@@ -7,7 +7,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg','favicon.ico','apple-touch-icon.png'],
+      includeAssets: ['appicon.png'],
       manifest: {
         name: 'RouteWise',
         short_name: 'RouteWise',
@@ -16,10 +16,10 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         icons: [
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
-        ],
+          { src: '/appicon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/appicon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/appicon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        ]
       },
     })
   ]

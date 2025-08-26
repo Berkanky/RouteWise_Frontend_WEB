@@ -165,8 +165,7 @@ export default {
     try {
       const { data } = await axios.post(
         "/TOTP/setup/start",
-        {},
-        { withCredentials: true }
+        {}
       );
       this.qrDataUrl = data?.QRDataUrl || "";
       this.manualSecret = data?.ManualSecret || "";
