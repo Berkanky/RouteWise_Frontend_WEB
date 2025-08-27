@@ -120,6 +120,6 @@ export const UseStore = defineStore("UseStore", {
   },
   persist: {
     storage: sessionStorage,
-    paths: ["UserData"],
+    paths: ["UserData", "RegisterData"],
   },
 });

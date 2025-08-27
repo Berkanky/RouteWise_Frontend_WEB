@@ -3,33 +3,35 @@
   <main class="min-h-screen bg-zinc-50 overflow-x-hidden">
     <router-view />
   </main>
+  <AppFooter />
 </template>
 
-
 <script>
-import {UseStore} from './stores/store';
-import AppNavbar from './components/AppNavbar.vue'
-import AppModal from './components/AppModal.vue'
+import { UseStore } from "./stores/store";
+import AppNavbar from "./components/AppNavbar.vue";
+import AppModal from "./components/AppModal.vue";
+import AppFooter from "./components/AppFooter.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     AppNavbar,
-    AppModal
+    AppModal,
+    AppFooter,
   },
-  setup(){
+  setup() {
     const store = UseStore();
-    return{
-      store
-    }
+    return {
+      store,
+    };
   },
   data() {
     return {
-      showModal: false
-    }
+      showModal: false,
+    };
   },
-  mounted(){
+  mounted() {
     this.store.WatchServices();
-  }
-}
+  },
+};
 </script>
