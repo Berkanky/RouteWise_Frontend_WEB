@@ -1,132 +1,100 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <!-- LEFT: QR + MANUAL SECRET -->
-      <div>
-        <h1 class="text-2xl md:text-[26px] font-semibold text-zinc-900">
-          Set up two-factor authentication
-        </h1>
-        <p class="mt-2 text-sm text-zinc-600">
-          Scan the QR code with your authenticator app or enter the manual key.
-        </p>
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <!-- LEFT: QR + MANUAL SECRET -->
+    <div>
+      <h1 class="text-2xl md:text-[26px] font-semibold text-zinc-900">
+        Set up two-factor authentication
+      </h1>
+      <p class="mt-2 text-sm text-zinc-600">
+        Scan the QR code with your authenticator app or enter the manual key.
+      </p>
 
-        <div
-          class="mt-6 rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6"
-        >
-          <div class="flex items-start gap-4">
-            <!-- QR -->
-            <div class="shrink-0">
-              <img
-                :src="qrDataUrl || placeholderQR"
-                alt="TOTP QR Code"
-                class="w-[180px] h-[180px] rounded-md border border-zinc-200 object-contain bg-white"
+      <div class="mt-6 rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
+        <!-- ESKI: flex items-start gap-4 -->
+        <div class="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+          <!-- QR -->
+          <div class="self-center md:self-start">
+            <!-- ESKI: w-[180px] h-[180px] -->
+            <img
+              :src="qrDataUrl || placeholderQR"
+              alt="TOTP QR Code"
+              class="w-36 h-36 md:w-44 md:h-44 rounded-md border border-zinc-200 object-contain bg-white"
+            />
+          </div>
+
+          <!-- Manual secret -->
+          <div class="grow min-w-0">
+            <label class="block text-sm font-medium text-zinc-800">Manual key</label>
+
+            <!-- ESKI: flex-row sabit -->
+            <div class="mt-1 flex flex-col sm:flex-row sm:items-center gap-2">
+              <!-- input katmanı -->
+              <input
+                :value="manualSecret"
+                readonly
+                class="w-full flex-1 min-w-0 truncate rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-zinc-800 font-mono text-sm"
               />
+              <!-- buton katmanı -->
+              <button
+                type="button"
+                @click="copySecret"
+                v-float-tip="'Copy manual key'"
+                class="shrink-0 sm:w-auto w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50"
+              >
+                Copy
+              </button>
             </div>
 
-            <!-- Manual secret -->
-            <div class="grow">
-              <label class="block text-sm font-medium text-zinc-800"
-                >Manual key</label
-              >
-              <div class="mt-1 flex items-center gap-2">
-                <input
-                  :value="manualSecret"
-                  readonly
-                  class="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-zinc-800 font-mono text-sm select-all"
-                />
-                <button
-                  type="button"
-                  @click="copySecret"
-                  v-float-tip="'Copy manual key'"
-                  class="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50"
-                >
-                  Copy
-                </button>
-              </div>
-
-              <p
-                class="mt-3 inline-flex items-center gap-2 text-xs text-zinc-600"
-              >
-                <span
-                  class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 font-medium"
-                >
-                  App: Microsoft Authenticator
-                </span>
-                <span>or any TOTP-compatible app</span>
-              </p>
-            </div>
+            <p class="mt-3 inline-flex flex-wrap items-center gap-2 text-xs text-zinc-600">
+              <span class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 font-medium">
+                App: Microsoft Authenticator
+              </span>
+              <span>or any TOTP-compatible app</span>
+            </p>
           </div>
         </div>
       </div>
-
-      <!-- RIGHT: VERIFY 6-DIGIT CODE -->
-      <div>
-        <h2 class="text-xl font-semibold text-zinc-900">
-          Enter the 6-digit code
-        </h2>
-        <p class="mt-2 text-sm text-zinc-600">
-          Open the app and type the current code.
-        </p>
-
-        <!-- OTP boxes -->
-        <div
-          class="mt-6 flex items-center justify-start gap-2 md:gap-3"
-          @paste.prevent="onPaste"
-        >
-          <input
-            v-for="(v, i) in code"
-            :key="i"
-            ref="box"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            pattern="[0-9]*"
-            maxlength="1"
-            :value="v"
-            @input="onInput(i, $event)"
-            @keydown="onKeydown(i, $event)"
-            class="h-12 w-10 md:h-12 md:w-12 text-center text-lg md:text-xl font-medium rounded-lg border border-rose-200/60 bg-rose-100/40 text-zinc-900 outline-none focus:bg-white focus:border-rose-300"
-          />
-        </div>
-
-        <!-- Error -->
-        <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
-
-        <!-- Submit -->
-        <button
-          :disabled="loading || otpString.length !== 6"
-          @click="onVerify"
-          class="mt-6 w-full lg:w-[360px] rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
-        >
-          <span v-if="!loading">Verify & Complete</span>
-          <span v-else class="inline-flex items-center gap-2">
-            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-              <circle
-                class="opacity-30"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="3"
-              />
-              <path
-                d="M22 12a10 10 0 0 1-10 10"
-                stroke="currentColor"
-                stroke-width="3"
-              />
-            </svg>
-            Verifying…
-          </span>
-        </button>
-
-        <p class="mt-4 text-[13px] text-zinc-600">
-          Already registered?
-          <RouterLink to="/login" class="underline hover:text-zinc-900"
-            >Go to login</RouterLink
-          >
-        </p>
-      </div>
     </div>
-  </section>
+
+    <!-- RIGHT: VERIFY 6-DIGIT CODE -->
+    <div>
+      <h2 class="text-xl font-semibold text-zinc-900">Enter the 6-digit code</h2>
+      <p class="mt-2 text-sm text-zinc-600">Open the app and type the current code.</p>
+
+      <div class="mt-6 flex items-center justify-start gap-2 md:gap-3" @paste.prevent="onPaste">
+        <input
+          v-for="(v, i) in code" :key="i" ref="box"
+          inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="1"
+          :value="v" @input="onInput(i, $event)" @keydown="onKeydown(i, $event)"
+          class="h-12 w-10 md:h-12 md:w-12 text-center text-lg md:text-xl font-medium rounded-lg border border-rose-200/60 bg-rose-100/40 text-zinc-900 outline-none focus:bg-white focus:border-rose-300"
+        />
+      </div>
+
+      <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
+
+      <button
+        :disabled="loading || otpString.length !== 6"
+        @click="onVerify"
+        class="mt-6 w-full lg:w-[360px] rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
+      >
+        <span v-if="!loading">Verify & Complete</span>
+        <span v-else class="inline-flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+            <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3"/>
+          </svg>
+          Verifying…
+        </span>
+      </button>
+
+      <p class="mt-4 text-[13px] text-zinc-600">
+        Already registered?
+        <RouterLink to="/login" class="underline hover:text-zinc-900">Go to login</RouterLink>
+      </p>
+    </div>
+  </div>
+</section>
 </template>
 
 <script>
