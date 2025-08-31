@@ -6,6 +6,9 @@ var LoginPage = () => import("../views/LoginPage.vue");
 var LoginTOTPVerify = () => import("../views/LoginTOTPVerifyPage.vue");
 var RegisterTOTPVerify = () => import("../views/RegisterTOTPVerifyPage.vue");
 var Register = () => import("../views/RegisterPage.vue");
+var PasswordResetStart = () => import("../views/PasswordResetStartPage.vue");
+var PasswordResetVerify= () => import("../views/PasswordResetVerifyPage.vue");
+var PasswordReset = () => import("../views/PasswordResetPage.vue");
 
 var NotFound = { template: '<div class="p-6">404 – Sayfa bulunamadı</div>' };
 
@@ -33,6 +36,24 @@ var routes = [
     path: "/register/TOTP/verify",
     name: "RegisterTOTPVerify",
     component: RegisterTOTPVerify,
+    meta: { guestOnly: true },
+  },
+  {
+    path: "/password/reset/start",
+    name: "PasswordResetStart",
+    component: PasswordResetStart,
+    meta: { guestOnly: true },
+  },
+  {
+    path: "/password/reset/verify",
+    name: "PasswordResetVerify",
+    component: PasswordResetVerify,
+    meta: { guestOnly: true },
+  },
+  {
+    path: "/password/reset/complete",
+    name: "PasswordReset",
+    component: PasswordReset,
     meta: { guestOnly: true },
   },
   {
@@ -71,18 +92,19 @@ async function validateSession({ force = true } = {}) {
   }
 }
 
+var SKIP_VALIDATE = new Set(['Login', 'Register', 'LoginTOTPVerify', 'RegisterTOTPVerify']);
+
 router.beforeEach(async (to) => {
+  if (SKIP_VALIDATE.has(to.name)) return true;
 
-  var authed = await validateSession({ force: true });
+  var needsAuth = to.matched.some(r => r.meta.requiresAuth);
+  if (needsAuth) {
+    var authed = await validateSession({ force: false }); // force=false => 60sn cache
+    if (!authed) return { name: 'Login', query: { redirect: to.fullPath } };
+  }
 
-  if (to.meta.requiresAuth && !authed) return { name: "Login", query: { redirect: to.fullPath } };
-
-  /* if (to.meta.guestOnly && authed) {
-    var q = to.query.redirect;
-    if (typeof q === "string" && q && q !== "/login") return q;
-    return { name: "Home" };
-  } */
-
+  return true;
 });
+
 
 export default router;

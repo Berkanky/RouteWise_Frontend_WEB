@@ -196,7 +196,7 @@ export default {
         if (res.status === 200) {
           this.store.RegisterData.QRDataUrl = res.data.QRDataUrl;
           this.store.RegisterData.ManualSecret = res.data.ManualSecret;
-
+          this.store.RegisterData.UserName = res.data.UserName;
           // show info modal, then auto-redirect
           this.showResume = true;
           this.resumeTimer = setTimeout(() => {

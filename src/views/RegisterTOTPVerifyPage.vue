@@ -11,11 +11,9 @@
       </p>
 
       <div class="mt-6 rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
-        <!-- ESKI: flex items-start gap-4 -->
         <div class="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
           <!-- QR -->
           <div class="self-center md:self-start">
-            <!-- ESKI: w-[180px] h-[180px] -->
             <img
               :src="qrDataUrl || placeholderQR"
               alt="TOTP QR Code"
@@ -26,16 +24,12 @@
           <!-- Manual secret -->
           <div class="grow min-w-0">
             <label class="block text-sm font-medium text-zinc-800">Manual key</label>
-
-            <!-- ESKI: flex-row sabit -->
             <div class="mt-1 flex flex-col sm:flex-row sm:items-center gap-2">
-              <!-- input katmanı -->
               <input
                 :value="manualSecret"
                 readonly
                 class="w-full flex-1 min-w-0 truncate rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-zinc-800 font-mono text-sm"
               />
-              <!-- buton katmanı -->
               <button
                 type="button"
                 @click="copySecret"
@@ -57,10 +51,22 @@
       </div>
     </div>
 
-    <!-- RIGHT: VERIFY 6-DIGIT CODE -->
     <div>
       <h2 class="text-xl font-semibold text-zinc-900">Enter the 6-digit code</h2>
       <p class="mt-2 text-sm text-zinc-600">Open the app and type the current code.</p>
+
+      <div class="mt-5">
+        <label class="block text-sm font-medium text-zinc-800">Username</label>
+        <input
+          :value="username"
+          disabled
+          aria-readonly="true"
+          class="mt-1 w-full lg:w-[360px] rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-zinc-800 text-sm cursor-not-allowed"
+        />
+        <p class="mt-1 text-[12px] text-zinc-500">
+          This account will be protected with 2FA.
+        </p>
+      </div>
 
       <div class="mt-6 flex items-center justify-start gap-2 md:gap-3" @paste.prevent="onPaste">
         <input
@@ -74,7 +80,7 @@
       <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
 
       <button
-        :disabled="loading || otpString.length !== 6"
+        :disabled="loading || otpString.length !== 6 || RegisterTOTPVerifyBoardingStatus"
         @click="onVerify"
         class="mt-6 w-full lg:w-[360px] rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
       >
@@ -94,28 +100,66 @@
       </p>
     </div>
   </div>
+  <div v-if="showCodesModal" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40" aria-hidden="true"></div>
+
+    <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-xl border border-zinc-200 p-6 mx-4">
+      <h3 class="text-lg font-semibold text-zinc-900">Save your backup codes</h3>
+      <p class="mt-1 text-sm text-zinc-600">
+        You will only see these codes <b>once</b>. Store them securely.
+      </p>
+
+      <div class="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 max-h-56 overflow-auto">
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-sm text-zinc-800">
+          <li v-for="(c, i) in backupCodes" :key="c">
+            <span class="text-zinc-500 mr-2">{{ String(i+1).padStart(2,'0') }}.</span>{{ c }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        <button @click="downloadCodes"
+          class="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50">
+          Download .txt
+        </button>
+        <button @click="copyCodes"
+          class="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50">
+          Copy all
+        </button>
+        <button @click="continueToLogin"
+          class="ml-auto rounded-full bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 text-sm font-semibold">
+          I saved them → Continue
+        </button>
+      </div>
+    </div>
+  </div>
 </section>
 </template>
 
 <script>
 import axios from "axios";
-import {
-  computePosition,
-  offset,
-  flip,
-  shift,
-  autoUpdate,
-} from "@floating-ui/dom";
+import { computePosition, offset, flip, shift, autoUpdate } from "@floating-ui/dom";
+import { UseStore } from "../stores/store";
 
 export default {
   name: "RegisterTOTPVerify",
+  setup(){
+    const store = UseStore();
+    return{
+      store
+    }
+  },
   data() {
     return {
+      RegisterTOTPVerifyBoardingStatus: false,
+      backupCodes: [],
+      showCodesModal: false,
       qrDataUrl: "",
       manualSecret: "",
       code: ["", "", "", "", "", ""],
       loading: false,
       error: "",
+      username: "", // ADDED
       placeholderQR:
         "data:image/svg+xml;utf8," +
         encodeURIComponent(
@@ -128,38 +172,50 @@ export default {
       return this.code.join("");
     },
   },
-  async mounted() {
-    // QR + manual secret çek
-    try {
-      const { data } = await axios.post(
-        "/TOTP/setup/start",
-        {}
-      );
-      this.qrDataUrl = data?.QRDataUrl || "";
-      this.manualSecret = data?.ManualSecret || "";
-    } catch (e) {
-      this.error = e?.response?.data?.message || "Could not start TOTP setup.";
-    }
-    // ilk otp kutusuna fokus
-    this.$nextTick(() => {
-      const first = this.$refs.box?.[0];
-      if (first) first.focus();
-    });
+  async mounted(){
+    var { QRDataUrl, ManualSecret, UserName } = this.store.RegisterData;
+
+    this.qrDataUrl = QRDataUrl;
+    this.manualSecret = ManualSecret;
+    this.username = UserName;
   },
   methods: {
+    downloadCodes() {
+    if (!this.backupCodes?.length) return;
+    var now = new Date().toISOString().replace(/[:.]/g,'-');
+    var fileName = `backup-codes-${this.username || 'user'}-${now}.txt`;
+    var header = `These are your one-time backup codes.\nStore them securely. Each can be used once.\n\nUsername: ${this.username}\nGenerated: ${new Date().toISOString()}\n\n`;
+    var body = this.backupCodes.map((c, i) => `${String(i+1).padStart(2,'0')}. ${c}`).join('\n');
+    var blob = new Blob([header + body + '\n'], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = fileName; a.click();
+    URL.revokeObjectURL(url);
+  },
+  copyCodes() {
+    if (!this.backupCodes?.length) return;
+    var body = this.backupCodes.join('\n');
+    navigator.clipboard?.writeText(body);
+  },
+  continueToLogin() {
+    this.showCodesModal = false;
+    this.$router.replace({ name: "Login" });
+  },
     async onVerify() {
       this.error = "";
       if (this.otpString.length !== 6) return;
       try {
         this.loading = true;
-        var res = await axios.post("/TOTP/setup/verify", {
-          Code: this.otpString,
-        });
-
-        if (res.status === 200) this.$router.replace({ name: "Login" });
+        const res = await axios.post("/TOTP/setup/verify", { Code: this.otpString });
+        console.log(res);
+        if (res.status === 200) {
+          this.showCodesModal = true;
+          this.backupCodes = res.data.Plain_Codes;
+          this.RegisterTOTPVerifyBoardingStatus = true;
+          //this.$router.replace({ name: "Login" });
+        }
       } catch (e) {
-        this.error =
-          e?.response?.data?.message || "Invalid code, please try again.";
+        this.error = e?.response?.data?.message || "Invalid code, please try again.";
         this.code = ["", "", "", "", "", ""];
         const first = this.$refs.box?.[0];
         if (first) first.focus();
@@ -200,9 +256,7 @@ export default {
     },
 
     onPaste(e) {
-      const text = (e.clipboardData?.getData("text") || "")
-        .replace(/\D/g, "")
-        .slice(0, 6);
+      const text = (e.clipboardData?.getData("text") || "").replace(/\D/g, "").slice(0, 6);
       if (!text) return;
       for (let i = 0; i < 6; i++) this.code[i] = text[i] || "";
       const idx = Math.min(text.length, 5);

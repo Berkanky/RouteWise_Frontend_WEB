@@ -70,7 +70,7 @@
           </label>
 
           <a
-            href="#"
+            href="/password/reset/start"
             v-float-tip="'We will send you a reset link.'"
             class="text-xs underline text-zinc-600 hover:text-zinc-800">
             Forgot password?
