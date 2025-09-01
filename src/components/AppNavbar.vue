@@ -9,9 +9,10 @@
 
       <!-- Desktop links -->
       <nav class="hidden md:flex items-center gap-8 text-sm text-zinc-700">
-        <RouterLink to="/home" class="hover:text-black">Home</RouterLink>
+        <RouterLink to="/home" class="hover:text-black" v-if="this.Active">Home</RouterLink>
         <a href="#" class="hover:text-black">About</a>
         <a href="#" class="hover:text-black">Contact</a>
+        <a href="/start/calculate/route" class="hover:text-black" v-if="this.Active">RouteWise</a>
       </nav>
 
       <!-- Right -->
@@ -24,7 +25,7 @@
           Logout
         </RouterLink>
       </div>
-
+      
       <!-- Mobile menu button -->
       <DisclosureButton
         class="md:hidden inline-flex items-center justify-center rounded-md px-3 py-2 text-zinc-700 hover:bg-zinc-100">
@@ -38,9 +39,10 @@
     <!-- Mobile panel -->
     <DisclosurePanel class="md:hidden border-t border-zinc-200 px-4 pb-3">
       <nav class="flex flex-col text-sm text-zinc-700">
-        <RouterLink to="/home" class="py-2 hover:text-black">Home</RouterLink>
+        <RouterLink to="/home" class="py-2 hover:text-black" v-if="this.Active">Home</RouterLink>
         <a href="#" class="py-2 hover:text-black">About</a>
         <a href="#" class="py-2 hover:text-black">Contact</a>
+        <a href="/start/calculate/route" class="hover:text-black" v-if="this.Active">RouteWise</a>
         <RouterLink
           v-if="this.Active"
           v-on:click="LogoutService()"
@@ -88,6 +90,8 @@ export default {
       handler(newVal){
         if(Object.keys(newVal).length && 'Active' in newVal && newVal["Active"]) this.Active = true;
         else this.Active = false;
+
+        console.log("User Active : ", this.Active);
       },
       immediate: true, deep: true
     }

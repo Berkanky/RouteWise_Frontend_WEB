@@ -1,17 +1,15 @@
 <template>
   <section class="mx-auto w-full max-w-xl px-4 sm:px-6">
-    <!-- Heading -->
-    <header class="mb-6 sm:mb-8">
-      <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">
-        Reset your password
-      </h1>
-      <p class="mt-2 text-center text-sm text-zinc-600">
-        Enter your username to start the reset flow.
-      </p>
-    </header>
-
     <!-- Card -->
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
+      <header class="mb-6 sm:mb-8">
+        <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">
+          Reset your password
+        </h1>
+        <p class="mt-2 text-center text-sm text-zinc-600">
+          Enter your username to start the reset flow.
+        </p>
+      </header>
       <form @submit.prevent="onSubmit" novalidate>
         <!-- Username -->
         <label for="username" class="block text-sm font-medium text-zinc-800 mb-1">

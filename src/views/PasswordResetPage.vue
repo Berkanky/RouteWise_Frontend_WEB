@@ -1,15 +1,5 @@
 <template>
   <section class="mx-auto w-full max-w-xl px-4 sm:px-6">
-    <!-- Heading -->
-    <header class="mb-6 sm:mb-8">
-      <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">
-        Set a new password
-      </h1>
-      <p class="mt-2 text-center text-sm text-zinc-600">
-        Choose a strong password you haven’t used before.
-      </p>
-    </header>
-
     <!-- Success Banner -->
     <div v-if="success" class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 flex items-start gap-2" role="status" aria-live="polite">
       <svg class="h-5 w-5 mt-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -22,6 +12,14 @@
 
     <!-- Card -->
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
+      <header class="mb-6 sm:mb-8">
+        <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">
+          Set a new password
+        </h1>
+        <p class="mt-2 text-center text-sm text-zinc-600">
+          Choose a strong password you haven’t used before.
+        </p>
+      </header>
       <form @submit.prevent="onSubmit" novalidate>
         <!-- PASSWORD -->
         <label class="block text-sm font-medium text-zinc-800 mb-1">New password</label>

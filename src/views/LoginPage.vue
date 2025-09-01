@@ -1,23 +1,17 @@
 <template>
-  <section class="mx-auto w-full max-w-xl px-4 sm:px-6">
-    <!-- Heading -->
-    <header class="mb-6 sm:mb-8">
-      <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">
-        Welcome back
-      </h1>
-      <p class="mt-2 text-center text-sm text-zinc-600">
-        Please sign in to continue.
-      </p>
-    </header>
-
-    <!-- Card -->
+  <main class="mx-auto w-full max-w-xl px-4 sm:px-6 pt-10">
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
+      <!-- Title moved INSIDE the card -->
+      <div class="mb-4">
+        <div class="text-[11px] uppercase tracking-wider text-zinc-500">Welcome back</div>
+        <h1 class="mt-1 text-xl font-semibold text-zinc-900">Sign in to continue</h1>
+      </div>
+
       <form @submit.prevent="onSubmit" novalidate>
         <!-- Username -->
         <label class="block text-sm font-medium text-zinc-800 mb-1">Username</label>
         <div class="relative">
           <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-            <!-- user icon -->
             <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z"/>
             </svg>
@@ -27,16 +21,15 @@
             type="text"
             autocomplete="username"
             placeholder="Enter your username"
-            class="w-full rounded-lg border border-rose-200/60 bg-rose-100/40 placeholder:text-zinc-400
-                   text-zinc-900 pl-10 pr-3 py-3 outline-none focus:bg-white focus:border-rose-300" />
+            class="w-full rounded-lg border border-zinc-300 bg-white placeholder:text-zinc-400
+                   text-zinc-900 pl-10 pr-3 py-3 outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300" />
         </div>
 
         <!-- Password -->
-        <div class="mt-5">
+        <div class="mt-4">
           <label class="block text-sm font-medium text-zinc-800 mb-1">Password</label>
           <div class="relative">
             <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-              <!-- lock icon -->
               <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"/>
               </svg>
@@ -46,8 +39,8 @@
               :type="showPassword ? 'text' : 'password'"
               autocomplete="current-password"
               placeholder="Enter your password"
-              class="w-full rounded-lg border border-rose-200/60 bg-rose-100/40 placeholder:text-zinc-400
-                     text-zinc-900 pl-10 pr-10 py-3 outline-none focus:bg-white focus:border-rose-300" />
+              class="w-full rounded-lg border border-zinc-300 bg-white placeholder:text-zinc-400
+                     text-zinc-900 pl-10 pr-10 py-3 outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300" />
             <button
               type="button"
               @click="showPassword = !showPassword"
@@ -83,7 +76,7 @@
         <!-- Submit -->
         <button
           :disabled="loading"
-          class="mt-6 w-full rounded-full bg-rose-500 hover:bg-rose-600
+          class="mt-5 w-full rounded-full bg-rose-500 hover:bg-rose-600
                  disabled:opacity-60 disabled:cursor-not-allowed
                  text-white font-semibold py-3 text-sm shadow-sm transition">
           <span v-if="!loading">Log in</span>
@@ -102,7 +95,7 @@
         </p>
       </form>
     </div>
-  </section>
+  </main>
 </template>
 
 <script>

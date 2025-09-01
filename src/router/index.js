@@ -9,6 +9,8 @@ var Register = () => import("../views/RegisterPage.vue");
 var PasswordResetStart = () => import("../views/PasswordResetStartPage.vue");
 var PasswordResetVerify= () => import("../views/PasswordResetVerifyPage.vue");
 var PasswordReset = () => import("../views/PasswordResetPage.vue");
+var StartCalculateRoute = () => import("../views/StartCalculateRoutePage.vue");
+var GoogleMaps = () => import("../views/GoogleMaps.vue");
 
 var NotFound = { template: '<div class="p-6">404 – Sayfa bulunamadı</div>' };
 
@@ -61,6 +63,18 @@ var routes = [
     name: "Register",
     component: Register,
     meta: { guestOnly: true },
+  },
+  {
+    path: "/start/calculate/route",
+    name: "StartCalculateRoute",
+    component: StartCalculateRoute,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/map",
+    name: "GoogleMaps",
+    component: GoogleMaps,
+    meta: { requiresAuth: true },
   },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
