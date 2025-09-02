@@ -182,7 +182,11 @@ export default {
         );
         console.log("/TOTP/verify : ", res);
         
-        if (res.status === 200) this.$router.push({ name: "Home" });
+        if (res.status === 200) {
+          
+          Object.assign(this.store.Config, { GOOGLE_API_KEY: res.data.config.GOOGLE_API_KEY });
+          this.$router.push({ name: "Home" });
+        }
 
         // redirect param varsa ona; yoksa /home
         var redir = this.$route.query.redirect;
