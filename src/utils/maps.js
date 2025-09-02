@@ -5,6 +5,7 @@ export function loadGoogleMapsSdk(key){
     if (document.getElementById(id)) return resolve();
     const s = document.createElement('script');
     s.id = id;
+    console.log("key : ", key);
     s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&v=weekly`;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error('Maps SDK yüklenemedi'));

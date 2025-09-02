@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6">
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10">
     <!-- tek kart: içinde 2 kolon -->
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
       <div class="grid grid-cols-1 lg:grid-cols-2">

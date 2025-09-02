@@ -54,8 +54,7 @@
                     <li v-for="(item, i) in this.Suggestions" :key="i"
                       @mousedown.prevent="SelectLocation(item.placePrediction.placeId, item.placePrediction.text.text, 'StartLocation')"
                       class="px-3 py-2 cursor-pointer"
-                      :class="item.placePrediction.placeId === this.SelectedStartLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'"
-                      >
+                      :class="item.placePrediction.placeId === this.SelectedStartLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
                       <div class="text-sm text-zinc-800">{{ item.placePrediction.text.text || '-' }}</div>
                     </li>
                   </ul>
@@ -76,8 +75,7 @@
                     <li v-for="(item, i) in this.Suggestions" :key="i"
                       @mousedown.prevent="SelectLocation(item.placePrediction.placeId, item.placePrediction.text.text, 'DestinationLocation')"
                       class="px-3 py-2 cursor-pointer"
-                      :class="item.placePrediction.placeId === this.SelectedDestinationLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'"
-                      >
+                      :class="item.placePrediction.placeId === this.SelectedDestinationLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
                       <div class="text-sm text-zinc-800">{{ item.placePrediction.text.text || '-' }}</div>
                     </li>
                   </ul>
@@ -200,6 +198,7 @@
 import { h } from "vue"
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, TransitionRoot } from "@headlessui/vue"
 import axios from "axios"
+import { UseStore } from "../stores/store";
 
 const HeadlessSelect = {
   name: "HeadlessSelect",
@@ -323,6 +322,12 @@ const HeadlessMultiSelect = {
 export default {
   name: "RouteWizard",
   components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, TransitionRoot, HeadlessSelect, HeadlessMultiSelect },
+  setup() {
+    const store = UseStore();
+    return {
+      store
+    }
+  },
   data() {
     return {
       step: 0,
@@ -389,15 +394,17 @@ export default {
     await this.GetCarMakes()
   },
   methods: {
-    SelectLocation(placeId, placeName, Type){
-      if( Type === 'StartLocation' ) {
+    SelectLocation(placeId, placeName, Type) {
+      if (Type === 'StartLocation') {
         this.SelectedStartLocationSuggestionPlaceId = placeId;
         this.form.StartLocation = placeName;
-      } else if( Type === 'DestinationLocation'){
+      } else if (Type === 'DestinationLocation') {
         this.SelectedDestinationLocationSuggestionPlaceId = placeId;
         this.form.DestinationLocation = placeName;
       }
-    
+
+      this.FindSelectedLocationDetails(placeId, Type);
+
       this.Suggestions = [];
     },
     goToStep(i) {
@@ -407,8 +414,8 @@ export default {
     },
     nextStep() { if (this.step < this.steps.length - 1 && this.canGoNext) this.step += 1 },
     prevStep() { if (this.step > 0) this.step -= 1 },
-    previewOnMap() { 
-      this.$router.push({name:'GoogleMaps'});
+    previewOnMap() {
+      this.$router.push({ name: 'GoogleMaps' });
     },
     async submitWizard() {
       if (!this.canSubmit || this.submitting) return
@@ -446,13 +453,26 @@ export default {
       var location_name = e.target.value;
       if (!location_name) return;
 
-      if( SuggestionType === 'StartLocation' ) this.SuggestionType = 'StartLocation';
-      else if( SuggestionType === 'DestinationLocation' ) this.SuggestionType = 'DestinationLocation';
+      if (SuggestionType === 'StartLocation') this.SuggestionType = 'StartLocation';
+      else if (SuggestionType === 'DestinationLocation') this.SuggestionType = 'DestinationLocation';
 
       var res = await axios.post("/google/places", { input: location_name }, {});
       console.log("/google/places : ", res);
       if (res.status === 200) this.Suggestions = res.data.suggestions;
       else return;
+    },
+    async FindSelectedLocationDetails(place_id, type) {
+      var res = await axios.post("/google/places/detail", { placeId: place_id }, {});
+      console.log("google/places/detail : ", res);
+      if (res.status === 200) {
+        if (type === 'StartLocation') {
+          Object.assign(this.store.StartLocation, res.data.location);
+
+          console.log(JSON.stringify(this.store.StartLocation));
+        } else if (type === 'DestinationLocation') {
+          Object.assign(this.store.DestinationLocation, res.data.location);
+        }
+      } else return;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-2xl">
+  <section class="mx-auto w-full max-w-xl px-4 sm:px-6 pt-10">
     <div class="mb-3">
       <button
         type="button"
@@ -183,8 +183,9 @@ export default {
         console.log("/TOTP/verify : ", res);
         
         if (res.status === 200) {
-          
-          Object.assign(this.store.Config, { GOOGLE_API_KEY: res.data.config.GOOGLE_API_KEY });
+          this.store.Config = res.data.config;
+          this.store.UserData.Active = true;
+          console.log("/TOTP/verify config : ", JSON.stringify(this.store.Config));
           this.$router.push({ name: "Home" });
         }
 

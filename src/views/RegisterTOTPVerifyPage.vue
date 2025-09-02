@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6">
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-6">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
     <!-- LEFT: QR + MANUAL SECRET -->
     <div>

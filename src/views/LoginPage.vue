@@ -130,12 +130,13 @@ export default {
           UserName: this.form.UserName,
           Password: this.form.Password,
         });
-        
+        console.log("/login : ", res);
         if (res.status === 200) {
           this.store.LoginData = this.form;
           this.$router.push({ name: "LoginTOTPVerify" });
         }
       } catch (e) {
+        console.log(e);
         this.error = e?.response?.data?.message || "Login failed.";
       } finally {
         this.loading = false;

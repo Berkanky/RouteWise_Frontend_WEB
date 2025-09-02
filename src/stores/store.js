@@ -22,7 +22,7 @@ export const UseStore = defineStore("UseStore", {
     created_router_id_count:0,
 
     Token: "",
-    ServerRoot: 'https://api.routewiseapp.com', //'http://localhost:3000', //"https://api.routewiseapp.com",
+    ServerRoot: 'http://localhost:3000', //'http://localhost:3000', //"https://api.routewiseapp.com",
     ServerWSRoot:'wss://api.routewiseapp.com', //'wss://localhost:3000', //"wss://api.routewiseapp.com",
     
     AppStarted: false,
@@ -120,6 +120,6 @@ export const UseStore = defineStore("UseStore", {
   },
   persist: {
     storage: sessionStorage,
-    paths: ["UserData", "RegisterData"],
+    paths: ["UserData", "RegisterData", "Config"],
   },
 });

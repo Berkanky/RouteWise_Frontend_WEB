@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-xl px-4 sm:px-6">
+  <section class="mx-auto w-full max-w-xl px-4 sm:px-6 pt-10">
     <!-- Heading -->
     <header class="mb-6 sm:mb-8">
       <h1 class="text-center text-2xl md:text-[26px] font-semibold text-zinc-900">

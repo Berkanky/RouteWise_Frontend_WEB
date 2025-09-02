@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-xl px-4 sm:px-6">
+  <section class="mx-auto w-full max-w-xl px-4 sm:px-6 pt-10">
     <!-- Card -->
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm p-5 md:p-6">
       <header class="mb-6 sm:mb-8">
