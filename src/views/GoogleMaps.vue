@@ -4,7 +4,7 @@
 
 <script>
 import { UseStore } from '../stores/store';
-import loadGoogleMapsSdk from '../utils/maps';
+import {loadGoogleMapsSdk} from '../utils/maps';
 export default {
     name: "GoogleMaps",
     setup(){

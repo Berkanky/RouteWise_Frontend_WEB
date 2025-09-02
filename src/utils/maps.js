@@ -1,4 +1,4 @@
-function loadGoogleMapsSdk(key){
+export function loadGoogleMapsSdk(key){
   return new Promise((resolve, reject) => {
     if (window.google?.maps) return resolve();
     const id = 'gmaps-sdk';
@@ -11,5 +11,3 @@ function loadGoogleMapsSdk(key){
     document.head.appendChild(s);
   });
 };
-
-module.exports = loadGoogleMapsSdk;
