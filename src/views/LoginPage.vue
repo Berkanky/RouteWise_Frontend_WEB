@@ -132,6 +132,7 @@ export default {
         });
         if (res.status === 200) {
           this.store.LoginData = this.form;
+          this.store.Config.GOOGLE_API_KEY = res.data.config.GOOGLE_API_KEY;
           this.$router.push({ name: "LoginTOTPVerify" });
         }
       } catch (e) {

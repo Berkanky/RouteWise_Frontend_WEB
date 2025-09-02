@@ -3,7 +3,7 @@ import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
     AppVersion:'1.0.0',
-    
+    Config: {},
     UserData: {},
 
     LoginData: {
