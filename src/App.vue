@@ -32,6 +32,7 @@ export default {
   },
   mounted() {
     this.store.WatchServices();
-  },
+    console.log("APP Triggered. ");
+  }
 };
 </script>
