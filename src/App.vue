@@ -22,7 +22,7 @@ export default {
   setup() {
     const store = UseStore();
     return {
-      store,
+      store
     };
   },
   data() {
