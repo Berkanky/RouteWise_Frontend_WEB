@@ -1,142 +1,218 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10">
-    <!-- tek kart: içinde 2 kolon -->
-    <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-      <div class="grid grid-cols-1 lg:grid-cols-2">
+  <!-- Outer container for register page with centered content and soft backdrop -->
+  <section
+    class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center"
+  >
+    <!-- Card wrapper using a two-column grid -->
+    <div
+      class="w-full overflow-hidden rounded-3xl border border-rose-200 bg-white shadow-md grid grid-cols-1 lg:grid-cols-2"
+    >
+      <!-- Left: Registration form -->
+      <div class="p-6 md:p-10 order-2 lg:order-1">
+        <header class="mb-8">
+          <h1 class="text-2xl md:text-3xl font-bold text-zinc-900">
+            Create your account
+          </h1>
+          <p class="mt-1 text-sm text-zinc-500">
+            Start your journey with RouteWise
+          </p>
+        </header>
+        <form @submit.prevent="onSubmit" novalidate>
+          <!-- Username field with real-time uniqueness check -->
+          <label
+            class="block text-sm font-medium text-zinc-800 mb-1"
+            for="register-username"
+          >
+            Username
+          </label>
+          <div class="relative">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
+            >
+              <!-- User icon -->
+              <svg
+                class="h-4 w-4 text-rose-400"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z"
+                />
+              </svg>
+            </span>
+            <input
+              id="register-username"
+              v-on:keyup="WatchUserName()"
+              v-model.trim="form.UserName"
+              type="text"
+              autocomplete="username"
+              placeholder="Choose a username"
+              :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
+              :aria-describedby="IsUserNameUsed ? 'username-error' : null"
+              :class="[
+                'w-full rounded-lg pl-10 pr-3 py-3 outline-none placeholder:text-zinc-400 text-zinc-900 focus:bg-white',
+                IsUserNameUsed
+                  ? 'border border-red-500/70 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                  : 'border border-rose-200/60 bg-rose-50/40 focus:border-rose-400 focus:ring-2 focus:ring-rose-300',
+              ]"
+            />
+          </div>
+          <p
+            v-if="IsUserNameUsed"
+            id="username-error"
+            class="mt-1 text-sm text-red-600"
+          >
+            This username is already taken.
+          </p>
 
-        <!-- LEFT: FORM -->
-        <div class="p-5 md:p-6 order-2 lg:order-1">
-          <header class="mb-6 sm:mb-8">
-            <h1 class="text-2xl md:text-[26px] font-semibold text-zinc-900">Create your account</h1>
-            <p class="mt-2 text-sm text-zinc-600">Start your journey with RouteWise.</p>
-          </header>
-
-          <form @submit.prevent="onSubmit" novalidate>
-            <!-- Username -->
-            <label class="block text-sm font-medium text-zinc-800 mb-1">Username</label>
+          <!-- Password field -->
+          <div class="mt-6">
+            <label
+              class="block text-sm font-medium text-zinc-800 mb-1"
+              for="register-password"
+            >
+              Password
+            </label>
             <div class="relative">
-              <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z"/>
+              <span
+                class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
+              >
+                <!-- Lock icon -->
+                <svg
+                  class="h-4 w-4 text-rose-400"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"
+                  />
                 </svg>
               </span>
               <input
-                v-on:keyup="WatchUserName()"
-                v-model.trim="form.UserName"
-                type="text"
-                autocomplete="username"
-                placeholder="Choose a username"
-                :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
-                :aria-describedby="IsUserNameUsed ? 'username-error' : null"
-                :class="[
-                  'w-full rounded-lg pl-10 pr-3 py-3 outline-none placeholder:text-zinc-400 text-zinc-900 focus:bg-white',
-                  IsUserNameUsed
-                    ? 'border border-red-500/70 bg-red-50 focus:border-red-500'
-                    : 'border border-rose-200/60 bg-rose-100/40 focus:border-rose-300',
-                ]" />
+                id="register-password"
+                v-model="form.Password"
+                :type="showPassword ? 'text' : 'password'"
+                autocomplete="new-password"
+                placeholder="Create a password"
+                class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 pl-10 pr-10 py-3 text-zinc-900 placeholder:text-zinc-400 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs font-medium text-rose-600 hover:text-rose-800 focus:outline-none"
+                :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              >
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
             </div>
-            <p v-if="IsUserNameUsed" id="username-error" class="mt-1 text-sm text-red-600">
-              This username is already taken.
+            <p class="mt-1 text-xs text-zinc-500">
+              Use at least 8 characters, including a number.
             </p>
-
-            <!-- Password -->
-            <div class="mt-5">
-              <label class="block text-sm font-medium text-zinc-800 mb-1">Password</label>
-              <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                  <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"/>
-                  </svg>
-                </span>
-                <input
-                  v-model="form.Password"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="new-password"
-                  placeholder="Create a password"
-                  class="w-full rounded-lg border border-rose-200/60 bg-rose-100/40 placeholder:text-zinc-400
-                         text-zinc-900 pl-10 pr-10 py-3 outline-none focus:bg-white focus:border-rose-300" />
-                <button
-                  type="button"
-                  @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs text-zinc-600 hover:text-zinc-900"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'">
-                  {{ showPassword ? 'Hide' : 'Show' }}
-                </button>
-              </div>
-              <p class="mt-1 text-[12px] text-zinc-500">
-                Use at least 8 characters, including a number.
-              </p>
-            </div>
-
-            <!-- Confirm -->
-            <div class="mt-5">
-              <label class="block text-sm font-medium text-zinc-800 mb-1">Password</label>
-              <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                  <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"/>
-                  </svg>
-                </span>
-                <input
-                  v-model="form.PasswordConfirm"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="new-password"
-                  placeholder="Create a password"
-                  class="w-full rounded-lg border border-rose-200/60 bg-rose-100/40 placeholder:text-zinc-400
-                         text-zinc-900 pl-10 pr-10 py-3 outline-none focus:bg-white focus:border-rose-300" />
-                <button
-                  type="button"
-                  @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs text-zinc-600 hover:text-zinc-900"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'">
-                  {{ showPassword ? 'Hide' : 'Show' }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Error -->
-            <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
-
-            <!-- Submit -->
-            <button
-              :disabled="loading || IsUserNameUsed"
-              class="mt-6 w-full rounded-full bg-rose-600 hover:bg-rose-700
-                     disabled:opacity-60 disabled:cursor-not-allowed
-                     text-white font-semibold py-3 text-sm shadow-sm transition">
-              <span v-if="!loading">Register</span>
-              <span v-else class="inline-flex items-center gap-2">
-                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
-                  <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3"/>
-                </svg>
-                Processing…
-              </span>
-            </button>
-
-            <p class="mt-4 text-center text-[13px] text-zinc-600">
-              Already have an account?
-              <RouterLink to="/login" class="underline hover:text-zinc-900">Log in</RouterLink>
-            </p>
-          </form>
-        </div>
-
-        <!-- RIGHT: IMAGE (kartın İÇİNDE) -->
-        <div class="order-1 lg:order-2 bg-zinc-50 border-b lg:border-b-0 lg:border-l border-zinc-200">
-          <!-- oran sabitlemek için wrapper -->
-          <div class="h-56 lg:h-full">
-            <img
-              src="../images/RouteWiseMapV2.jpg"
-              alt="Register illustration"
-              class="h-full w-full object-cover"
-              aria-hidden="true" />
           </div>
-        </div>
 
+          <!-- Confirm password field -->
+          <div class="mt-6">
+            <label
+              class="block text-sm font-medium text-zinc-800 mb-1"
+              for="register-confirm"
+            >
+              Confirm password
+            </label>
+            <div class="relative">
+              <span
+                class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
+              >
+                <!-- Lock icon reused -->
+                <svg
+                  class="h-4 w-4 text-rose-400"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"
+                  />
+                </svg>
+              </span>
+              <input
+                id="register-confirm"
+                v-model="form.PasswordConfirm"
+                :type="showPassword ? 'text' : 'password'"
+                autocomplete="new-password"
+                placeholder="Re-enter your password"
+                class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 pl-10 pr-10 py-3 text-zinc-900 placeholder:text-zinc-400 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs font-medium text-rose-600 hover:text-rose-800 focus:outline-none"
+                :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              >
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <p v-if="error" class="mt-4 text-sm text-red-600">
+            {{ error }}
+          </p>
+
+          <!-- Submit button -->
+          <button
+            :disabled="loading || IsUserNameUsed"
+            class="mt-7 w-full rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
+          >
+            <span v-if="!loading">Register</span>
+            <span v-else class="inline-flex items-center gap-2">
+              <svg
+                class="animate-spin h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  class="opacity-30"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="3"
+                />
+                <path
+                  d="M22 12a10 10 0 0 1-10 10"
+                  stroke="currentColor"
+                  stroke-width="3"
+                />
+              </svg>
+              Processing…
+            </span>
+          </button>
+
+          <p class="mt-6 text-center text-sm text-zinc-600">
+            Already have an account?
+            <RouterLink
+              to="/login"
+              class="underline text-rose-600 hover:text-rose-800"
+            >
+              Log in
+            </RouterLink>
+          </p>
+        </form>
+      </div>
+
+      <!-- Right: Illustration inside card -->
+      <div
+        class="order-1 lg:order-2 bg-rose-50 border-b lg:border-b-0 lg:border-l border-rose-200 hidden lg:block"
+      >
+        <div class="h-56 lg:h-full">
+          <img
+            src="../images/RouteWiseMapV2.jpg"
+            alt="Register illustration"
+            class="h-full w-full object-cover"
+            aria-hidden="true"
+          />
+        </div>
       </div>
     </div>
-
-    <!-- Resume modal (aynı) -->
-    <!-- ... modal kodun burada aynen kalıyor ... -->
   </section>
 </template>
 
@@ -200,20 +276,25 @@ export default {
       clearTimeout(this.resumeTimer);
       this.$router.push({ name: "RegisterTOTPVerify" });
     },
-
     WatchUserName() {
       const UserName = this.form.UserName?.trim();
-      if (!UserName) { this.IsUserNameUsed = false; return; }
+      if (!UserName) {
+        this.IsUserNameUsed = false;
+        return;
+      }
       clearTimeout(this.debounceTimer);
       this.debounceTimer = setTimeout(() => {
         this.sendWS({ UserName });
       }, 300);
     },
     WSConnect() {
-      const RailwayWS = this.store.ServerWSRoot;
-      try { this.socket = new WebSocket(RailwayWS); }
-      catch (e) { console.error("Web Socket Error. ", e); return this.scheduleReconnect(); }
-
+      var RailwayWS = import.meta.env.VITE_WEB_SOCKET_API_URL;
+      try {
+        this.socket = new WebSocket(RailwayWS);
+      } catch (e) {
+        console.error("Web Socket Error. ", e);
+        return this.scheduleReconnect();
+      }
       this.socket.onopen = () => {
         this.reconnectAttempts = 0;
         this.flushQueue();
@@ -256,17 +337,21 @@ export default {
           this.socket.send(JSON.stringify({ type: "ping", t: Date.now() }));
       }, 25_000);
     },
-    stopHeartbeat() { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; },
+    stopHeartbeat() {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    },
     cleanupWS(manual = false) {
       this.isManualClose = manual;
       clearTimeout(this.reconnectTimer);
       this.stopHeartbeat();
       if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
-        try { this.socket.close(1000, "client closing"); } catch {}
+        try {
+          this.socket.close(1000, "client closing");
+        } catch {}
       }
       this.socket = null;
     },
-
     async TOTPSetupStartService() {
       try {
         const res = await axios.post("/TOTP/setup/start");
@@ -275,17 +360,23 @@ export default {
           this.store.RegisterData.ManualSecret = res.data.ManualSecret;
           this.$router.push({ name: "RegisterTOTPVerify" });
         }
-      } catch (err) { console.log(err); }
+      } catch (err) {
+        console.log(err);
+      }
     },
-
     async onSubmit() {
       this.error = "";
       if (!this.form.UserName || !this.form.Password || !this.form.PasswordConfirm) {
-        this.error = "Please fill in all fields."; return;
+        this.error = "Please fill in all fields.";
+        return;
       }
-      if (this.IsUserNameUsed) { this.error = "Please choose another username."; return; }
+      if (this.IsUserNameUsed) {
+        this.error = "Please choose another username.";
+        return;
+      }
       if (this.form.Password !== this.form.PasswordConfirm) {
-        this.error = "Passwords do not match."; return;
+        this.error = "Passwords do not match.";
+        return;
       }
       try {
         this.loading = true;

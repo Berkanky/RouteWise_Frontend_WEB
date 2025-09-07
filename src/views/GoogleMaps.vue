@@ -1,5 +1,5 @@
 <template>
-    <div id="gmap" class="w-full h-screen"></div>
+    <div id="gmap" class="w-full h-screen" ></div>
 </template>
 
 <script>

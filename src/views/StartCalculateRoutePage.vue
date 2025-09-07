@@ -2,15 +2,15 @@
   <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6">
     <div class="grid grid-cols-1 lg:grid-cols-[260px,1fr] gap-6">
       <aside class="lg:sticky lg:top-6">
-        <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm p-4">
+        <div class="rounded-2xl border border-zinc-100 bg-white shadow-md p-4">
           <h2 class="text-sm font-semibold text-zinc-800 mb-3">Route setup</h2>
-          <div class="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
-            <div class="h-full bg-rose-500 transition-all" :style="{ width: progressPct + '%' }"></div>
+          <div class="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div class="h-full bg-rose-600 transition-all" :style="{ width: progressPct + '%' }"></div>
           </div>
           <ol class="mt-4 space-y-2 text-sm">
             <li v-for="(s, i) in steps" :key="s.key" class="flex items-center gap-2">
               <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs"
-                :class="i === step ? 'border-rose-500 text-rose-600' : (i < step ? 'border-emerald-500 text-emerald-600' : 'border-zinc-300 text-zinc-400')">
+                :class="i === step ? 'border-rose-600 text-rose-700' : (i < step ? 'border-emerald-500 text-emerald-600' : 'border-zinc-300 text-zinc-400')">
                 {{ i + 1 }}
               </span>
               <button type="button" class="text-left hover:underline"
@@ -23,7 +23,7 @@
       </aside>
 
       <main>
-        <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+        <div class="rounded-2xl border border-zinc-100 bg-white shadow-md overflow-hidden">
           <div class="flex items-center justify-between px-5 md:px-6 py-4 border-b border-zinc-100">
             <div>
               <div class="text-[11px] uppercase tracking-wider text-zinc-500">{{ current.title }}</div>
@@ -38,23 +38,22 @@
 
           <div class="px-5 md:px-6 py-5">
             <template v-if="step === 0">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div class="grid grid-cols-1 lg:grid-cols-[1fr,1fr,auto] gap-5 items-end">
                 <!-- START -->
                 <div class="relative">
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Starting Point</label>
-                  <input v-model.trim="form.StartLocation" @input="FindLocation($event, 'StartLocation')"
-                    @keydown.down.prevent="moveHighlight('start', 1)" @keydown.up.prevent="moveHighlight('start', -1)"
-                    @keydown.enter.prevent="confirmHighlight('start')" @focus="focusedInput = 'start'" type="text"
-                    inputmode="text" placeholder="e.g. Kadıköy, İstanbul"
+                  <input v-model.trim="form.StartLocation" @keydown.down.prevent="moveHighlight('start', 1)"
+                    @keydown.up.prevent="moveHighlight('start', -1)" @keydown.enter.prevent="confirmHighlight('start')"
+                    @focus="focusedInput = 'start'" type="text" inputmode="text" placeholder="e.g. Kadıköy, İstanbul"
                     class="w-full rounded-lg border border-zinc-300 bg-white placeholder:text-zinc-400 px-3 py-3 focus:ring-2 focus:ring-rose-200 focus:border-rose-300" />
 
                   <!-- DROPDOWN -->
-                  <ul v-if="focusedInput === 'start' && this.Suggestions.length"
+                  <ul v-if="focusedInput === 'start' && Suggestions.length"
                     class="absolute z-20 mt-1 w-full max-h-64 overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg">
-                    <li v-for="(item, i) in this.Suggestions" :key="i"
+                    <li v-for="(item, i) in Suggestions" :key="i"
                       @mousedown.prevent="SelectLocation(item.placePrediction.placeId, item.placePrediction.text.text, 'StartLocation')"
                       class="px-3 py-2 cursor-pointer"
-                      :class="item.placePrediction.placeId === this.SelectedStartLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
+                      :class="item.placePrediction.placeId === SelectedStartLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
                       <div class="text-sm text-zinc-800">{{ item.placePrediction.text.text || '-' }}</div>
                     </li>
                   </ul>
@@ -63,51 +62,62 @@
                 <!-- DESTINATION -->
                 <div class="relative">
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Destination Point</label>
-                  <input v-model.trim="form.DestinationLocation" @input="FindLocation($event, 'DestinationLocation')"
-                    @keydown.down.prevent="moveHighlight('dest', 1)" @keydown.up.prevent="moveHighlight('dest', -1)"
-                    @keydown.enter.prevent="confirmHighlight('dest')" @focus="focusedInput = 'dest'" type="text"
-                    inputmode="text" placeholder="e.g. İzmit, Kocaeli"
+                  <input v-model.trim="form.DestinationLocation" @keydown.down.prevent="moveHighlight('dest', 1)"
+                    @keydown.up.prevent="moveHighlight('dest', -1)" @keydown.enter.prevent="confirmHighlight('dest')"
+                    @focus="focusedInput = 'dest'" type="text" inputmode="text" placeholder="e.g. İzmit, Kocaeli"
                     class="w-full rounded-lg border border-zinc-300 bg-white placeholder:text-zinc-400 px-3 py-3 focus:ring-2 focus:ring-rose-200 focus:border-rose-300" />
 
                   <!-- DROPDOWN -->
-                  <ul v-if="focusedInput === 'dest' && this.Suggestions.length"
+                  <ul v-if="focusedInput === 'dest' && Suggestions.length"
                     class="absolute z-20 mt-1 w-full max-h-64 overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg">
-                    <li v-for="(item, i) in this.Suggestions" :key="i"
+                    <li v-for="(item, i) in Suggestions" :key="i"
                       @mousedown.prevent="SelectLocation(item.placePrediction.placeId, item.placePrediction.text.text, 'DestinationLocation')"
                       class="px-3 py-2 cursor-pointer"
-                      :class="item.placePrediction.placeId === this.SelectedDestinationLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
+                      :class="item.placePrediction.placeId === SelectedDestinationLocationSuggestionPlaceId ? 'bg-zinc-100' : 'hover:bg-zinc-50'">
                       <div class="text-sm text-zinc-800">{{ item.placePrediction.text.text || '-' }}</div>
                     </li>
                   </ul>
                 </div>
+
+                <!-- BUILD ROUTE BUTTON (UI ONLY) -->
+                <div class="flex lg:justify-end">
+                  <button 
+                    v-on:click="CalculateRoute"
+                    type="button" title="Build the route"
+                    class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-4 py-3 font-semibold shadow-sm hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <!-- Opsiyonel küçük spinner yeri; istersen gösterirsin -->
+                    <!-- <svg v-if="$refs.gmap?.isBuilding" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg> -->
+                    <span>Build Route</span>
+                  </button>
+                </div>
               </div>
 
-              <div class="mt-4">
-                <button type="button"
-                  class="rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
-                  @click="previewOnMap">
-                  Show on the map
-                </button>
-              </div>
+              <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" @selected_polyline_temporary_id="getselected_polyline_temporary_id"/>
             </template>
+
 
             <template v-else-if="step === 1">
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <div>
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Car Brand</label>
-                  <HeadlessSelect v-model="form.CarBrand" :items="carBrandItems" placeholder="Select car brand" />
+                  <HeadlessSelect v-model="form.CarBrand" :items="carBrandItems" placeholder="Select car brand"
+                    @update:modelValue="onBrandChange" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Car Model</label>
-                  <HeadlessSelect v-model="form.CarModel" :items="carModelItems" placeholder="Select car model" />
+                  <HeadlessSelect v-model="form.CarModel"
+                    :items="carModelItems.map(function (item) { return item.model })" placeholder="Select car model"
+                    @update:modelValue="onModelChange" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Engine Type</label>
-                  <HeadlessSelect v-model="form.Engine" :items="engineItems" placeholder="Select engine type" />
+                  <HeadlessSelect v-model="form.Engine" :items="engineItems" placeholder="Select engine type"
+                    @update:modelValue="onEngineChange" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Fuel Type</label>
-                  <HeadlessSelect v-model="form.FuelType" :items="fuelItems" placeholder="Select fuel type" />
+                  <HeadlessSelect v-model="form.FuelType" :items="fuelItems" placeholder="Select fuel type"
+                    @update:modelValue="onFuelChange" />
                 </div>
               </div>
             </template>
@@ -199,6 +209,7 @@ import { h } from "vue"
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, TransitionRoot } from "@headlessui/vue"
 import axios from "axios"
 import { UseStore } from "../stores/store";
+import GoogleMaps from "../components/GoogleMaps.vue";
 
 const HeadlessSelect = {
   name: "HeadlessSelect",
@@ -214,6 +225,7 @@ const HeadlessSelect = {
     labelOf(it) {
       if (it == null) return ""
       if (typeof it === "string" || typeof it === "number") return String(it)
+      if (it.engine && it.cylinders) return `${it.engine} CC - ${it.cylinders} Cylinder`
       return it.label ?? it.name ?? it.title ?? it.value ?? JSON.stringify(it)
     }
   },
@@ -321,7 +333,7 @@ const HeadlessMultiSelect = {
 
 export default {
   name: "RouteWizard",
-  components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, TransitionRoot, HeadlessSelect, HeadlessMultiSelect },
+  components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, TransitionRoot, HeadlessSelect, HeadlessMultiSelect, GoogleMaps },
   setup() {
     const store = UseStore();
     return {
@@ -344,6 +356,7 @@ export default {
         CarBrand: null,
         CarModel: null,
         Engine: null,
+        Cylinder: null,
         FuelType: null,
         RouteType: null,
         DriveType: null,
@@ -359,15 +372,28 @@ export default {
       carModelItems: [],
       engineItems: [],
       fuelItems: [],
-      routeTypeItems: [],
-      driveTypeItems: [],
+      routeTypeItems: [
+        "ROUTING_PREFERENCE_UNSPECIFIED",
+        "TRAFFIC_UNAWARE",
+        "TRAFFIC_AWARE",
+        "TRAFFIC_AWARE_OPTIMAL"
+      ],
+      driveTypeItems: [
+        "Economic",
+        "Normal",
+        "Aggressive"
+      ],
       tollPassItems: [],
       submitting: false,
       SuggestionType: null,
       Suggestions: [],
       focusedInput: null,
       SelectedStartLocationSuggestionPlaceId: null,
-      SelectedDestinationLocationSuggestionPlaceId: null
+      SelectedDestinationLocationSuggestionPlaceId: null,
+      searchTimeoutStart: null,
+      searchTimeoutDest: null,
+      build_route_button_triggered: 0,
+      selected_polyline_temporary_id: null
     }
   },
   computed: {
@@ -391,21 +417,68 @@ export default {
     canSubmit() { return this.step5Ok && this.step1Ok && this.step2Ok && this.step3Ok && this.step4Ok }
   },
   async mounted() {
-    await this.GetCarMakes()
+    await this.GetCarMakes();
+    await this.CathchMetaData();
   },
   methods: {
+    getselected_polyline_temporary_id(selected_polyline_temporary_id){
+      if(selected_polyline_temporary_id) this.selected_polyline_temporary_id = selected_polyline_temporary_id;
+    },
+    CalculateRoute(){
+      
+      this.build_route_button_triggered++;
+    },
+    async CathchMetaData() {
+      var res = await axios.get(`/meta/country?include=toll_passes`);
+      if (res.status === 200) this.tollPassItems = res.data.country_meta_list;
+      else return;
+    },
+    async onEngineChange(v) {
+      console.log("onEngineChange : ", v);
+      var Model = this.form.CarModel;
+      var Make = this.form.CarBrand.label;
+      var Engine = this.form.Engine.engine;
+      var Cylinder = v.cylinders;
+
+      var res = await axios.post("/car/fuel/type", { Model, Make, Engine, Cylinder }, {});
+      if (res.status === 200) this.fuelItems = res.data.FuelTypes;
+      else return;
+    },
+    async onModelChange(v) {
+
+      var Model = v;
+      var Make = this.form.CarBrand.label;
+
+      var res = await axios.post(`/car/engines`, { Make, Model }, {});
+      if (res.status === 200) this.engineItems = res.data.CarEngines;
+      else return;
+    },
+    async onBrandChange(v) {
+      var Make = v.label;
+      var res = await axios.post(`/car/models`, { Make }, {});
+      if (res.status === 200) this.carModelItems = res.data.CarModels;
+      else return;
+    },
     SelectLocation(placeId, placeName, Type) {
       if (Type === 'StartLocation') {
+
         this.SelectedStartLocationSuggestionPlaceId = placeId;
         this.form.StartLocation = placeName;
+
+        this.store.StartLocation.StartLocation = placeName;
+        this.store.StartLocation.PlaceId = placeId;
+
       } else if (Type === 'DestinationLocation') {
+
         this.SelectedDestinationLocationSuggestionPlaceId = placeId;
         this.form.DestinationLocation = placeName;
+
+        this.store.DestinationLocation.DestinationLocation = placeName;
+        this.store.DestinationLocation.PlaceId = placeId;
       }
-
       this.FindSelectedLocationDetails(placeId, Type);
-
       this.Suggestions = [];
+      this.focusedInput = null;
     },
     goToStep(i) {
       if (i <= this.step) { this.step = i; return }
@@ -419,13 +492,41 @@ export default {
     },
     async submitWizard() {
       if (!this.canSubmit || this.submitting) return
-      this.submitting = true
-      try {
-      } catch (e) {
-        console.error(e)
-      } finally {
-        this.submitting = false
+
+      var body = {
+        StartLocationPlaceId: this.SelectedStartLocationSuggestionPlaceId,
+        StartLocation: this.form.StartLocation || null,
+        Latitude: this.store.StartLocation?.latitude || null,
+        Longitude: this.store.StartLocation?.longitude || null,
+        TravelMode: this.form.DriveType || null,
+        DestinationLocation: this.form.DestinationLocation,
+        DestinationLocationPlaceId: this.SelectedDestinationLocationSuggestionPlaceId,
+        DestinationLocationLatitude: this.store.DestinationLocation?.latitude || null,
+        DestinationLocationLongitude: this.store.DestinationLocation?.longitude || null,
+        FuelType: this.form.FuelType?.label || null,
+        TollPass: this.form.TollPass.map(function (item) { return item.id }) || null,
+        RoutingPreference: this.form.RouteType || null,
+        Engine: this.form.Engine.engine,
+        Name: this.form.Name,
+        Description: this.form.Description,
+        CarBrand: this.form.CarBrand.label,
+        CarModel: this.form.CarModel,
+        Luggage: this.form.Luggage,
+        Person: this.form.Person,
+        DriveType: this.form.DriveType,
+        selected_polyline_temporary_id: this.selected_polyline_temporary_id
+      };
+
+      console.log("body : ", JSON.stringify(body));
+
+      var res = await axios.post(`/start/calculate/route`, body, {});
+      console.log("Res", res);
+      if (res.status === 200) {
+
+        this.submitting = true;
+        return;
       }
+      else return;
     },
     resetAll() {
       this.form = {
@@ -444,35 +545,100 @@ export default {
         Description: ""
       }
       this.step = 0
+      this.Suggestions = []
+      this.SelectedStartLocationSuggestionPlaceId = null
+      this.SelectedDestinationLocationSuggestionPlaceId = null
     },
     async GetCarMakes() {
       const res = await axios.get("/car/makes")
       if (res.status === 200) this.carBrandItems = res.data.CarBrands
     },
-    async FindLocation(e, SuggestionType) {
-      var location_name = e.target.value;
+    async GetCarModels(make) {
+      // to be implemented by user
+    },
+    async GetEngineTypes(model) {
+      // to be implemented by user
+    },
+    async GetFuelTypes(engine) {
+      // to be implemented by user
+    },
+    async FindLocation(query, SuggestionType) {
+      const location_name = typeof query === 'string' ? query : ''
       if (!location_name) return;
-
-      if (SuggestionType === 'StartLocation') this.SuggestionType = 'StartLocation';
-      else if (SuggestionType === 'DestinationLocation') this.SuggestionType = 'DestinationLocation';
-
-      var res = await axios.post("/google/places", { input: location_name }, {});
-      console.log("/google/places : ", res);
-      if (res.status === 200) this.Suggestions = res.data.suggestions;
-      else return;
+      if (SuggestionType === 'StartLocation') this.SuggestionType = 'StartLocation'
+      else if (SuggestionType === 'DestinationLocation') this.SuggestionType = 'DestinationLocation'
+      try {
+        const res = await axios.post("/google/places", { input: location_name }, {})
+        if (res.status === 200) this.Suggestions = res.data.suggestions
+      } catch (e) {
+        return
+      }
     },
     async FindSelectedLocationDetails(place_id, type) {
-      var res = await axios.post("/google/places/detail", { placeId: place_id }, {});
-      console.log("google/places/detail : ", res);
-      if (res.status === 200) {
-        if (type === 'StartLocation') {
-          Object.assign(this.store.StartLocation, res.data.location);
+      try {
+        const res = await axios.post("/google/places/detail", { placeId: place_id }, {})
+        console.log(res);
+        if (res.status === 200) {
+          if (type === 'StartLocation') {
+            this.store.StartLocation = res.data.selected_location_detail;
 
-          console.log(JSON.stringify(this.store.StartLocation));
-        } else if (type === 'DestinationLocation') {
-          Object.assign(this.store.DestinationLocation, res.data.location);
+            console.log("/google/places/detail : ", this.store.StartLocation);
+
+          } else if (type === 'DestinationLocation') {
+
+            this.store.DestinationLocation = res.data.selected_location_detail;
+
+            console.log("/google/places/detail : ", this.store.DestinationLocation);
+          }
         }
-      } else return;
+      } catch (e) {
+        return
+      }
+    }
+  },
+  watch: {
+    'form.StartLocation'(newVal) {
+      if (this.focusedInput === 'start') {
+        if (this.searchTimeoutStart) clearTimeout(this.searchTimeoutStart)
+        this.searchTimeoutStart = setTimeout(() => {
+          this.FindLocation(newVal, 'StartLocation')
+        }, 600)
+      }
+    },
+    'form.DestinationLocation'(newVal) {
+      if (this.focusedInput === 'dest') {
+        if (this.searchTimeoutDest) clearTimeout(this.searchTimeoutDest)
+        this.searchTimeoutDest = setTimeout(() => {
+          this.FindLocation(newVal, 'DestinationLocation')
+        }, 600)
+      }
+    },
+    'form.CarBrand'(newVal) {
+      if (newVal !== null) {
+        this.form.CarModel = null
+        this.form.Engine = null
+        this.form.FuelType = null
+        this.carModelItems = []
+        this.engineItems = []
+        this.fuelItems = []
+        this.GetCarModels(newVal)
+      }
+    },
+    'form.CarModel'(newVal) {
+      if (newVal !== null) {
+        this.form.Engine = null
+        this.form.FuelType = null
+        this.engineItems = []
+        this.fuelItems = []
+        this.GetEngineTypes(newVal)
+      }
+    },
+    'form.Engine'(newVal) {
+      if (newVal !== null) {
+        this.form.FuelType = null
+        this.fuelItems = []
+        this.GetFuelTypes(newVal)
+      }
     }
   }
 }

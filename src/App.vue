@@ -36,3 +36,12 @@ export default {
   }
 };
 </script>
+
+<style>
+html, body, #app {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI,
+               Roboto, Helvetica, Arial, 'Apple Color Emoji','Segoe UI Emoji', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+</style>
