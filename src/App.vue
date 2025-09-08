@@ -1,6 +1,6 @@
 <template>
   <AppNavbar />
-  <main class="min-h-screen bg-zinc-50 overflow-x-hidden">
+  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50">
     <router-view />
   </main>
   <AppFooter />
@@ -32,16 +32,20 @@ export default {
   },
   mounted() {
     this.store.WatchServices();
-    console.log("APP Triggered. ");
   }
 };
 </script>
 
 <style>
-html, body, #app {
+html,
+body,
+#app {
   font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI,
-               Roboto, Helvetica, Arial, 'Apple Color Emoji','Segoe UI Emoji', sans-serif;
+    Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
 }
 </style>

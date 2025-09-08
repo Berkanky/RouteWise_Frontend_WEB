@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6">
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 pb-28 sm:pb-6">
     <div class="grid grid-cols-1 lg:grid-cols-[260px,1fr] gap-6">
       <aside class="lg:sticky lg:top-6">
         <div class="rounded-2xl border border-zinc-100 bg-white shadow-md p-4">
@@ -23,7 +23,7 @@
       </aside>
 
       <main>
-        <div class="rounded-2xl border border-zinc-100 bg-white shadow-md overflow-hidden">
+        <div class="rounded-2xl border border-zinc-100 bg-white shadow-md">
           <div class="flex items-center justify-between px-5 md:px-6 py-4 border-b border-zinc-100">
             <div>
               <div class="text-[11px] uppercase tracking-wider text-zinc-500">{{ current.title }}</div>
@@ -36,7 +36,7 @@
             </button>
           </div>
 
-          <div class="px-5 md:px-6 py-5">
+          <div class="px-5 md:px-6 py-5 sm:pb-6">
             <template v-if="step === 0">
               <div class="grid grid-cols-1 lg:grid-cols-[1fr,1fr,auto] gap-5 items-end">
                 <!-- START -->
@@ -91,8 +91,12 @@
                   </button>
                 </div>
               </div>
-
-              <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" @selected_polyline_temporary_id="getselected_polyline_temporary_id"/>
+              <div class="touch-pan-y">
+                <GoogleMaps
+                  :build_route_button_triggered="this.build_route_button_triggered"
+                  @selected_polyline_temporary_id="getselected_polyline_temporary_id"
+                />
+              </div>
             </template>
 
 

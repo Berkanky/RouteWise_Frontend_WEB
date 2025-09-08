@@ -69,7 +69,11 @@ export const UseStore = defineStore("UseStore", {
           
           Object.assign(this.ServiceRequestData, {message, status, data, config: { url: res.config.url }});
 
-          if(res.config.url == '/auth/details' && res.status === 200) this.UserData = res.data.UserData; 
+          if(res.config.url == '/auth/details' && res.status === 200) {
+
+            this.Config = res.data.config;
+            this.UserData = res.data.UserData; 
+          }
 
           return Promise.resolve(res);
         },

@@ -15,7 +15,6 @@ export default {
     },
     async mounted() {
         var GOOGLE_API_KEY = this.store.Config.GOOGLE_API_KEY;
-        console.log("GOOGLE_API_KEY : ", GOOGLE_API_KEY);
         await loadGoogleMapsSdk(GOOGLE_API_KEY);
 
         var el = document.getElementById("gmap");

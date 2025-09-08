@@ -200,6 +200,9 @@ export default {
       error: "",
     };
   },
+  created(){
+    this.store.ResetPiniaStore();
+  },
   methods: {
     async onSubmit() {
       this.error = "";

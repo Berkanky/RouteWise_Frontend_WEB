@@ -1,6 +1,6 @@
 <template>
-  <div style="position:relative;">
-    <div id="gmap" style="width:100%;height:350px;margin-top:15px;border-radius:15px;"></div>
+  <div class="gmap-wrap">
+    <div id="gmap" class="gmap-canvas"></div>
   </div>
 </template>
 
@@ -52,7 +52,8 @@ export default {
     }
   },
   async mounted() {
-    var GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+    var GOOGLE_API_KEY = this.store.Config.GOOGLE_API_KEY;
+    if (!GOOGLE_API_KEY) return;
     var default_center = { lat: 41.015137, lng: 28.97953 };
 
     await loadGoogleMapsSdk(GOOGLE_API_KEY);
@@ -67,7 +68,9 @@ export default {
       center,
       zoom: 10,
       streetViewControl: false,
-      mapTypeControl: false
+      mapTypeControl: false,
+      gestureHandling: 'cooperative', // tek parmak sayfa kaydırır, harita 2 parmakla taşınır
+      scrollwheel: false      
     });
 
     this.map = map;
@@ -240,7 +243,7 @@ export default {
       pl.__selected = true;
       pl.setOptions(SELECTED_STYLE);
       this.selectedPolyline = pl;
-      this.selected_polyline_temporary_id =  pl.__id;
+      this.selected_polyline_temporary_id = pl.__id;
       console.log("selected_polyline_temporary_id : ", this.selected_polyline_temporary_id);
       this.$emit("selected_polyline_temporary_id", this.selected_polyline_temporary_id);
     },
@@ -409,3 +412,33 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.gmap-wrap {
+  position: relative;
+  width: 100%;
+  /* Mobilde yeterli alan: min 260px, tipik 48vh, masaüstünde 520px’e kadar */
+  height: clamp(260px, 48vh, 520px);
+  margin-top: 15px;
+}
+
+/* Büyük ekranlarda eski 350px hissini korumak isteyenler için: */
+@media (min-width: 1024px) {
+  .gmap-wrap {
+    height: 350px;
+    /* lg ve üstü */
+  }
+}
+
+.gmap-canvas {
+  touch-action: pan-y;  
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+}
+
+/* Güvenlik için: harita köşeleri taşmasın */
+.gmap-canvas :global(canvas) {
+  border-radius: 12px;
+}
+</style>

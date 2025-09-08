@@ -88,10 +88,8 @@ export default {
   watch:{
     'store.UserData':{
       handler(newVal){
-        if(Object.keys(newVal).length && 'Active' in newVal && newVal["Active"]) this.Active = true;
+        if(newVal && 'Active' in newVal && newVal["Active"] === true) this.Active = true;
         else this.Active = false;
-
-        console.log("User Active : ", this.Active);
       },
       immediate: true, deep: true
     }

@@ -185,7 +185,7 @@ export default {
           IsRemindDeviceActive: this.store.LoginData.IsRemindDeviceActive,
         });
         if (res.status === 200) {
-          this.store.Config = res.data.config;
+          
           this.store.UserData.Active = true;
           this.$router.push({ name: "Home" });
         }
