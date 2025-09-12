@@ -41,7 +41,8 @@ export default {
       isBuilding: false,
       buildToken: 0,
       selectedPolyline: null,
-      selected_polyline_temporary_id: null
+      selected_polyline_temporary_id: null,
+      decoded_overview_polyline_points: []
     };
   },
   computed: {
@@ -244,8 +245,10 @@ export default {
       pl.setOptions(SELECTED_STYLE);
       this.selectedPolyline = pl;
       this.selected_polyline_temporary_id = pl.__id;
-      console.log("selected_polyline_temporary_id : ", this.selected_polyline_temporary_id);
+      
+      var selected_polyline_detail = this.decoded_overview_polyline_points.find(function(item){ return item.temporary_route_id == pl.__id});
       this.$emit("selected_polyline_temporary_id", this.selected_polyline_temporary_id);
+      this.$emit("selected_polyline_detail", selected_polyline_detail);
     },
 
     addSelectablePolyline({ map, id, path, meta = {}, onSelect }) {
@@ -372,6 +375,7 @@ export default {
         var d = { lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude };
 
         var decoded = await this.getRouteDecodedPolyline(s, d);
+        this.decoded_overview_polyline_points = decoded;
         if (myToken !== this.buildToken) return;
 
         this.drawRoute(decoded || []);

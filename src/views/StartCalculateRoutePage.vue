@@ -81,9 +81,7 @@
 
                 <!-- BUILD ROUTE BUTTON (UI ONLY) -->
                 <div class="flex lg:justify-end">
-                  <button 
-                    v-on:click="CalculateRoute"
-                    type="button" title="Build the route"
+                  <button v-on:click="CalculateRoute" type="button" title="Build the route"
                     class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-4 py-3 font-semibold shadow-sm hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed">
                     <!-- Opsiyonel küçük spinner yeri; istersen gösterirsin -->
                     <!-- <svg v-if="$refs.gmap?.isBuilding" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg> -->
@@ -92,13 +90,135 @@
                 </div>
               </div>
               <div class="touch-pan-y">
-                <GoogleMaps
-                  :build_route_button_triggered="this.build_route_button_triggered"
+                <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered"
                   @selected_polyline_temporary_id="getselected_polyline_temporary_id"
-                />
+                  @selected_polyline_detail="getselected_polyline_detail" />
+              </div>
+
+              <!-- Cards under the map (refined with small radius and aesthetic headers) -->
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Start Location Card -->
+                <section v-if="this.SelectedStartLocationSuggestionPlaceId"
+                  class="bg-white border border-zinc-200 rounded-md shadow-xl">
+                  <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
+                    <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
+                      Start Location
+                    </h3>
+                  </header>
+                  <div class="p-4">
+                    <dl class="space-y-3 text-sm">
+                      <div class="flex items-start justify-between gap-4">
+                        <dt class="text-zinc-500">Start Location</dt>
+                        <dd
+                          class="text-zinc-900 text-[15px] leading-snug font-medium text-right break-words line-clamp-2 max-w-[70%]">
+                          {{ this.store.StartLocation.formatted_address }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Latitude</dt>
+                        <dd class="text-zinc-900 font-mono tabular-nums text-xs md:text-sm truncate max-w-[160px]"
+                          :title="this.store.StartLocation.latitude">
+                          {{ this.store.StartLocation.latitude }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Longitude</dt>
+                        <dd class="text-zinc-900 font-mono tabular-nums text-xs md:text-sm truncate max-w-[160px]"
+                          :title="this.store.StartLocation.longitude">
+                          {{ this.store.StartLocation.longitude }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Date</dt>
+                        <dd>
+                          <span
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium text-zinc-700 bg-zinc-50 ring-1 ring-inset ring-zinc-200">
+                            {{ new Date().toLocaleString() }}
+                          </span>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </section>
+
+                <!-- Destination Location Card -->
+                <section 
+                  v-if="this.SelectedDestinationLocationSuggestionPlaceId"
+                  class="bg-white border border-zinc-200 rounded-md shadow-xl">
+                  <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
+                    <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
+                      Destination Location
+                    </h3>
+                  </header>
+                  <div class="p-4">
+                    <dl class="space-y-3 text-sm">
+                      <div class="flex items-start justify-between gap-4">
+                        <dt class="text-zinc-500">Destination Location</dt>
+                        <dd
+                          class="text-zinc-900 text-[15px] leading-snug font-medium text-right break-words line-clamp-2 max-w-[70%]">
+                          {{ this.store.DestinationLocation.formatted_address }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Latitude</dt>
+                        <dd class="text-zinc-900 font-mono tabular-nums text-xs md:text-sm truncate max-w-[160px]"
+                          :title="this.store.DestinationLocation.latitude">
+                          {{ this.store.DestinationLocation.latitude }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Longitude</dt>
+                        <dd class="text-zinc-900 font-mono tabular-nums text-xs md:text-sm truncate max-w-[160px]"
+                          :title="this.store.DestinationLocation.longitude">
+                          {{ this.store.DestinationLocation.longitude }}
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Date</dt>
+                        <dd>
+                          <span
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium text-zinc-700 bg-zinc-50 ring-1 ring-inset ring-zinc-200">
+                            {{ new Date().toLocaleString() }}
+                          </span>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </section>
+
+                <!-- Route Summary Card -->
+                <section v-if="this.selected_polyline_temporary_id"
+                  class="bg-white border border-zinc-200 rounded-md shadow-xl">
+                  <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
+                    <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
+                      Route Summary
+                    </h3>
+                  </header>
+                  <div class="p-4">
+                    <dl class="space-y-3 text-sm">
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Distance (km)</dt>
+                        <dd class="text-zinc-900 font-semibold">
+                          {{ Number.isFinite(this.selected_polyline_detail.distance_meters) ?
+                            (this.selected_polyline_detail.distance_meters / 1000).toFixed(1) : '—' }} KM
+                        </dd>
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <dt class="text-zinc-500">Estimated Arrival Time</dt>
+                        <dd class="text-zinc-900">{{ this.selected_polyline_detail.duration_formatted || '—' }}</dd>
+                      </div>
+                      <div class="flex items-start justify-between gap-4">
+                        <dd class="text-zinc-500 text-[9px] leading-tight break-all">
+                          {{ this.selected_polyline_detail.provider || '—' }}_
+                          {{ this.selected_polyline_detail.temporary_route_id || '—' }}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </section>
               </div>
             </template>
-
 
             <template v-else-if="step === 1">
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -174,6 +294,13 @@
                 </div>
               </div>
             </template>
+          </div>
+
+          <div v-if="feedback" class="mb-4 rounded-md border px-3 py-2 text-sm"
+              :class="feedback.type === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-red-200 bg-red-50 text-red-800'">
+            {{ feedback.message }}
           </div>
 
           <div class="hidden sm:flex items-center justify-between px-5 md:px-6 py-4 border-t border-zinc-100">
@@ -397,7 +524,10 @@ export default {
       searchTimeoutStart: null,
       searchTimeoutDest: null,
       build_route_button_triggered: 0,
-      selected_polyline_temporary_id: null
+      selected_polyline_temporary_id: null,
+      selected_polyline_detail: {},
+      submitting: false,
+      feedback: null, 
     }
   },
   computed: {
@@ -425,11 +555,14 @@ export default {
     await this.CathchMetaData();
   },
   methods: {
-    getselected_polyline_temporary_id(selected_polyline_temporary_id){
-      if(selected_polyline_temporary_id) this.selected_polyline_temporary_id = selected_polyline_temporary_id;
+    getselected_polyline_detail(selected_polyline_detail) {
+      if (selected_polyline_detail) this.selected_polyline_detail = selected_polyline_detail;
     },
-    CalculateRoute(){
-      
+    getselected_polyline_temporary_id(selected_polyline_temporary_id) {
+      if (selected_polyline_temporary_id) this.selected_polyline_temporary_id = selected_polyline_temporary_id;
+    },
+    CalculateRoute() {
+
       this.build_route_button_triggered++;
     },
     async CathchMetaData() {
@@ -520,17 +653,20 @@ export default {
         DriveType: this.form.DriveType,
         selected_polyline_temporary_id: this.selected_polyline_temporary_id
       };
+      try{
+        var res = await axios.post(`/start/calculate/route`, body, {});
+        if (res.status === 200) { 
 
-      console.log("body : ", JSON.stringify(body));
-
-      var res = await axios.post(`/start/calculate/route`, body, {});
-      console.log("Res", res);
-      if (res.status === 200) {
-
-        this.submitting = true;
-        return;
+          this.feedback = { type: 'success', message: res.data.message };
+          this.submitting = true;
+          return;
+        }
+        else {
+          this.feedback = { type: 'error', message: err.response.data.message };
+        }
+      }catch(err){
+        this.feedback = { type: 'error', message: err.response.data.message };
       }
-      else return;
     },
     resetAll() {
       this.form = {

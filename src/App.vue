@@ -3,7 +3,6 @@
   <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50">
     <router-view />
   </main>
-  <AppFooter />
 </template>
 
 <script>
