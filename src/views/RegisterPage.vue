@@ -43,7 +43,6 @@
                 class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-black">
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
-              <p class="mt-1 text-xs text-zinc-500">Use at least 8 characters, including a number.</p>
             </div>
 
             <!-- Confirm Password -->
@@ -131,30 +130,12 @@ export default {
   },
   async mounted() {
     this.WSConnect();
-    await this.RegisterTOTPSetupStatusService();
   },
   beforeUnmount() {
     this.cleanupWS(true);
     clearTimeout(this.resumeTimer);
   },
   methods: {
-    async RegisterTOTPSetupStatusService() {
-      try {
-        const res = await axios.get(`/TOTP/setup/status`);
-        if (res.status === 200) {
-          this.store.RegisterData.QRDataUrl = res.data.QRDataUrl;
-          this.store.RegisterData.ManualSecret = res.data.ManualSecret;
-          this.store.RegisterData.UserName = res.data.UserName;
-          // show info modal, then auto-redirect
-          this.showResume = true;
-          this.resumeTimer = setTimeout(() => {
-            this.$router.push({ name: "RegisterTOTPVerify" });
-          }, 5000);
-        }
-      } catch (e) {
-        // no ongoing setup = 404/204 vs. ignore
-      }
-    },
     goVerifyNow() {
       clearTimeout(this.resumeTimer);
       this.$router.push({ name: "RegisterTOTPVerify" });

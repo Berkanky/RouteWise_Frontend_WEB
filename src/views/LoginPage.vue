@@ -21,7 +21,7 @@
             <!-- Username -->
             <div class="mb-4">
               <input v-model.trim="form.UserName" type="text" autocomplete="username"
-                placeholder="user****@routewise.com"
+                placeholder="username"
                 class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition" />
             </div>
 

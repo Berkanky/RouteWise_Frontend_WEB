@@ -122,13 +122,13 @@
 
                 <!-- BUILD ROUTE BUTTON (UI ONLY) -->
                 <div class="flex lg:justify-end">
-                  <button v-on:click="CalculateRoute" type="button" title="Build the route"
-                    class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-4 py-3 font-semibold shadow-sm hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed">
-                    <!-- Opsiyonel küçük spinner yeri; istersen gösterirsin -->
-                    <!-- <svg v-if="$refs.gmap?.isBuilding" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg> -->
-                    <span>Build Route</span>
+                  <button @click="CalculateRoute" type="button" title="Build the route"
+                    class="w-full lg:w-auto min-w-[140px] h-[48px] flex justify-center items-center gap-2 rounded-md border border-zinc-300/60 bg-white text-zinc-800 text-sm font-semibold px-5 py-3 transition duration-200 hover:bg-zinc-50 hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Build Route
                   </button>
+
                 </div>
+
               </div>
               <div class="touch-pan-y">
                 <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered"
@@ -827,9 +827,9 @@ export default {
     }
   },
   watch: {
-    step:{
-      async handler(newVal){
-        if(newVal === 1 ) await this.GetCarMakes();
+    step: {
+      async handler(newVal) {
+        if (newVal === 1) await this.GetCarMakes();
         console.log("form : ", JSON.stringify(this.form));
       },
       immediate: true, deep: true

@@ -39,7 +39,12 @@ export default {
   },
   computed:{
     is_mobile_active() {
-      this.isMobile = window.innerWidth < 768;
+      var auth_pages = ["Login", "LoginTOTPVerify", "RegisterTOTPVerify", "PasswordResetStart", "PasswordResetVerify", "PasswordReset", "Register"];
+      var current_route_name = this.$route.name;
+
+      var is_current_route_auth_page = auth_pages.some(function(item){ return item === current_route_name});
+
+      this.isMobile = window.innerWidth < 768 && is_current_route_auth_page ? true : false;
       return this.isMobile;
     }
   },
