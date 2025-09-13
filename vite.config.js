@@ -7,7 +7,11 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['appicon.png', 'pwa-icon.svg'],
+      includeAssets: [
+        'pwa-icon-192.png',
+        'pwa-icon-512.png',
+        'pwa-icon-512-maskable.png'
+      ],
       manifest: {
         name: 'RouteWise',
         short_name: 'RouteWise',
@@ -16,12 +20,24 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         icons: [
-          { src: "/pwa-icon.svg", type: "image/svg+xml", sizes: "any" },
-          { src: '/appicon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/appicon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/appicon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+          {
+            src: 'pwa-icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-icon-512-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
         ]
-      },
+      }
     })
   ]
 })
