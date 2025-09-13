@@ -1,10 +1,7 @@
 <template>
-  <!-- Dış bölüm: ortalanmış, yumuşak arka plan -->
-  <section
-    class="mx-auto w-full max-w-md sm:max-w-lg px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center"
-  >
+  <section class="mx-auto w-full max-w-md sm:max-w-lg px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center">
     <div class="w-full">
-      <!-- Başarılı güncelleme uyarısı -->
+      <!-- Success alert -->
       <div
         v-if="success"
         class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 flex items-start gap-2"
@@ -21,10 +18,8 @@
         </div>
       </div>
 
-      <!-- Kart: yuvarlak köşeler, kırmızı kenarlık ve gölge -->
-      <div
-        class="rounded-3xl border border-rose-200 bg-white shadow-md p-6 sm:p-10"
-      >
+      <!-- Card -->
+      <div class="md:rounded-3xl md:border md:border-zinc-200 md:bg-white md:shadow-sm p-6 sm:p-10">
         <header class="mb-6 sm:mb-8">
           <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900">
             Set a new password
@@ -35,7 +30,7 @@
         </header>
 
         <form @submit.prevent="onSubmit" novalidate>
-          <!-- Şifre -->
+          <!-- Password -->
           <label class="block text-sm font-medium text-zinc-800 mb-1">
             New password
           </label>
@@ -44,34 +39,24 @@
               :type="showPass ? 'text' : 'password'"
               v-model.trim="password"
               autocomplete="new-password"
-              class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 placeholder:text-zinc-400 text-zinc-900 pr-10 pl-3 py-3 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+              class="w-full rounded-lg border border-zinc-200 bg-zinc-50 placeholder:text-zinc-400 text-zinc-900 pr-10 pl-3 py-3 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
               placeholder="••••••••"
               @input="touch = true"
               :disabled="success"
             />
             <button
               type="button"
-              class="absolute inset-y-0 right-3 flex items-center text-rose-600 hover:text-rose-800"
+              class="absolute inset-y-0 right-3 flex items-center text-zinc-600 hover:text-black"
               @click="showPass = !showPass"
               aria-label="Toggle password visibility"
               :disabled="success"
             >
-              <svg
-                v-if="!showPass"
-                class="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg v-if="!showPass" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z"
                 />
               </svg>
-              <svg
-                v-else
-                class="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z"
                 />
@@ -79,7 +64,7 @@
             </button>
           </div>
 
-          <!-- İpucu listesi -->
+          <!-- Hints -->
           <ul class="mt-2 space-y-1 text-xs">
             <li :class="hintClass(minLenOk)">• At least 8 characters</li>
             <li :class="hintClass(upperOk)">• Uppercase letter</li>
@@ -88,10 +73,8 @@
             <li :class="hintClass(symbolOk)">• Symbol</li>
           </ul>
 
-          <!-- Şifre onay -->
-          <label
-            class="block text-sm font-medium text-zinc-800 mt-5 mb-1"
-          >
+          <!-- Confirm -->
+          <label class="block text-sm font-medium text-zinc-800 mt-5 mb-1">
             Confirm password
           </label>
           <div class="relative">
@@ -99,33 +82,23 @@
               :type="showConfirm ? 'text' : 'password'"
               v-model.trim="confirmPassword"
               autocomplete="new-password"
-              class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 placeholder:text-zinc-400 text-zinc-900 pr-10 pl-3 py-3 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+              class="w-full rounded-lg border border-zinc-200 bg-zinc-50 placeholder:text-zinc-400 text-zinc-900 pr-10 pl-3 py-3 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
               placeholder="••••••••"
               :disabled="success"
             />
             <button
               type="button"
-              class="absolute inset-y-0 right-3 flex items-center text-rose-600 hover:text-rose-800"
+              class="absolute inset-y-0 right-3 flex items-center text-zinc-600 hover:text-black"
               @click="showConfirm = !showConfirm"
               aria-label="Toggle confirm password visibility"
               :disabled="success"
             >
-              <svg
-                v-if="!showConfirm"
-                class="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg v-if="!showConfirm" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z"
                 />
               </svg>
-              <svg
-                v-else
-                class="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z"
                 />
@@ -133,23 +106,19 @@
             </button>
           </div>
 
-          <!-- Hata mesajı -->
+          <!-- Error -->
           <p v-if="error" class="mt-4 text-sm text-red-600">
             {{ error }}
           </p>
 
-          <!-- Kaydet butonu -->
+          <!-- Submit -->
           <button
             :disabled="loading || !formOk || success"
-            class="mt-6 w-full rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
+            class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
           >
             <span v-if="!loading">Save new password</span>
             <span v-else class="inline-flex items-center gap-2">
-              <svg
-                class="animate-spin h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
+              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                 <circle
                   class="opacity-30"
                   cx="12"
@@ -187,19 +156,19 @@ export default {
       loading: false,
       error: "",
       touch: false,
-      success: false,       // başarı mesajı için
-      redirectTimer: null,  // yönlendirme zamanlayıcısı
+      success: false,
+      redirectTimer: null,
     };
   },
   computed: {
-    minLenOk() { return this.password.length >= 8; },
-    upperOk()  { return /[A-Z]/.test(this.password); },
-    lowerOk()  { return /[a-z]/.test(this.password); },
-    numberOk() { return /[0-9]/.test(this.password); },
-    symbolOk() { return /[^A-Za-z0-9]/.test(this.password); },
-    strongOk() { return this.minLenOk && this.upperOk && this.lowerOk && this.numberOk && this.symbolOk; },
-    matchOk()  { return this.confirmPassword.length > 0 && this.password === this.confirmPassword; },
-    formOk()   { return this.strongOk && this.matchOk; },
+    minLenOk()   { return this.password.length >= 8; },
+    upperOk()    { return /[A-Z]/.test(this.password); },
+    lowerOk()    { return /[a-z]/.test(this.password); },
+    numberOk()   { return /[0-9]/.test(this.password); },
+    symbolOk()   { return /[^A-Za-z0-9]/.test(this.password); },
+    strongOk()   { return this.minLenOk && this.upperOk && this.lowerOk && this.numberOk && this.symbolOk; },
+    matchOk()    { return this.confirmPassword.length > 0 && this.password === this.confirmPassword; },
+    formOk()     { return this.strongOk && this.matchOk; },
   },
   methods: {
     hintClass(ok) {
@@ -209,8 +178,8 @@ export default {
       this.error = "Something went wrong. Please try again.";
     },
     async onSubmit() {
-      this.error = "";
       if (!this.formOk || this.success) return;
+      this.error = "";
       this.loading = true;
 
       try {
@@ -220,7 +189,6 @@ export default {
         });
 
         if (res.status === 200) {
-          // Başarı mesajı ve yönlendirme
           this.success = true;
           this.redirectTimer = setTimeout(() => {
             this.$router.push({ name: "Login" });
@@ -228,7 +196,7 @@ export default {
         } else {
           this.error = res?.data?.message || "Please try again.";
         }
-      } catch (e) {
+      } catch {
         this.uniformFail();
       } finally {
         this.loading = false;

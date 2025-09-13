@@ -1,7 +1,8 @@
 <template>
-  <Disclosure as="header" class="w-full bg-white shadow-sm backdrop-blur z-50">
+  <Disclosure as="header" class="fixed top-0 left-0 right-0 w-full bg-white shadow-sm backdrop-blur z-50">
+    <!-- Top Bar -->
     <div class="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-      <!-- Desktop Header -->
+      <!-- Left: Logo -->
       <div class="flex items-center gap-2">
         <img src="../images/RouteWise-3D-İcon.png" alt="RouteWise Logo" class="h-6 w-6" />
         <span class="text-lg font-semibold text-zinc-900">RouteWise</span>
@@ -15,6 +16,7 @@
         <RouterLink to="/start/calculate/route" class="hover:text-[#e11d48]">Route</RouterLink>
       </nav>
 
+      <!-- Desktop Logout -->
       <div v-if="Active" class="hidden md:block">
         <RouterLink @click="LogoutService" to="/login"
           class="bg-[#e11d48]/10 hover:bg-[#e11d48]/20 text-[#e11d48] px-4 py-2 rounded-full text-sm font-medium shadow">
@@ -35,69 +37,56 @@
     <teleport to="body">
       <transition name="slide-fade">
         <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[100] md:hidden">
+          <!-- Overlay -->
           <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]" @click="toggleMobileMenu(false)"></div>
 
+          <!-- Drawer -->
           <div
-            class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-[100] overflow-y-auto flex flex-col justify-between rounded-tr-2xl rounded-br-2xl">
+            class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-[100] overflow-y-auto flex flex-col justify-between rounded-tr-lg rounded-br-lg">
 
-            <!-- Top: Map + User Info -->
-            <div>
-              <div class="relative mb-4">
-                <img src="../images/RouteWiseMapV2.jpg" alt="Map Header"
-                  class="w-full h-44 object-cover rounded-b-md" />
-                <div class="absolute top-2 left-2">
-                  <img src="../images/RouteWise-3D-İcon.png" class="h-6 w-6" alt="Mini Logo" />
-                </div>
-                <div
-                  class="absolute bottom-0 left-0 w-full bg-zinc-900/50 text-white text-center text-sm py-2 backdrop-blur-sm">
-                  <p class="font-semibold">{{ store.UserData?.UserName || 'User' }}</p>
-                  <p class="text-xs opacity-80">Created: {{ formatDate(store.UserData?.CreatedDate) }}</p>
-                </div>
-              </div>
-
-              <!-- Nav Items -->
-              <nav class="flex flex-col text-zinc-800 text-base font-medium px-3 space-y-3" v-if="Active">
-                <RouterLink to="/home" @click="toggleMobileMenu(false)" :class="['flex items-center gap-2 py-2 px-2 relative transition-all duration-150',
-                  isActive('/home') ? 'bg-zinc-100 rounded-md' : '']">
-                  <ChevronDoubleRightIcon v-if="isActive('/home')" class="w-4 h-4 text-zinc-400" />
-                  <HomeIcon v-else class="w-5 h-5 text-zinc-500" />
-                  <span>Home</span>
-                  <span class="absolute bottom-0 left-2 right-2 h-px"
-                    :class="isActive('/home') ? 'bg-gradient-to-r from-white/0 via-zinc-400 to-white/0' : 'bg-transparent'"></span>
-                </RouterLink>
-
-                <a href="#" @click="toggleMobileMenu(false)" :class="['flex items-center gap-2 py-2 px-2 relative transition-all duration-150',
-                  isActive('/about') ? 'bg-zinc-100 rounded-md' : '']">
-                  <ChevronDoubleRightIcon v-if="isActive('/about')" class="w-4 h-4 text-zinc-400" />
-                  <InformationCircleIcon v-else class="w-5 h-5 text-zinc-500" />
-                  <span>About</span>
-                  <span class="absolute bottom-0 left-2 right-2 h-px"
-                    :class="isActive('/about') ? 'bg-gradient-to-r from-white/0 via-zinc-400 to-white/0' : 'bg-transparent'"></span>
-                </a>
-
-                <a href="#" @click="toggleMobileMenu(false)" :class="['flex items-center gap-2 py-2 px-2 relative transition-all duration-150',
-                  isActive('/contact') ? 'bg-zinc-100 rounded-md' : '']">
-                  <ChevronDoubleRightIcon v-if="isActive('/contact')" class="w-4 h-4 text-zinc-400" />
-                  <PhoneIcon v-else class="w-5 h-5 text-zinc-500" />
-                  <span>Contact</span>
-                  <span class="absolute bottom-0 left-2 right-2 h-px"
-                    :class="isActive('/contact') ? 'bg-gradient-to-r from-white/0 via-zinc-400 to-white/0' : 'bg-transparent'"></span>
-                </a>
-
-                <RouterLink to="/start/calculate/route" @click="toggleMobileMenu(false)" :class="['flex items-center gap-2 py-2 px-2 relative transition-all duration-150',
-                  isActive('/start/calculate/route') ? 'bg-zinc-100 rounded-md' : '']">
-                  <ChevronDoubleRightIcon v-if="isActive('/start/calculate/route')" class="w-4 h-4 text-zinc-400" />
-                  <MapIcon v-else class="w-5 h-5 text-zinc-500" />
-                  <span>Route</span>
-                  <span class="absolute bottom-0 left-2 right-2 h-px"
-                    :class="isActive('/start/calculate/route') ? 'bg-gradient-to-r from-white/0 via-zinc-400 to-white/0' : 'bg-transparent'"></span>
-                </RouterLink>
-              </nav>
+            <!-- Gradient Header + Logo + User Info -->
+            <div class="relative h-40 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 
+            flex flex-col items-center justify-center text-zinc-800 rounded-tr-2xl">
+              <img src="../images/RouteWise-3D-İcon.png" class="h-14 w-14 mb-2 drop-shadow" alt="App Logo" />
+              <p class="font-semibold">{{ store.UserData?.UserName || 'User' }}</p>
+              <p class="text-xs text-zinc-500 opacity-80">Created: {{ formatDate(store.UserData?.CreatedDate) }}</p>
             </div>
 
-            <!-- Bottom: Latest Calculations + App Version + Logout -->
+
+            <!-- Navigation -->
+            <div class="flex-1 mt-4">
+              <!-- Nav Items -->
+              <nav class="flex flex-col text-zinc-700 text-sm font-normal mt-3 space-y-2" v-if="Active">
+                <RouterLink to="/home" @click="toggleMobileMenu(false)" :class="['flex items-center gap-3 py-2 px-3 rounded-md transition-colors',
+                  isActive('/home') ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-800']">
+                  <HomeIcon class="w-5 h-5" />
+                  <span>Home</span>
+                </RouterLink>
+
+                <RouterLink to="/about" @click="toggleMobileMenu(false)" :class="['flex items-center gap-3 py-2 px-3 rounded-md transition-colors',
+                  isActive('/about') ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-800']">
+                  <InformationCircleIcon class="w-5 h-5" />
+                  <span>About</span>
+                </RouterLink>
+
+                <RouterLink to="/contact" @click="toggleMobileMenu(false)" :class="['flex items-center gap-3 py-2 px-3 rounded-md transition-colors',
+                  isActive('/contact') ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-800']">
+                  <PhoneIcon class="w-5 h-5" />
+                  <span>Contact</span>
+                </RouterLink>
+
+                <RouterLink to="/start/calculate/route" @click="toggleMobileMenu(false)" :class="['flex items-center gap-3 py-2 px-3 rounded-md transition-colors',
+                  isActive('/start/calculate/route') ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-800']">
+                  <MapIcon class="w-5 h-5" />
+                  <span>Route</span>
+                </RouterLink>
+              </nav>
+
+
+            </div>
+
+            <!-- Bottom: Latest Calculations + Version + Logout -->
             <div class="px-3">
-              <!-- Latest Calculations Card -->
               <div
                 class="mb-4 p-3 bg-zinc-50 rounded-xl shadow-sm flex items-center justify-between hover:bg-zinc-100 transition-all cursor-pointer"
                 @click="goToRecentRoutes">
@@ -109,10 +98,8 @@
                 <ChevronRightIcon class="h-4 w-4 text-zinc-400" />
               </div>
 
-              <!-- App Version -->
               <p class="text-center text-[10px] text-zinc-400 mb-3 opacity-70">app_version {{ store.AppVersion }}</p>
 
-              <!-- Logout -->
               <button @click="() => { LogoutService(); toggleMobileMenu(false); }"
                 class="w-full px-5 py-3 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 border-t border-zinc-200 shadow-[0_-1px_2px_rgba(0,0,0,0.05)] flex items-center gap-2 justify-center rounded-b-2xl">
                 <ArrowLeftOnRectangleIcon class="w-5 h-5 text-zinc-500" />

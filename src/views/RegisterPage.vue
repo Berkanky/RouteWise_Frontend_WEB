@@ -1,216 +1,99 @@
 <template>
-  <!-- Outer container for register page with centered content and soft backdrop -->
-  <section
-    class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center"
-  >
-    <!-- Card wrapper using a two-column grid -->
-    <div
-      class="w-full overflow-hidden rounded-3xl border border-rose-200 bg-white shadow-md grid grid-cols-1 lg:grid-cols-2"
-    >
-      <!-- Left: Registration form -->
-      <div class="p-6 md:p-10 order-2 lg:order-1">
-        <header class="mb-8">
-          <h1 class="text-2xl md:text-3xl font-bold text-zinc-900">
-            Create your account
-          </h1>
-          <p class="mt-1 text-sm text-zinc-500">
-            Start your journey with RouteWise
-          </p>
-        </header>
-        <form @submit.prevent="onSubmit" novalidate>
-          <!-- Username field with real-time uniqueness check -->
-          <label
-            class="block text-sm font-medium text-zinc-800 mb-1"
-            for="register-username"
-          >
-            Username
-          </label>
-          <div class="relative">
-            <span
-              class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
-            >
-              <!-- User icon -->
-              <svg
-                class="h-4 w-4 text-rose-400"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z"
-                />
-              </svg>
-            </span>
-            <input
-              id="register-username"
-              v-on:keyup="WatchUserName()"
-              v-model.trim="form.UserName"
-              type="text"
-              autocomplete="username"
-              placeholder="Choose a username"
-              :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
-              :aria-describedby="IsUserNameUsed ? 'username-error' : null"
-              :class="[
-                'w-full rounded-lg pl-10 pr-3 py-3 outline-none placeholder:text-zinc-400 text-zinc-900 focus:bg-white',
-                IsUserNameUsed
-                  ? 'border border-red-500/70 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-                  : 'border border-rose-200/60 bg-rose-50/40 focus:border-rose-400 focus:ring-2 focus:ring-rose-300',
-              ]"
-            />
-          </div>
-          <p
-            v-if="IsUserNameUsed"
-            id="username-error"
-            class="mt-1 text-sm text-red-600"
-          >
-            This username is already taken.
-          </p>
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 pb-8 flex items-start justify-center min-h-[80vh]">
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 md:bg-white md:rounded-xl md:border md:border-zinc-200 md:shadow-sm md:overflow-hidden">
+      
+      <!-- Left: Register Form -->
+      <div class="w-full px-4 py-10 sm:px-6 md:px-12 md:py-16 flex flex-col justify-center">
+        <div class="w-full max-w-md mx-auto text-center md:text-left">
+          <!-- Logo -->
+          <img src="../images/AppIconRouteWise-4 1.svg" alt="Routewise Logo" class="w-24 h-24 mx-auto md:mx-0 mb-8" />
+          
+          <!-- Heading -->
+          <h1 class="text-2xl font-bold text-black mb-2">Create your account</h1>
+          <p class="text-sm text-zinc-500 mb-8">Start your journey with RouteWise.</p>
 
-          <!-- Password field -->
-          <div class="mt-6">
-            <label
-              class="block text-sm font-medium text-zinc-800 mb-1"
-              for="register-password"
-            >
-              Password
-            </label>
-            <div class="relative">
-              <span
-                class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
-              >
-                <!-- Lock icon -->
-                <svg
-                  class="h-4 w-4 text-rose-400"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"
-                  />
-                </svg>
-              </span>
+          <!-- Form -->
+          <form @submit.prevent="onSubmit" novalidate class="text-left">
+
+            <!-- Username -->
+            <div class="mb-4">
               <input
-                id="register-password"
-                v-model="form.Password"
+                v-model.trim="form.UserName"
+                @keyup="WatchUserName"
+                type="text"
+                autocomplete="username"
+                placeholder="Choose a username"
+                :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
+                :class="IsUserNameUsed ? 'border border-red-500 bg-red-50' : ''"
+              />
+              <p v-if="IsUserNameUsed" class="text-sm text-red-600 mt-1">This username is already taken.</p>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4 relative">
+              <input
                 :type="showPassword ? 'text' : 'password'"
+                v-model="form.Password"
                 autocomplete="new-password"
                 placeholder="Create a password"
-                class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 pl-10 pr-10 py-3 text-zinc-900 placeholder:text-zinc-400 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
               />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs font-medium text-rose-600 hover:text-rose-800 focus:outline-none"
-                :aria-label="showPassword ? 'Hide password' : 'Show password'"
-              >
+              <button type="button" @click="showPassword = !showPassword"
+                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-black">
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
+              <p class="mt-1 text-xs text-zinc-500">Use at least 8 characters, including a number.</p>
             </div>
-            <p class="mt-1 text-xs text-zinc-500">
-              Use at least 8 characters, including a number.
-            </p>
-          </div>
 
-          <!-- Confirm password field -->
-          <div class="mt-6">
-            <label
-              class="block text-sm font-medium text-zinc-800 mb-1"
-              for="register-confirm"
-            >
-              Confirm password
-            </label>
-            <div class="relative">
-              <span
-                class="pointer-events-none absolute inset-y-0 left-3 flex items-center"
-              >
-                <!-- Lock icon reused -->
-                <svg
-                  class="h-4 w-4 text-rose-400"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 8v-3h2v3h-2ZM9 9V7a3 3 0 1 1 6 0v2H9Z"
-                  />
-                </svg>
-              </span>
+            <!-- Confirm Password -->
+            <div class="mb-4 relative">
               <input
-                id="register-confirm"
-                v-model="form.PasswordConfirm"
                 :type="showPassword ? 'text' : 'password'"
+                v-model="form.PasswordConfirm"
                 autocomplete="new-password"
                 placeholder="Re-enter your password"
-                class="w-full rounded-lg border border-rose-200/60 bg-rose-50/40 pl-10 pr-10 py-3 text-zinc-900 placeholder:text-zinc-400 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
               />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute inset-y-0 right-2 flex items-center rounded px-2 text-xs font-medium text-rose-600 hover:text-rose-800 focus:outline-none"
-                :aria-label="showPassword ? 'Hide password' : 'Show password'"
-              >
+              <button type="button" @click="showPassword = !showPassword"
+                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-black">
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
             </div>
-          </div>
 
-          <!-- Error message -->
-          <p v-if="error" class="mt-4 text-sm text-red-600">
-            {{ error }}
-          </p>
+            <!-- Error -->
+            <p v-if="error" class="text-sm text-red-600 text-center mt-3">
+              {{ error }}
+            </p>
 
-          <!-- Submit button -->
-          <button
-            :disabled="loading || IsUserNameUsed"
-            class="mt-7 w-full rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
-          >
-            <span v-if="!loading">Register</span>
-            <span v-else class="inline-flex items-center gap-2">
-              <svg
-                class="animate-spin h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  class="opacity-30"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="3"
-                />
-                <path
-                  d="M22 12a10 10 0 0 1-10 10"
-                  stroke="currentColor"
-                  stroke-width="3"
-                />
-              </svg>
-              Processing…
-            </span>
-          </button>
+            <!-- Register Button -->
+            <button
+              :disabled="loading || IsUserNameUsed"
+              class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white font-semibold shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition mt-4">
+              <span v-if="!loading">Register</span>
+              <span v-else class="inline-flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+                  <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
+                </svg>
+                Processing…
+              </span>
+            </button>
 
-          <p class="mt-6 text-center text-sm text-zinc-600">
-            Already have an account?
-            <RouterLink
-              to="/login"
-              class="underline text-rose-600 hover:text-rose-800"
-            >
-              Log in
-            </RouterLink>
-          </p>
-        </form>
+            <!-- Already have account -->
+            <p class="mt-6 text-center text-sm text-zinc-600">
+              Already have an account?
+              <RouterLink to="/login" class="text-black underline hover:text-zinc-800 font-medium">
+                Log in
+              </RouterLink>
+            </p>
+          </form>
+        </div>
       </div>
 
-      <!-- Right: Illustration inside card -->
-      <div
-        class="order-1 lg:order-2 bg-rose-50 border-b lg:border-b-0 lg:border-l border-rose-200 hidden lg:block"
-      >
-        <div class="h-56 lg:h-full">
-          <img
-            src="../images/RouteWiseMapV2.jpg"
-            alt="Register illustration"
-            class="h-full w-full object-cover"
-            aria-hidden="true"
-          />
-        </div>
+      <!-- Right: Illustration -->
+      <div class="hidden md:block bg-zinc-100">
+        <img src="../images/background.jpg" alt="Register illustration" class="w-full h-full object-cover" />
       </div>
     </div>
   </section>

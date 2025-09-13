@@ -19,11 +19,11 @@
         <div class="grid grid-cols-2 gap-y-3 text-[13px] text-gray-700">
           <div>
             <p class="text-gray-400">Distance</p>
-            <p>{{ route.DistanceKM || '-'}} km / {{ route.DistanceMIL || '-' }} mi</p>
+            <p>{{ route.DistanceKM || '-' }} km / {{ route.DistanceMIL || '-' }} mi</p>
           </div>
           <div>
             <p class="text-gray-400">Fuel</p>
-            <p>{{ route.FuelType  ||'-'}} • {{ route.CombinedConsumptionMPG ||'-' }} MPG</p>
+            <p>{{ route.VehicleId.fueltype1 || '-' }}</p>
           </div>
           <div>
             <p class="text-gray-400">Fuel Cost</p>
@@ -31,23 +31,24 @@
           </div>
           <div>
             <p class="text-gray-400">Toll</p>
-            <p v-if="route.TollRoadEstimatedPriceDollar">${{ route.TollRoadEstimatedPriceDollar}}</p>
+            <p v-if="route.TollRoadEstimatedPriceDollar">${{ route.TollRoadEstimatedPriceDollar }}</p>
             <p v-else>Paid route information could not be obtained.</p>
           </div>
           <div>
             <p class="text-gray-400">Car</p>
-            <p>{{ route.CarBrand || '-' }} {{ route.CarModel || '-' }}</p>
+            <p>{{ route.VehicleId.make || '-' }} {{ route.VehicleId.model || '-' }}</p>
           </div>
           <div>
             <p class="text-gray-400">Engine</p>
-            <p>{{ route.EngineDisplacement || '-' }}L</p>
+            <p>{{ route.VehicleId.displ || '-' }}L</p>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="mt-5 flex justify-between items-center border-t pt-3">
+        <div class="mt-5 flex justify-between items-start border-t pt-3">
           <div class="text-[11px] text-gray-400 leading-tight">
-            From {{ route.StartLocation}}<br />
+            <p class="mb-1">Created: {{ route.CreatedDate }}</p>
+            From {{ route.StartLocation }}<br />
             To {{ route.DestinationLocation }}
           </div>
           <div class="text-right">
@@ -69,35 +70,35 @@
 </template>
 
 <script>
-import {UseStore} from '../stores/store';
+import { UseStore } from '../stores/store';
 import axios from 'axios';
 export default {
   name: "App",
-  setup(){
+  setup() {
     var store = UseStore();
-    return{
+    return {
       store
     }
   },
   data() {
-    return{
+    return {
       routes: []
     }
   },
-  async mounted(){
+  async mounted() {
     await this.calculated_routes_service();
   },
-  methods:{
-    handleViewDetail(_id, ProcessId){
-      this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: _id, ProcessId: ProcessId }});
+  methods: {
+    handleViewDetail(_id, ProcessId) {
+      this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: _id, ProcessId: ProcessId } });
     },
-    async calculated_routes_service(){
-      try{
+    async calculated_routes_service() {
+      try {
         var res = await axios.get(`/calculated/routes`);
         console.log(res);
-        if(res.status === 200 ) this.routes = res.data.Routes;
+        if (res.status === 200) this.routes = res.data.Routes;
         else return;
-      }catch(err){
+      } catch (err) {
         console.log(err);
       }
     }

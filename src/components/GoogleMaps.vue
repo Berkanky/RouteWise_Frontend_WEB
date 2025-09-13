@@ -71,7 +71,7 @@ export default {
       streetViewControl: false,
       mapTypeControl: false,
       gestureHandling: 'cooperative', // tek parmak sayfa kaydırır, harita 2 parmakla taşınır
-      scrollwheel: false      
+      scrollwheel: false
     });
 
     this.map = map;
@@ -85,6 +85,15 @@ export default {
     });
   },
   methods: {
+    focusOn(pos, opts = {}) {
+      if (!this.map || !pos) return;
+      var { zoomIfCloser = 14 } = opts;
+
+      try { this.map.panTo(pos); } catch (_) { this.map.setCenter(pos); }
+
+      var curZoom = typeof this.map.getZoom === 'function' ? (this.map.getZoom() ?? 10) : 10;
+      if (curZoom < zoomIfCloser) setTimeout(() => { try { this.map.setZoom(zoomIfCloser); } catch { } }, 120);
+    },
     hardResetMap() {
       if (!this.map) return;
 
@@ -245,8 +254,8 @@ export default {
       pl.setOptions(SELECTED_STYLE);
       this.selectedPolyline = pl;
       this.selected_polyline_temporary_id = pl.__id;
-      
-      var selected_polyline_detail = this.decoded_overview_polyline_points.find(function(item){ return item.temporary_route_id == pl.__id});
+
+      var selected_polyline_detail = this.decoded_overview_polyline_points.find(function (item) { return item.temporary_route_id == pl.__id });
       this.$emit("selected_polyline_temporary_id", this.selected_polyline_temporary_id);
       this.$emit("selected_polyline_detail", selected_polyline_detail);
     },
@@ -388,32 +397,50 @@ export default {
 
   watch: {
     build_route_button_triggered: {
-      handler(newVal) {
-        if (newVal) this.onBuildRoute();
-      },
+      handler(newVal) { if (newVal) this.onBuildRoute(); },
       immediate: true, deep: true
     },
+
     'store.StartLocation': {
       handler(newVal) {
         if (newVal && typeof newVal.latitude === "number" && typeof newVal.longitude === "number") {
           this.StartLocation = newVal;
-          var pos = { lat: newVal.latitude, lng: newVal.longitude };
+          const pos = { lat: newVal.latitude, lng: newVal.longitude };
           this.upsertMarker(pos, 'start_location', newVal);
+
+          // Odak mantığı:
+          const hasDest = !!(this.DestinationLocation && typeof this.DestinationLocation.latitude === "number" && typeof this.DestinationLocation.longitude === "number");
+          if (hasDest) {
+            // İki uç varsa tümünü sığdır
+            this.fitAll();
+          } else {
+            // Sadece start varsa yakınlaş
+            this.focusOn(pos, { zoomIfCloser: 14 });
+          }
         }
       },
       immediate: true, deep: true
     },
+
     'store.DestinationLocation': {
       handler(newVal) {
         if (newVal && typeof newVal.latitude === "number" && typeof newVal.longitude === "number") {
           this.DestinationLocation = newVal;
-          var pos = { lat: newVal.latitude, lng: newVal.longitude };
+          const pos = { lat: newVal.latitude, lng: newVal.longitude };
           this.upsertMarker(pos, 'destination_location', newVal);
+
+          const hasStart = !!(this.StartLocation && typeof this.StartLocation.latitude === "number" && typeof this.StartLocation.longitude === "number");
+          if (hasStart) {
+            this.fitAll();
+          } else {
+            this.focusOn(pos, { zoomIfCloser: 13 });
+          }
         }
       },
       immediate: true, deep: true
     }
   }
+
 };
 </script>
 
@@ -435,7 +462,7 @@ export default {
 }
 
 .gmap-canvas {
-  touch-action: pan-y;  
+  touch-action: pan-y;
   position: absolute;
   inset: 0;
   border-radius: 12px;

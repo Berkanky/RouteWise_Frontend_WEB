@@ -1,6 +1,6 @@
 <template>
   <AppNavbar />
-  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50">
+  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50 pt-16">
     <router-view />
   </main>
 </template>

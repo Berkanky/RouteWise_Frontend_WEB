@@ -93,22 +93,6 @@ export const UseStore = defineStore("UseStore", {
     ResetPiniaStore() {
       this.$reset();
     },
-    PasswordRegex(Password) {
-      var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-      return pattern.test(Password);
-    },
-    EMailAddressRegex(EMailAddress) {
-      var EMailAddressRegex =
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; //RFC5322
-      return EMailAddressRegex.test(EMailAddress);
-    },
-    PhoneNumberRegex(DialCode, PhoneNumber) {
-      var CustomerPhoneNumber = DialCode + PhoneNumber;
-
-      var phoneNumberRegex =
-        /^(?=(\D*\d){7,15}$)\+?[\s().-]*\d+([\s().-]*\d+)*[\s().-]*$/;
-      return phoneNumberRegex.test(CustomerPhoneNumber);
-    },
     GetCurrentDateFormatted(){
       var date = new Date();
 

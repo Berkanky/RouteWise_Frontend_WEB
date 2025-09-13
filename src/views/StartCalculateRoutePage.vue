@@ -20,6 +20,47 @@
             </li>
           </ol>
         </div>
+        <!-- Google Maps URL Import & Export Card -->
+        <section class="rounded-2xl border border-zinc-100 bg-white shadow-md p-4 mt-3">
+          <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
+            <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
+              Import from Google Maps
+            </h3>
+          </header>
+
+          <div class="p-4 space-y-3">
+            <label class="block text-sm font-medium text-zinc-800">Route URL</label>
+            <input v-model.trim="routeUrl" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/..."
+              class="w-full rounded-lg border border-zinc-300 bg-white placeholder:text-zinc-400 px-3 py-3 focus:ring-2 focus:ring-rose-200 focus:border-rose-300" />
+
+            <p class="text-[12px] text-zinc-500">
+              Paste the shared Google Maps route link. Short links are also supported
+              (<span class="font-mono">maps.app.goo.gl/…</span>). When you click Export,
+              the origin and destination will be downloaded as JSON.
+            </p>
+
+            <div class="flex items-center gap-3 pt-1">
+              <button type="button" @click="exportFromMapsUrl" :disabled="!routeUrl || isExporting"
+                class="w-full flex justify-center items-center gap-2 rounded-lg border border-zinc-300/60 bg-white text-zinc-800 text-sm font-semibold py-2.5 transition duration-200 hover:bg-zinc-50 hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg v-if="isExporting" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                  <path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4"
+                    stroke-linecap="round" />
+                </svg>
+                <span>Export</span>
+              </button>
+
+
+            </div>
+
+            <!-- Export mesajı buton altına alındı -->
+            <div class="pt-1">
+              <span v-if="exportError" class="text-sm text-rose-600">{{ exportError }}</span>
+              <span v-else-if="exportInfo" class="text-sm text-emerald-600">{{ exportInfo }}</span>
+            </div>
+
+          </div>
+        </section>
       </aside>
 
       <main>
@@ -99,8 +140,7 @@
               <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 <!-- Start Location Card -->
-                <section v-if="this.SelectedStartLocationSuggestionPlaceId"
-                  class="bg-white border border-zinc-200 rounded-md shadow-xl">
+                <section v-if="this.form.StartLocation" class="bg-white border border-zinc-200 rounded-md shadow-xl">
                   <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
                     <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
                       Start Location
@@ -143,8 +183,7 @@
                 </section>
 
                 <!-- Destination Location Card -->
-                <section 
-                  v-if="this.SelectedDestinationLocationSuggestionPlaceId"
+                <section v-if="this.form.DestinationLocation"
                   class="bg-white border border-zinc-200 rounded-md shadow-xl">
                   <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
                     <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
@@ -296,10 +335,9 @@
             </template>
           </div>
 
-          <div v-if="feedback" class="mb-4 rounded-md border px-3 py-2 text-sm"
-              :class="feedback.type === 'success'
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                : 'border-red-200 bg-red-50 text-red-800'">
+          <div v-if="feedback" class="mb-4 rounded-md border px-3 py-2 text-sm" :class="feedback.type === 'success'
+            ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+            : 'border-red-200 bg-red-50 text-red-800'">
             {{ feedback.message }}
           </div>
 
@@ -333,6 +371,17 @@
       </main>
     </div>
   </section>
+  <!-- LOADING OVERLAY -->
+  <div v-if="isProcessing" class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+    <div class="text-center space-y-2">
+      <svg class="h-6 w-6 animate-spin text-black mx-auto" viewBox="0 0 24 24" fill="none">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+      </svg>
+      <p class="text-black text-sm font-medium">Please wait, your request is being processed...</p>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -495,7 +544,7 @@ export default {
         Luggage: null,
         Person: 1,
         Name: "",
-        Description: ""
+        Description: "",
       },
       startLocationItems: [],
       destinationItems: [],
@@ -527,7 +576,12 @@ export default {
       selected_polyline_temporary_id: null,
       selected_polyline_detail: {},
       submitting: false,
-      feedback: null, 
+      feedback: null,
+      routeUrl: "",
+      isExporting: false,
+      exportError: "",
+      exportInfo: "",
+      isProcessing: false,
     }
   },
   computed: {
@@ -551,10 +605,38 @@ export default {
     canSubmit() { return this.step5Ok && this.step1Ok && this.step2Ok && this.step3Ok && this.step4Ok }
   },
   async mounted() {
-    await this.GetCarMakes();
     await this.CathchMetaData();
   },
   methods: {
+    async exportFromMapsUrl() {
+      this.isExporting = true;
+      this.isProcessing = true;
+      this.exportError = "";
+      this.exportInfo = "";
+      if (!this.routeUrl) return;
+
+      try {
+        var res = await axios.post('/maps/resolve-link', { google_maps_shared_link_url: this.routeUrl }, {});
+        if (res.status === 200) {
+          this.store.StartLocation = res.data.StartLocation;
+          this.form.StartLocation = res.data.StartLocation.StartLocation;
+
+          this.store.DestinationLocation = res.data.DestinationLocation;
+          this.form.DestinationLocation = res.data.DestinationLocation.DestinationLocation;
+          this.CalculateRoute();
+          this.exportInfo = "Route imported successfully.";
+        }
+        else {
+          this.exportError = "An error occurred while importing route.";
+        }
+      } catch (err) {
+        this.exportError = "Failed to import route.";
+      }
+      finally {
+        this.isExporting = false;
+        this.isProcessing = false;
+      }
+    },
     getselected_polyline_detail(selected_polyline_detail) {
       if (selected_polyline_detail) this.selected_polyline_detail = selected_polyline_detail;
     },
@@ -562,9 +644,13 @@ export default {
       if (selected_polyline_temporary_id) this.selected_polyline_temporary_id = selected_polyline_temporary_id;
     },
     CalculateRoute() {
-
+      this.isProcessing = true;
       this.build_route_button_triggered++;
+      setTimeout(() => {
+        this.isProcessing = false; // Fake işlem bittikten sonra kapat
+      }, 1500); // (Bu örnek statik süre. Asıl response'a göre ayarlamalısın.)
     },
+
     async CathchMetaData() {
       var res = await axios.get(`/meta/country?include=toll_passes`);
       if (res.status === 200) this.tollPassItems = res.data.country_meta_list;
@@ -629,21 +715,22 @@ export default {
     },
     async submitWizard() {
       if (!this.canSubmit || this.submitting) return
-
+      this.isProcessing = true;
       var body = {
         StartLocationPlaceId: this.SelectedStartLocationSuggestionPlaceId,
-        StartLocation: this.form.StartLocation || null,
-        Latitude: this.store.StartLocation?.latitude || null,
-        Longitude: this.store.StartLocation?.longitude || null,
-        TravelMode: this.form.DriveType || null,
+        StartLocation: this.form.StartLocation,
+        Latitude: this.store.StartLocation?.latitude,
+        Longitude: this.store.StartLocation?.longitude,
+        TravelMode: "DRIVE",
         DestinationLocation: this.form.DestinationLocation,
         DestinationLocationPlaceId: this.SelectedDestinationLocationSuggestionPlaceId,
-        DestinationLocationLatitude: this.store.DestinationLocation?.latitude || null,
-        DestinationLocationLongitude: this.store.DestinationLocation?.longitude || null,
-        FuelType: this.form.FuelType?.label || null,
-        TollPass: this.form.TollPass.map(function (item) { return item.id }) || null,
-        RoutingPreference: this.form.RouteType || null,
+        DestinationLocationLatitude: this.store.DestinationLocation?.latitude,
+        DestinationLocationLongitude: this.store.DestinationLocation?.longitude,
+        FuelType: this.form.FuelType?.label,
+        TollPass: this.form.TollPass.map(function (item) { return item.id }),
+        RoutingPreference: this.form.RouteType,
         Engine: this.form.Engine.engine,
+        Cylinder: this.form.Engine.cylinders,
         Name: this.form.Name,
         Description: this.form.Description,
         CarBrand: this.form.CarBrand.label,
@@ -651,21 +738,24 @@ export default {
         Luggage: this.form.Luggage,
         Person: this.form.Person,
         DriveType: this.form.DriveType,
-        selected_polyline_temporary_id: this.selected_polyline_temporary_id
+        selected_polyline_temporary_id: this.selected_polyline_temporary_id,
       };
-      try{
+      try {
         var res = await axios.post(`/start/calculate/route`, body, {});
-        if (res.status === 200) { 
+        if (res.status === 200) {
 
           this.feedback = { type: 'success', message: res.data.message };
           this.submitting = true;
+          this.isProcessing = false;
           return;
         }
         else {
           this.feedback = { type: 'error', message: err.response.data.message };
+          this.isProcessing = false;
         }
-      }catch(err){
+      } catch (err) {
         this.feedback = { type: 'error', message: err.response.data.message };
+        this.isProcessing = false;
       }
     },
     resetAll() {
@@ -690,7 +780,7 @@ export default {
       this.SelectedDestinationLocationSuggestionPlaceId = null
     },
     async GetCarMakes() {
-      const res = await axios.get("/car/makes")
+      var res = await axios.get("/car/makes")
       if (res.status === 200) this.carBrandItems = res.data.CarBrands
     },
     async GetCarModels(make) {
@@ -737,6 +827,13 @@ export default {
     }
   },
   watch: {
+    step:{
+      async handler(newVal){
+        if(newVal === 1 ) await this.GetCarMakes();
+        console.log("form : ", JSON.stringify(this.form));
+      },
+      immediate: true, deep: true
+    },
     'form.StartLocation'(newVal) {
       if (this.focusedInput === 'start') {
         if (this.searchTimeoutStart) clearTimeout(this.searchTimeoutStart)
