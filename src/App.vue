@@ -1,5 +1,5 @@
 <template>
-  <AppNavbar />
+  <AppNavbar v-if="!this.is_mobile_active"/>
   <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50 pt-16">
     <router-view />
   </main>
@@ -27,10 +27,29 @@ export default {
   data() {
     return {
       showModal: false,
+      isMobileMenuOpen: false,
+      isMobile: window.innerWidth < 768
     };
+  },
+  created(){
+    window.addEventListener('resize', this.updateMobileStatus)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateMobileStatus)
+  },
+  computed:{
+    is_mobile_active() {
+      this.isMobile = window.innerWidth < 768;
+      return this.isMobile;
+    }
   },
   mounted() {
     this.store.WatchServices();
+  },
+  methods:{
+    updateMobileStatus() {
+      this.isMobile = window.innerWidth < 768
+    },
   }
 };
 </script>
