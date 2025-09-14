@@ -383,7 +383,13 @@ export default {
         var s = { lat: this.StartLocation.latitude, lng: this.StartLocation.longitude };
         var d = { lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude };
 
-        var decoded = await this.getRouteDecodedPolyline(s, d);
+        var decoded = [];
+
+        if ( this.store.calculated_route_detail_active ) decoded[0] = this.store.calculated_route_detail_overview_details;
+        else decoded = await this.getRouteDecodedPolyline(s, d);
+
+        console.log("decoded : ", decoded);
+        
         this.decoded_overview_polyline_points = decoded;
         if (myToken !== this.buildToken) return;
 
@@ -397,7 +403,11 @@ export default {
 
   watch: {
     build_route_button_triggered: {
-      handler(newVal) { if (newVal) this.onBuildRoute(); },
+      handler(newVal) { 
+        if (newVal) {
+          this.onBuildRoute(); 
+        }
+      },
       immediate: true, deep: true
     },
 

@@ -2,48 +2,22 @@ import { defineStore } from "pinia";
 import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
-    AppVersion:'1.0.0',
+    AppVersion:'1.0.1',
     Config: {},
     UserData: {},
 
     LoginData: {
-      IsRemindDeviceActive: true,
-      Verified: false,
-      VerifySended: false,
+      IsRemindDeviceActive: true
     },
-    RegisterData: { VerifySended: false },
+    RegisterData: {},
 
-    DefaultCenterLocation:{},
     StartLocation:{},
     DestinationLocation:{},
-
-    decoded_overview_polyline_points_array:[], // { index:0, decoded_overview_polyline_points:'', routeId: ''};
-    created_router_id:[], //oluşturulmuş her polyline
-    created_router_id_count:0,
-
-    Token: "",
-    ServerRoot: 'http://localhost:3000', //'http://localhost:3000', //"https://api.routewiseapp.com",
-    ServerWSRoot:'wss://api.routewiseapp.com', //'wss://localhost:3000', //"wss://api.routewiseapp.com",
     
-    AppStarted: false,
-
-    VerificationPageType: "",
-
+    calculated_route_detail_active: false,
+    calculated_route_detail_overview_details: {},
     ServiceRequestData: {},
-
-    GoogleMapsMarkerActiveMarkerDetail:{}, //type:'StartLocation'
-
-    SelectedCalculatedRoutes:[],
-    SelectedCalculatedRouteDetail:{},
-
     ServiceRequestStarted: false,
-
-    Routes:[],
-
-    sharedRoutes:[],
-    isSharedRoutesEmpty: false,
-
-    tollPassList:[],
   }),
   actions: {
     WatchServices() {
@@ -108,6 +82,6 @@ export const UseStore = defineStore("UseStore", {
   },
   persist: {
     storage: sessionStorage,
-    paths: ["UserData", "RegisterData", "Config"],
+    paths: ["UserData", "Config"],
   },
 });

@@ -59,7 +59,7 @@
 
         <!-- View Detail Button -->
         <div class="mt-4 flex justify-center sm:justify-end">
-          <button @click="handleViewDetail(route._id, route.ProcessId)"
+          <button @click="handleViewDetail(route._id)"
             class="w-full sm:w-auto text-[12px] font-semibold tracking-wide uppercase px-4 py-2 border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out rounded-full">
             View Detail
           </button>
@@ -90,8 +90,8 @@ export default {
     await this.calculated_routes_service();
   },
   methods: {
-    handleViewDetail(_id, ProcessId) {
-      this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: _id, ProcessId: ProcessId } });
+    handleViewDetail(_id) {
+      this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: _id } });
     },
     async calculated_routes_service() {
       try {

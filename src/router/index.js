@@ -78,7 +78,7 @@ var routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/calculated/route/detail/:_id/:ProcessId",
+    path: "/calculated/route/detail/:_id",
     name: "CalculatedRouteDetail",
     component: CalculatedRouteDetail,
     meta: { requiresAuth: true },

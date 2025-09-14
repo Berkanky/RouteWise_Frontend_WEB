@@ -21,7 +21,7 @@
           </ol>
         </div>
         <!-- Google Maps URL Import & Export Card -->
-        <section class="rounded-2xl border border-zinc-100 bg-white shadow-md p-4 mt-3">
+        <section class="rounded-2xl border border-zinc-100 bg-white shadow-md p-4 mt-3" v-if="this.step === 0">
           <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
             <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
               Import from Google Maps
@@ -618,13 +618,32 @@ export default {
       try {
         var res = await axios.post('/maps/resolve-link', { google_maps_shared_link_url: this.routeUrl }, {});
         if (res.status === 200) {
-          this.store.StartLocation = res.data.StartLocation;
-          this.form.StartLocation = res.data.StartLocation.StartLocation;
 
-          this.store.DestinationLocation = res.data.DestinationLocation;
-          this.form.DestinationLocation = res.data.DestinationLocation.DestinationLocation;
-          this.CalculateRoute();
+          var start_location_details = {
+            place_id: res.data.start_location_details.place_id,
+            formatted_address: res.data.start_location_details.formatted_address,
+            latitude: res.data.start_location_details.geometry.location.latitude,
+            longitude: res.data.start_location_details.geometry.location.longitude,
+            StartLocation: res.data.destination_location_details.StartLocation
+          };
+
+          var destination_location_details = {
+            place_id: res.data.destination_location_details.place_id,
+            formatted_address: res.data.destination_location_details.formatted_address,
+            latitude: res.data.destination_location_details.geometry.location.latitude,
+            longitude: res.data.destination_location_details.geometry.location.longitude,
+            DestinationLocation: res.data.destination_location_details.DestinationLocation
+          };
+
+          this.store.StartLocation = start_location_details;
+          this.form.StartLocation = start_location_details.StartLocation;
+
+          this.store.DestinationLocation = destination_location_details;
+          this.form.DestinationLocation = destination_location_details.DestinationLocation;
+
           this.exportInfo = "Route imported successfully.";
+
+          this.CalculateRoute();
         }
         else {
           this.exportError = "An error occurred while importing route.";
