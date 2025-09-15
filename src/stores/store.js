@@ -67,17 +67,28 @@ export const UseStore = defineStore("UseStore", {
     ResetPiniaStore() {
       this.$reset();
     },
-    GetCurrentDateFormatted(){
-      var date = new Date();
+    GetCurrentDateFormatted(date){
+      date = String(date);
+      var d = new Date(date);
 
-      var month = date.getMonth() + 1;
-      var day = date.getDate();
-      var year = date.getFullYear();
+      var month = d.getMonth() + 1;
+      var day = d.getDate();
+      var year = d.getFullYear();
 
-      month = month < 10 ? '0' + month : month;
-      day = day < 10 ? '0' + day : day;
+      var hour = d.getHours();
+      var minute = d.getMinutes();
+      var second = d.getSeconds();
 
-      return month + '.' + day + '.' + year;
+      if( month < 10 ) month = '0' + month;
+      if( day < 10 ) day = '0' + day;
+
+      if( hour < 10 ) hour = '0' + hour;
+      if( minute < 10 ) minute = '0' + minute;
+      if( second < 10 ) second = '0' + second;
+
+      var formatted_date = month + '.' + day + '.' + year + ' ' + hour + ':' + minute + ':' + second;
+
+      return formatted_date;
     }
   },
   persist: {

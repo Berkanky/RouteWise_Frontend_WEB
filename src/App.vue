@@ -71,4 +71,36 @@ body,
   min-height: 100%;
   overflow-y: auto;
 }
+
+/* Tüm scroll bar */
+::-webkit-scrollbar {
+  width: 8px;         /* dikey */
+  height: 8px;        /* yatay */
+}
+
+/* Track (arka plan) */
+::-webkit-scrollbar-track {
+  background: transparent; /* temiz görünüm */
+  margin: 4px;             /* kenardan boşluk */
+}
+
+/* Thumb (kaydırma kolu) */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.25); 
+  border-radius: 9999px;               /* tam yuvarlak */
+  border: 2px solid transparent;       /* boşluk efekti */
+  background-clip: content-box;        /* ortalanmış thumb */
+}
+
+/* Hover olunca daha net */
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.45);
+}
+
+/* Firefox için */
+* {
+  scrollbar-width: thin;            /* ince */
+  scrollbar-color: rgba(0,0,0,0.3) transparent;
+}
+
 </style>

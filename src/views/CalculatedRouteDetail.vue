@@ -1,35 +1,34 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6">
-    <!-- Üst bar -->
-    <header class="sticky top-0 z-30 -mx-4 sm:mx-0 bg-white/90 backdrop-blur border-b border-zinc-100">
-      <div class="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <button type="button" @click="goBack()"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 hover:bg-zinc-50 active:scale-[0.98]">
-            <svg viewBox="0 0 24 24" class="h-5 w-5">
-              <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-            </svg>
-          </button>
-          <div>
-            <h1 class="text-[15px] sm:text-[16px] font-semibold text-zinc-900">Route detail</h1>
-            <p class="text-[12px] text-zinc-500 leading-none">
-              <span class="font-mono">{{ calculated_route_detail?._id || '—' }}</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span v-if="calculated_route_detail?.IsRouteCompleted === true"
-            class="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[12px] font-medium text-green-700">
-            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Completed
-          </span>
-          <span v-else
-            class="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] font-medium text-rose-700">
-            <span class="h-1.5 w-1.5 rounded-full bg-rose-600"></span> In progress
-          </span>
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-zinc-100">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button type="button" @click="goBack()"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 hover:bg-zinc-50 active:scale-[0.98]">
+          <svg viewBox="0 0 24 24" class="h-5 w-5">
+            <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-[15px] sm:text-[16px] font-semibold text-zinc-900">Route detail</h1>
+          <p class="text-[12px] text-zinc-500 leading-none">
+            <span class="font-mono">{{ calculated_route_detail?._id || '—' }}</span>
+          </p>
         </div>
       </div>
-    </header>
+
+      <div class="flex items-center gap-2">
+        <span v-if="calculated_route_detail?.IsRouteCompleted === true"
+          class="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[12px] font-medium text-green-700">
+          <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Completed
+        </span>
+        <span v-else
+          class="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] font-medium text-rose-700">
+          <span class="h-1.5 w-1.5 rounded-full bg-rose-600"></span> In progress
+        </span>
+      </div>
+    </div>
+  </header>
+  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6 pb-[calc(96px+max(env(safe-area-inset-bottom),0px))] sm:pb-8">
 
     <!-- Yükleniyor -->
     <div v-if="isLoading" class="py-10 grid gap-4">
@@ -70,7 +69,7 @@
                 <path fill="currentColor"
                   d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-6a1 1 0 0 1 1 1v2h-2V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v2h-2v-2a1 1 0 0 1 1-1ZM3 11H1v2h2v-2Zm20 0h-2v2h2v-2ZM5.64 4.22 4.22 5.64 5.64 7.06 7.06 5.64 5.64 4.22Zm13.14 13.14-1.42 1.42 1.42 1.42 1.42-1.42-1.42-1.42Zm0-11.72-1.42-1.42-1.42 1.42 1.42 1.42 1.42-1.42ZM7.06 18.36 5.64 16.94 4.22 18.36l1.42 1.42 1.42-1.42Z" />
               </svg>
-              {{ createdDateLocal }}
+              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail.CreatedDate) }}
             </span>
             <span
               class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
@@ -166,25 +165,34 @@
         </div>
       </div>
 
-      <!-- Geçiş kartı + sürüş tipi + kişi/eşya -->
       <div class="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-4">
+        <!-- Toll passes -->
         <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-[14px] font-semibold text-zinc-900">Toll passes</h3>
-            <span class="text-[12px] text-zinc-500">{{ (calculated_route_detail?.TollPass || []).length }} item</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="(tp, i) in (calculated_route_detail?.TollPass || [])" :key="i"
-              class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-[12px] text-zinc-700">
-              <span class="h-1.5 w-1.5 rounded-full"
-                :style="{ backgroundColor: i % 2 === 0 ? '#ef4444' : '#111827' }"></span>
-              {{ prettyToll(tp) }}
+            <span class="text-[12px] text-zinc-500">
+              {{ (calculated_route_detail?.TollPass || []).length }} item
             </span>
-            <span v-if="!(calculated_route_detail?.TollPass || []).length" class="text-[13px] text-zinc-500">No
-              passes</span>
+          </div>
+
+          <!-- Mobil: 2 kolon. >=sm: auto-fit grid; tüm chip'ler aynı genişlikte kutulara oturur -->
+          <div class="grid grid-cols-2 gap-2
+             sm:[grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))] sm:gap-2">
+            <span v-for="(tp, i) in (calculated_route_detail?.TollPass || [])" :key="i" class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50
+               px-2.5 py-1.5 text-[12px] text-zinc-700 w-full min-w-0 overflow-hidden">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full"
+                :style="{ backgroundColor: i % 2 === 0 ? '#ef4444' : '#111827' }"></span>
+              <span class="truncate max-w-full whitespace-nowrap">{{ prettyToll(tp) }}</span>
+            </span>
+
+            <span v-if="!(calculated_route_detail?.TollPass || []).length"
+              class="text-[13px] text-zinc-500 col-span-2 sm:col-[1/-1]">
+              No passes
+            </span>
           </div>
         </div>
 
+        <!-- Trip options -->
         <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
           <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Trip options</h3>
           <ul class="space-y-2 text-[13px] text-zinc-700">
@@ -200,12 +208,19 @@
             </li>
             <li class="flex items-center justify-between">
               <span class="text-zinc-500">Luggage</span>
-              <span class="font-medium">{{ calculated_route_detail?.LuggageWeightPound ||
-                (calculated_route_detail?.LuggageWeight + ' kg') }}</span>
+              <span class="font-medium">
+                <template v-if="calculated_route_detail?.LuggageWeightPound">
+                  {{ calculated_route_detail.LuggageWeightPound }} <span class="text-zinc-500">lb</span>
+                </template>
+                <template v-else>
+                  {{ calculated_route_detail?.LuggageWeight ?? '—' }} <span class="text-zinc-500">KG</span>
+                </template>
+              </span>
             </li>
           </ul>
         </div>
       </div>
+
 
       <!-- Maliyet kırılımı -->
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
@@ -230,39 +245,141 @@
           <span class="text-[13px] text-zinc-500">Grand total</span>
           <span class="text-[20px] font-semibold text-zinc-900">$ {{ calculated_route_detail?.TotalCost }}</span>
         </div>
-      </div>
 
-      <!-- Araç bilgisi -->
-      <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
-        <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Vehicle</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[13px]">
-          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
-            <p class="text-zinc-500 text-[12px]">Make/Model</p>
-            <p class="font-medium">{{ calculated_route_detail?.VehicleId?.make }} {{
-              calculated_route_detail?.VehicleId?.model }}</p>
+        <div class="mt-2 flex flex-wrap items-center justify-between text-[12px] text-zinc-500">
+          <div class="inline-flex items-center gap-1">
+            <svg viewBox="0 0 24 24" class="h-4 w-4">
+              <path fill="currentColor"
+                d="M12 8a1 1 0 0 1 1 1v3.59l2.3 2.3-1.42 1.42L11 13.41V9a1 1 0 0 1 1-1Zm0-6a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
+            </svg>
+            <span class="text-zinc-600">Requested:</span>
+            <span class="font-medium text-zinc-700">
+              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail?.request_date) }}
+            </span>
           </div>
-          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
-            <p class="text-zinc-500 text-[12px]">Year</p>
-            <p class="font-medium">{{ calculated_route_detail?.VehicleId?.year || '—' }}</p>
-          </div>
-          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
-            <p class="text-zinc-500 text-[12px]">Transmission</p>
-            <p class="font-medium">{{ calculated_route_detail?.VehicleId?.trany || '—' }}</p>
-          </div>
-          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
-            <p class="text-zinc-500 text-[12px]">MPG (city/comb/hwy)</p>
-            <p class="font-medium">
-              {{ calculated_route_detail?.VehicleId?.city08 }}/{{ calculated_route_detail?.VehicleId?.comb08 }}/{{
-                calculated_route_detail?.VehicleId?.highway08 }}
-            </p>
+
+          <div class="inline-flex items-center gap-1">
+            <svg viewBox="0 0 24 24" class="h-4 w-4">
+              <path fill="currentColor" d="M19 3H5v18l7-3 7 3V3Z" />
+            </svg>
+            <span class="text-zinc-600">Created:</span>
+            <span class="font-medium text-zinc-700">
+              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail?.CreatedDate) }}
+            </span>
           </div>
         </div>
       </div>
 
+      <!-- Araç bilgisi -->
+      <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-[14px] font-semibold text-zinc-900">Vehicle</h3>
+
+          <!-- Öne çıkan rozetler (sadece Tailwind) -->
+          <div class="hidden sm:flex items-center gap-2">
+            <span v-if="calculated_route_detail?.VehicleId?.drive"
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.VehicleId?.drive }}
+            </span>
+            <span v-if="calculated_route_detail?.VehicleId?.trany"
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.VehicleId?.trany }}
+            </span>
+            <span v-if="calculated_route_detail?.VehicleId?.fueltype"
+              class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] text-rose-700">
+              {{ calculated_route_detail?.VehicleId?.fueltype }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Sadece util class: dl/dt/dd + grid -->
+        <dl class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Make</dt>
+            <dd class="text-[13px] font-medium text-zinc-900">{{ calculated_route_detail?.VehicleId?.make || '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Model</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.model ||
+              '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Base Model</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.basemodel
+              || '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Year</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 tabular-nums">{{ calculated_route_detail?.VehicleId?.year
+              || '—' }}</dd>
+          </div>
+
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Cylinders</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 tabular-nums">{{
+              calculated_route_detail?.VehicleId?.cylinders || '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Displacement</dt>
+            <dd class="text-[13px] font-medium text-zinc-900">
+              <span class="tabular-nums">{{ calculated_route_detail?.VehicleId?.displ ?? '—' }}</span>
+              <span v-if="calculated_route_detail?.VehicleId?.displ" class="ml-1 text-zinc-500 text-[12px]">L</span>
+            </dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Transmission</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.trany ||
+              '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Drive</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.drive ||
+              '—' }}</dd>
+          </div>
+
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Fuel Type</dt>
+            <dd class="text-[13px] font-medium text-zinc-900">{{ calculated_route_detail?.VehicleId?.fueltype || '—' }}
+            </dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Fuel Type 1</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.fueltype1
+              || '—' }}</dd>
+          </div>
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">Vehicle Class</dt>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.vclass ||
+              '—' }}</dd>
+          </div>
+
+          <!-- MPG üçlü tek hücrede -->
+          <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+            <dt class="text-zinc-500 text-[12px] leading-none mb-1">MPG</dt>
+            <dd class="text-[13px] font-medium text-zinc-900">
+              <span class="inline-flex items-baseline gap-1">
+                <b class="text-[14px] tabular-nums">{{ calculated_route_detail?.VehicleId?.city08 ?? '—' }}</b>
+                <span class="text-[11px] text-zinc-500">City</span>
+              </span>
+              <span class="mx-2 text-zinc-300">/</span>
+              <span class="inline-flex items-baseline gap-1">
+                <b class="text-[14px] tabular-nums">{{ calculated_route_detail?.VehicleId?.comb08 ?? '—' }}</b>
+                <span class="text-[11px] text-zinc-500">Comb</span>
+              </span>
+              <span class="mx-2 text-zinc-300">/</span>
+              <span class="inline-flex items-baseline gap-1">
+                <b class="text-[14px] tabular-nums">{{ calculated_route_detail?.VehicleId?.highway08 ?? '—' }}</b>
+                <span class="text-[11px] text-zinc-500">Hwy</span>
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+
       <!-- Harita placeholder (polyline sonra) -->
       <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm overflow-hidden">
         <div class="px-4 pt-4">
-          <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Route map</h3>
         </div>
         <div class="h-[360px] sm:h-[420px] w-full bg-zinc-100 relative">
           <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
@@ -270,10 +387,36 @@
       </div>
 
       <!-- Alt yapışkan eylem çubuğu -->
-      <div class="sticky bottom-3 z-30">
+      <div class="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+        <div class="mx-auto max-w-6xl">
+          <div class="rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur
+                shadow-lg px-3 py-2 flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="inline-flex h-2 w-2 rounded-full"
+                :style="{ backgroundColor: calculated_route_detail?.StrokeColor || '#111827' }"></span>
+              <span class="text-[13px] text-zinc-700 truncate pr-2">
+                {{ calculated_route_detail?.StartLocation }} → {{ calculated_route_detail?.DestinationLocation }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button"
+                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-3 py-2 text-[13px] font-semibold hover:opacity-90 active:scale-[0.99]">
+                Recalculate
+              </button>
+              <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
+                class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop sticky -->
+      <div class="hidden sm:block sticky bottom-3 z-30">
         <div class="mx-auto max-w-6xl">
           <div
-            class="rounded-2xl border border-zinc-200 bg-white shadow-lg px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between">
+            class="rounded-2xl border border-zinc-200 bg-white shadow-lg px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span class="inline-flex h-2 w-2 rounded-full"
                 :style="{ backgroundColor: calculated_route_detail?.StrokeColor || '#111827' }"></span>
@@ -283,11 +426,11 @@
             </div>
             <div class="flex items-center gap-2">
               <button type="button"
-                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-3 sm:px-4 py-2 text-[13px] font-semibold hover:opacity-90 active:scale-[0.99]">
+                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-4 py-2 text-[13px] font-semibold hover:opacity-90 active:scale-[0.99]">
                 Recalculate
               </button>
-              <button v-on:click="delete_calculated_route(calculated_route_detail._id)" type="button"
-                class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 sm:px-4 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
+              <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
+                class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-4 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
                 Delete
               </button>
             </div>
@@ -297,7 +440,7 @@
 
       <!-- ID çıktı (debug) -->
       <div class="text-[12px] text-zinc-400 text-center">
-        {{ calculated_route_detail?._id }}
+        {{ this.store.AppVersion }} - {{ calculated_route_detail?._id }}
       </div>
     </div>
     <div v-if="successMessage" class="fixed left-1/2 -translate-x-1/2 top-16 z-[100]
@@ -321,7 +464,7 @@ export default {
     GoogleMaps
   },
   setup() {
-    const store = UseStore();
+    var store = UseStore();
     return {
       store
     }
@@ -339,7 +482,7 @@ export default {
   async mounted() {
     this.store.calculated_route_detail_overview_details = {};
 
-    const { _id } = this.$route.params || {};
+    var { _id } = this.$route.params || {};
     await this.get_calculated_route_detail(_id);
 
     this.store.calculated_route_detail_active = true;
@@ -350,26 +493,12 @@ export default {
   },
   computed: {
     vehicleLabel() {
-      const v = this.calculated_route_detail?.VehicleId || {};
-      const base = [v.make, v.model].filter(Boolean).join(' ');
+      var v = this.calculated_route_detail?.VehicleId || {};
+      var base = [v.make, v.model].filter(Boolean).join(' ');
       return base || 'Vehicle';
     },
-    createdDateLocal() {
-      const raw = this.calculated_route_detail?.CreatedDate;
-      if (!raw) return '—';
-      // Beklenen format "YYYY/MM/DD HH:mm:ss"
-      try {
-        // Safari güvenliği için / yerine - ile normalize edelim
-        const normalized = raw.replace(/\//g, '-');
-        const d = new Date(normalized);
-        if (isNaN(d.getTime())) return raw;
-        return d.toLocaleString();
-      } catch {
-        return raw;
-      }
-    },
     drivePillClass() {
-      const t = (this.calculated_route_detail?.DriveType || '').toLowerCase();
+      var t = (this.calculated_route_detail?.DriveType || '').toLowerCase();
       if (t.includes('aggressive')) {
         return 'border-rose-600 text-rose-700';
       } else if (t.includes('eco') || t.includes('economic')) {
@@ -405,11 +534,11 @@ export default {
     prettyToll(code) {
       if (!code) return '—';
       // "US_WA_GOOD_TO_GO" -> "US WA | GOOD TO GO"
-      const parts = String(code).split('_');
+      var parts = String(code).split('_');
       if (parts.length <= 1) return code;
-      const country = parts[0] || '';
-      const state = parts[1] || '';
-      const name = parts.slice(2).join(' ').replace(/\s+/g, ' ').trim();
+      var country = parts[0] || '';
+      var state = parts[1] || '';
+      var name = parts.slice(2).join(' ').replace(/\s+/g, ' ').trim();
       return `${country} ${state} | ${name}`;
     },
     async get_calculated_route_detail(_id) {

@@ -671,8 +671,8 @@ export default {
     },
 
     async CathchMetaData() {
-      var res = await axios.get(`/meta/country?include=toll_passes`);
-      if (res.status === 200) this.tollPassItems = res.data.country_meta_list;
+      var res = await axios.get(`/toll-passes`);
+      if (res.status === 200) this.tollPassItems = res.data.toll_passes;
       else return;
     },
     async onEngineChange(v) {
@@ -766,6 +766,10 @@ export default {
           this.feedback = { type: 'success', message: res.data.message };
           this.submitting = true;
           this.isProcessing = false;
+
+          var created_calculated_route_id = res.data.created_calculated_route_id;
+
+          this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: created_calculated_route_id } });
           return;
         }
         else {
