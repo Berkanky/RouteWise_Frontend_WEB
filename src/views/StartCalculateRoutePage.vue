@@ -604,9 +604,6 @@ export default {
     },
     canSubmit() { return this.step5Ok && this.step1Ok && this.step2Ok && this.step3Ok && this.step4Ok }
   },
-  async mounted() {
-    await this.CathchMetaData();
-  },
   methods: {
     async exportFromMapsUrl() {
       this.isExporting = true;
@@ -670,8 +667,8 @@ export default {
       }, 1500); // (Bu örnek statik süre. Asıl response'a göre ayarlamalısın.)
     },
 
-    async CathchMetaData() {
-      var res = await axios.get(`/toll-passes`);
+    async CathchMetaData(country_name) {
+      var res = await axios.post(`/toll-passes`, { country_name: country_name }, {});
       if (res.status === 200) this.tollPassItems = res.data.toll_passes;
       else return;
     },
@@ -813,7 +810,16 @@ export default {
       // to be implemented by user
     },
     async GetFuelTypes(engine) {
-      // to be implemented by user
+
+      var start_location_country = this.store.StartLocation?.address_components_details?.country;
+      var destination_location_country = this.store.DestinationLocation?.address_components_details?.country;
+
+      if( start_location_country && destination_location_country  && start_location_country === destination_location_country ) {
+
+        var country_name = start_location_country;
+
+        await this.CathchMetaData(country_name);
+      }
     },
     async FindLocation(query, SuggestionType) {
       const location_name = typeof query === 'string' ? query : ''
