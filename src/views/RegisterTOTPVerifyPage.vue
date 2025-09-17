@@ -265,6 +265,9 @@ export default {
     this.manualSecret = ManualSecret;
     this.username = UserName;
   },
+  beforeRouteLeave(to, from){
+    this.store.RegisterData = {};
+  },
   methods: {
     downloadCodes() {
       if (!this.backupCodes?.length) return;

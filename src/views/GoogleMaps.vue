@@ -32,20 +32,6 @@ export default {
             map,
             title: "İstanbul",
         });
-    },
-    watch:{
-        'store.UserData':{
-            handler(newVal){
-                console.log("store.UserData : ", JSON.stringify(newVal));
-            },
-            immediate: true, deep: true
-        },
-        'store.Config':{
-            handler(newVal){
-                console.log("store.config : ", JSON.stringify(newVal));
-            },
-            immediate: true, deep: true
-        }
     }
 };
 </script>

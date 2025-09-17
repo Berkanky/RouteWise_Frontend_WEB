@@ -308,8 +308,6 @@ export default {
           temporary_route_id: decoded_route.temporary_route_id
         };
 
-        console.log("meta : ", meta);
-
         const pl = this.addSelectablePolyline({
           map: this.map,
           id: meta.temporary_route_id,
@@ -387,8 +385,6 @@ export default {
 
         if ( this.store.calculated_route_detail_active ) decoded[0] = this.store.calculated_route_detail_overview_details;
         else decoded = await this.getRouteDecodedPolyline(s, d);
-
-        console.log("decoded : ", decoded);
         
         this.decoded_overview_polyline_points = decoded;
         if (myToken !== this.buildToken) return;

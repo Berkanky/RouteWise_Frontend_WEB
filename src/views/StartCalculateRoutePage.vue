@@ -673,7 +673,7 @@ export default {
       else return;
     },
     async onEngineChange(v) {
-      console.log("onEngineChange : ", v);
+
       var Model = this.form.CarModel;
       var Make = this.form.CarBrand.label;
       var Engine = this.form.Engine.engine;
@@ -835,19 +835,17 @@ export default {
     },
     async FindSelectedLocationDetails(place_id, type) {
       try {
-        const res = await axios.post("/google/places/detail", { placeId: place_id }, {})
-        console.log(res);
+        const res = await axios.post("/google/places/detail", { placeId: place_id }, {});
+
         if (res.status === 200) {
           if (type === 'StartLocation') {
-            this.store.StartLocation = res.data.selected_location_detail;
 
-            console.log("/google/places/detail : ", this.store.StartLocation);
+            this.store.StartLocation = res.data.selected_location_detail;
 
           } else if (type === 'DestinationLocation') {
 
             this.store.DestinationLocation = res.data.selected_location_detail;
 
-            console.log("/google/places/detail : ", this.store.DestinationLocation);
           }
         }
       } catch (e) {
@@ -859,7 +857,6 @@ export default {
     step: {
       async handler(newVal) {
         if (newVal === 1) await this.GetCarMakes();
-        console.log("form : ", JSON.stringify(this.form));
       },
       immediate: true, deep: true
     },

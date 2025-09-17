@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
-    AppVersion:'1.0.2',
+    AppVersion:'1.0.3',
     Config: {},
     UserData: {},
 

@@ -102,7 +102,6 @@ async function validateSession({ force = true } = {}) {
   if (!force && currentUser && Date.now() - validatedAt < 60_000) return true;
   try {
     var { data } = await axios.get("/auth/details");
-    console.log("/auth/details : ", data);
     currentUser = data?.user ?? data;
     validatedAt = Date.now();
     return true;

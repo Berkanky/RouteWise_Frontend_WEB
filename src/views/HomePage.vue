@@ -96,7 +96,6 @@ export default {
     async calculated_routes_service() {
       try {
         var res = await axios.get(`/calculated/routes`);
-        console.log(res);
         if (res.status === 200) this.routes = res.data.Routes;
         else return;
       } catch (err) {

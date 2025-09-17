@@ -97,6 +97,9 @@ export default {
       if (first) first.focus();
     });
   },
+  beforeRouteLeave(to, from){
+    this.store.LoginData = {};
+  },
   methods: {
     goBackLogin() {
       this.$router.replace({ name: "Login" });
