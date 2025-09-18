@@ -149,7 +149,9 @@ export default {
           if (typeof redir === "string" && redir) {
             this.$router.replace(redir);
           } else {
-            this.$router.replace({ name: "Home" });
+
+            var Page = 1;
+            this.$router.push({ name: 'Home', query:{ Page: Page } });
           }
         }
       } catch (e) {

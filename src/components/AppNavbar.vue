@@ -10,8 +10,8 @@
 
       <!-- Desktop Nav (centered) -->
       <div class="hidden md:flex flex-1 justify-center">
-        <nav v-if="Active" class="flex items-center gap-6 text-sm font-medium text-zinc-600">
-          <RouterLink to="/home" class="hover:text-[#e11d48]">Home</RouterLink>
+        <nav v-if="Active" class="flex items-center gap-6 text-sm font-medium text-zinc-600" v-on:click="GoHomePage()">
+          <RouterLink class="hover:text-[#e11d48]">Home</RouterLink>
           <a href="#" class="hover:text-[#e11d48]">About</a>
           <a href="#" class="hover:text-[#e11d48]">Contact</a>
 
@@ -82,10 +82,8 @@
 
             <!-- Navigation -->
             <div class="flex-1 mt-2">
-              <nav class="flex flex-col text-zinc-700 text-sm font-normal mt-3 space-y-1" v-if="Active">
+              <nav class="flex flex-col text-zinc-700 text-sm font-normal mt-3 space-y-1" v-if="Active" v-on:click="GoHomePage()">
                 <RouterLink
-                  to="/home"
-                  @click="toggleMobileMenu(false)"
                   :class="[
                     'flex items-center gap-3 py-2.5 px-3 transition-colors',
                     isActive('/home') ? 'text-zinc-900 font-medium bg-zinc-50' : 'text-zinc-500 hover:text-zinc-800'
@@ -205,6 +203,10 @@ export default {
     }
   },
   methods: {
+    GoHomePage(){
+      var Page = 1;
+      this.$router.push({ name: 'Home', query:{ Page: Page } });
+    },
     async LogoutService() {
       try {
         const res = await axios.put("/logout")

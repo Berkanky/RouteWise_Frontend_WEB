@@ -89,9 +89,13 @@ var routes = [
 var router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(_to, _from, saved) {
-    return saved || { top: 0 };
-  },
+   scrollBehavior(to, from, savedPosition) {
+    if (to.name === 'Home' && from.name === 'Home' && to.query.Page !== from.query.Page) return false;
+
+    if (savedPosition) return savedPosition;
+
+    return { left: 0, top: 0 };
+  }
 });
 
 var currentUser = null;

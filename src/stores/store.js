@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
+    WebAppName: 'RouteWise',
     AppVersion:'1.0.3',
     Config: {},
     UserData: {},

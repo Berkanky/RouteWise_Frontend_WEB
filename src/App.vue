@@ -1,8 +1,9 @@
 <template>
   <AppNavbar v-if="!this.is_mobile_active"/>
-  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50 pt-16">
+  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50 pt-16 has-fixed-footer">
     <router-view />
   </main>
+  <AppFooter class="hidden md:block" />
 </template>
 
 <script>
@@ -72,35 +73,36 @@ body,
   overflow-y: auto;
 }
 
-/* Tüm scroll bar */
 ::-webkit-scrollbar {
-  width: 8px;         /* dikey */
-  height: 8px;        /* yatay */
+  width: 8px;        
+  height: 8px;       
 }
 
-/* Track (arka plan) */
 ::-webkit-scrollbar-track {
-  background: transparent; /* temiz görünüm */
-  margin: 4px;             /* kenardan boşluk */
+  background: transparent; 
+  margin: 4px;          
 }
 
-/* Thumb (kaydırma kolu) */
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.25); 
-  border-radius: 9999px;               /* tam yuvarlak */
-  border: 2px solid transparent;       /* boşluk efekti */
-  background-clip: content-box;        /* ortalanmış thumb */
+  border-radius: 9999px;              
+  border: 2px solid transparent;   
+  background-clip: content-box;       
 }
 
-/* Hover olunca daha net */
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0,0,0,0.45);
 }
 
-/* Firefox için */
 * {
-  scrollbar-width: thin;            /* ince */
+  scrollbar-width: thin;       
   scrollbar-color: rgba(0,0,0,0.3) transparent;
+}
+
+@media (min-width: 768px) {
+  .has-fixed-footer {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 56px);
+  }
 }
 
 </style>

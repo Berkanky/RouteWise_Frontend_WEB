@@ -529,7 +529,8 @@ export default {
       }
     },
     goBack() {
-      this.$router.push({ name: 'Home' });
+      var Page = 1;
+      this.$router.push({ name: 'Home', query:{ Page: Page } });
     },
     prettyToll(code) {
       if (!code) return '—';

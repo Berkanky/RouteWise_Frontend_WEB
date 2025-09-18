@@ -4,7 +4,6 @@
       <div v-for="(route, key) in routes" :key="key"
         class="bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-5 hover:shadow-md transition duration-200">
 
-        <!-- Header -->
         <div class="flex justify-between items-center mb-4">
           <div>
             <h2 class="text-[15px] sm:text-[16px] font-semibold text-gray-900">{{ route.Name }}</h2>
@@ -15,7 +14,6 @@
           </span>
         </div>
 
-        <!-- Info Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-[13px] sm:text-[14px] text-gray-700">
           <div>
             <p class="text-gray-400">Distance</p>
@@ -44,7 +42,6 @@
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="mt-5 flex justify-between items-start border-t pt-3">
           <div class="text-[11px] text-gray-400 leading-tight">
             <p class="mb-1">Created: {{ route.CreatedDate }}</p>
@@ -57,7 +54,6 @@
           </div>
         </div>
 
-        <!-- View Detail Button -->
         <div class="mt-4 flex justify-center sm:justify-end">
           <button @click="handleViewDetail(route._id)"
             class="w-full sm:w-auto text-[12px] font-semibold tracking-wide uppercase px-4 py-2 border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out rounded-full">
@@ -67,6 +63,39 @@
 
       </div>
     </div>
+
+    <div class="sticky bottom-0 z-30">
+      <div class="bg-white/90 dark:bg-zinc-950/80 backdrop-blur
+           border-t border-zinc-200/80 dark:border-zinc-800
+           h-14 sm:h-[60px] px-3 sm:px-4
+           flex items-center justify-between gap-4" style="padding-bottom: env(safe-area-inset-bottom);">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative h-1.5 w-28 rounded bg-zinc-200/90 dark:bg-zinc-800 overflow-hidden">
+            <div class="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-200 transition-all duration-300"
+              :style="{ width: progressPct + '%' }"></div>
+          </div>
+          <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 dark:text-zinc-300 truncate">
+            {{ routes.length }} / {{ TotalCount }} gösteriliyor
+          </p>
+        </div>
+
+        <button v-if="hasMore" :disabled="loading" @click="manualLoadMore" class="inline-flex h-10 sm:h-11 px-4 items-center justify-center gap-2
+             rounded-md bg-zinc-900 text-white
+             hover:bg-zinc-800 active:bg-zinc-950 active:translate-y-px
+             disabled:opacity-60 disabled:active:translate-y-0 disabled:pointer-events-none
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/40
+             transition touch-manipulation">
+          <svg v-if="loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" class="opacity-25" />
+            <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
+          </svg>
+          <span class="text-[13px] font-medium">{{ loading ? 'Yükleniyor' : 'Daha fazla' }}</span>
+        </button>
+      </div>
+
+      <div id="sentinel" class="h-1 w-full"></div>
+    </div>
+
   </div>
 </template>
 
@@ -83,31 +112,130 @@ export default {
   },
   data() {
     return {
-      routes: []
+      routes: [],
+      Page: null,
+      PageSize: 12,
+      TotalCount: null,
+      loading: false,
+      _io: null,
+      _ioTick: 0,
+      _abortCtrl: null
+    }
+  },
+  computed: {
+    hasMore() {
+      if (this.TotalCount === null) return true;
+      return this.Page * this.PageSize < this.TotalCount;
+    },
+    progressPct() {
+      if (!this.TotalCount || this.TotalCount <= 0) return 0;
+      var pct = (this.routes.length / this.TotalCount) * 100;
+      return Math.max(0, Math.min(100, Math.round(pct)));
     }
   },
   async mounted() {
-    await this.calculated_routes_service();
+    await this.calculated_routes_service({ reset: true });
+
+    this.setupInfiniteScroll();
+    document.addEventListener('visibilitychange', this._onVisChange);
+  },
+  created() {
+
+    var { Page } = this.$route.query;
+    this.Page = Number(Page ?? 1);
+  },
+  beforeUnmount() {
+    this._io?.disconnect?.();
+    document.removeEventListener('visibilitychange', this._onVisChange);
+    this._abortCtrl?.abort?.();
   },
   methods: {
     handleViewDetail(_id) {
       this.$router.push({ name: 'CalculatedRouteDetail', params: { _id: _id } });
     },
-    async calculated_routes_service() {
+    _onVisChange() {
+      if (document.visibilityState !== 'visible') {
+        this._io?.disconnect?.();
+      } else {
+        this.$nextTick(() => this.setupInfiniteScroll());
+      }
+    },
+
+    setupInfiniteScroll() {
+      var el = document.getElementById('sentinel');
+      if (!el) return;
+
+      this._io?.disconnect?.();
+
+      this._io = new IntersectionObserver((entries) => {
+
+        var now = performance.now();
+        if (now - this._ioTick < 400) return;
+
+        var visible = entries.some(e => e.isIntersecting);
+        if (!visible) return;
+        if (!this.hasMore || this.loading) return;
+
+        this._ioTick = now;
+        this.nextPage();
+      }, {
+        root: null,
+        rootMargin: '300px',
+        threshold: 0
+      });
+
+      this._io.observe(el);
+    },
+
+    nextPage() {
+      var next = (Number(this.$route.query.Page ?? this.Page) || 1) + 1;
+      this.$router.replace({ name: 'Home', query: { ...this.$route.query, Page: next } });
+    },
+
+    manualLoadMore() {
+      if (!this.hasMore || this.loading) return;
+      this.nextPage();
+    },
+
+    async calculated_routes_service({ reset = false } = {}) {
+      if (this.loading) return;
+      this.loading = true;
+
+      try { this._abortCtrl?.abort?.(); } catch { }
+      this._abortCtrl = new AbortController();
+
       try {
-        var res = await axios.get(`/calculated/routes`);
-        if (res.status === 200) this.routes = res.data.Routes;
-        else return;
+        var res = await axios.get(`/calculated/routes`, {
+          params: { Page: this.Page },
+          signal: this._abortCtrl.signal
+        });
+
+        var data = res.data || {};
+        if (typeof data.PageSize === 'number') this.PageSize = data.PageSize;
+        if (typeof data.TotalCount === 'number') this.TotalCount = data.TotalCount;
+
+        var list = Array.isArray(data.Routes) ? data.Routes : [];
+
+        if (reset || this.Page === 1) this.routes = list;
+        else this.routes = [...this.routes, ...list];
       } catch (err) {
+
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     }
-  }
+  },
+  watch: {
+    '$route.query.Page': {
+      async handler() {
+        var nextPage = Number(this.$route.query.Page ?? 1);
+        if (nextPage === this.Page) return;
+        this.Page = nextPage;
+        await this.calculated_routes_service({ reset: nextPage === 1 });
+      },
+      immediate: true
+    }
+  },
 };
 </script>
-
-<style>
-body {
-  font-family: 'Inter', sans-serif;
-}
-</style>
