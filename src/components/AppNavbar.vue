@@ -14,8 +14,6 @@
           <button class="hover:text-[#e11d48]" @click="GoHomePage">
             Home
           </button>
-          <a href="#" class="hover:text-[#e11d48]">About</a>
-          <a href="#" class="hover:text-[#e11d48]">Contact</a>
 
           <!-- Route: belirgin/pil -->
           <RouterLink

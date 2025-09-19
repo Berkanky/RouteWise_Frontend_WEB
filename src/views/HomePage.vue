@@ -66,35 +66,48 @@
 
     <div class="sticky bottom-0 z-30">
       <div class="bg-white/90 dark:bg-zinc-950/80 backdrop-blur
-           border-t border-zinc-200/80 dark:border-zinc-800
-           h-14 sm:h-[60px] px-3 sm:px-4
-           flex items-center justify-between gap-4" style="padding-bottom: env(safe-area-inset-bottom);">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="relative h-1.5 w-28 rounded bg-zinc-200/90 dark:bg-zinc-800 overflow-hidden">
-            <div class="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-200 transition-all duration-300"
-              :style="{ width: progressPct + '%' }"></div>
-          </div>
-          <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 dark:text-zinc-300 truncate">
-            {{ routes.length }} / {{ TotalCount }} gösteriliyor
-          </p>
-        </div>
+           border-t border-zinc-200/80 dark:border-zinc-800">
+        <!-- İç konteyner: masaüstünde ortalanmış kompakt bar -->
+        <div class="h-14 sm:h-[60px] px-3 sm:px-4
+             flex items-center justify-between gap-4
+             md:mx-auto md:max-w-3xl md:justify-center" style="padding-bottom: env(safe-area-inset-bottom);">
+          <!-- Progress + sayaç -->
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative h-1.5 w-28 rounded bg-zinc-200/90 dark:bg-zinc-800 overflow-hidden">
+              <div class="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-200 transition-all duration-300"
+                :style="{ width: progressPct + '%' }"></div>
+            </div>
 
-        <button v-if="hasMore" :disabled="loading" @click="manualLoadMore" class="inline-flex h-10 sm:h-11 px-4 items-center justify-center gap-2
-             rounded-md bg-zinc-900 text-white
-             hover:bg-zinc-800 active:bg-zinc-950 active:translate-y-px
-             disabled:opacity-60 disabled:active:translate-y-0 disabled:pointer-events-none
-             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/40
-             transition touch-manipulation">
-          <svg v-if="loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" class="opacity-25" />
-            <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
-          </svg>
-          <span class="text-[13px] font-medium">{{ loading ? 'Yükleniyor' : 'Daha fazla' }}</span>
-        </button>
+            <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 dark:text-zinc-300 truncate">
+              {{ routes.length }} / {{ TotalCount }} gösteriliyor
+            </p>
+          </div>
+
+          <!-- Masaüstünde progress grubunun yanında, mobilde sağda -->
+          <button v-if="hasMore" :disabled="loading" @click="manualLoadMore" class="inline-flex h-10 sm:h-11 px-4 items-center justify-center gap-2
+         rounded-md bg-white text-zinc-900 border border-zinc-200
+         hover:bg-zinc-50 active:bg-zinc-100 active:translate-y-px
+         disabled:opacity-60 disabled:active:translate-y-0 disabled:pointer-events-none
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20
+         transition touch-manipulation
+         dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-700
+         md:ml-4 md:shrink-0">
+            <svg v-if="loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" class="opacity-25" />
+              <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
+            </svg>
+            <span class="text-[13px] font-medium">
+              {{ loading ? 'Yükleniyor' : 'Daha fazla' }}
+            </span>
+          </button>
+
+
+        </div>
       </div>
 
       <div id="sentinel" class="h-1 w-full"></div>
     </div>
+
 
   </div>
 </template>
