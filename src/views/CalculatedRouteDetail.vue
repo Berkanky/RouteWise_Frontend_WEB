@@ -425,10 +425,6 @@
               </span>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button"
-                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-4 py-2 text-[13px] font-semibold hover:opacity-90 active:scale-[0.99]">
-                Recalculate
-              </button>
               <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
                 class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-4 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
                 Delete

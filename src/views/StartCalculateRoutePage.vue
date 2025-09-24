@@ -553,10 +553,22 @@ export default {
       engineItems: [],
       fuelItems: [],
       routeTypeItems: [
-        "ROUTING_PREFERENCE_UNSPECIFIED",
-        "TRAFFIC_UNAWARE",
-        "TRAFFIC_AWARE",
-        "TRAFFIC_AWARE_OPTIMAL"
+        {
+          id: "ROUTING_PREFERENCE_UNSPECIFIED",
+          label: "Routing Preference Unspecified"
+        },
+        {
+          id: "TRAFFIC_UNAWARE",
+          label: "Traffic Unaware"
+        },
+        {
+          id: "TRAFFIC_AWARE",
+          label: "Traffic Aware"
+        },
+        {
+          id: "TRAFFIC_AWARE_OPTIMAL",
+          label: "Traffic Aware Optimal"
+        }
       ],
       driveTypeItems: [
         "Economic",
@@ -742,9 +754,9 @@ export default {
         DestinationLocationPlaceId: this.SelectedDestinationLocationSuggestionPlaceId,
         DestinationLocationLatitude: this.store.DestinationLocation?.latitude,
         DestinationLocationLongitude: this.store.DestinationLocation?.longitude,
-        FuelType: this.form.FuelType?.label,
+        FuelType: this.form.FuelType?.id,
         TollPass: this.form.TollPass.map(function (item) { return item.id }),
-        RoutingPreference: this.form.RouteType,
+        RoutingPreference: this.form.RouteType?.id,
         Engine: this.form.Engine.engine,
         Cylinder: this.form.Engine.cylinders,
         Name: this.form.Name,
@@ -854,6 +866,12 @@ export default {
     }
   },
   watch: {
+    form:{
+      handler(newVal){
+        console.log("form : ", newVal);
+      },
+      immediate: true, deep: true
+    },
     step: {
       async handler(newVal) {
         if (newVal === 1) await this.GetCarMakes();
