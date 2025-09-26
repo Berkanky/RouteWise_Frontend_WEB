@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center mb-4">
           <div>
             <h2 class="text-[15px] sm:text-[16px] font-semibold text-gray-900">{{ route.Name }}</h2>
-            <p class="text-[12px] text-gray-500">{{ route.AverageDestinationTime }}</p>
+            <p class="text-[12px] text-gray-500">{{ route.AverageDestinationTimeFormatted }}</p>
           </div>
           <span class="text-[10px] uppercase bg-black text-white px-2 py-1 tracking-wide rounded">
             {{ route.TravelMode }}

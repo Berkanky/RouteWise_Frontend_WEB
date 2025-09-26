@@ -305,9 +305,70 @@ export default {
           duration_formatted: decoded_route.duration_formatted,
           provider: decoded_route.provider,
           route_length: decoded_route.route_length,
-          temporary_route_id: decoded_route.temporary_route_id
+          temporary_route_id: decoded_route.temporary_route_id,
+          distance_mi: decoded_route.distance_mi
         };
 
+        // Küçük yardımcı: güzel içerik HTML'i
+        function buildRouteInfoContent(meta) {
+          return `
+            <div style="
+              min-width:240px;max-width:320px;
+              border:1px solid #e5e7eb;border-radius:12px;
+              background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.08);
+              padding:12px 12px 10px; font:13px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+            ">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <svg viewBox='0 0 24 24' width="16" height="16" style="color:#ef4444">
+                  <path fill="currentColor" d="M12 2a9 9 0 1 1-6.36 2.64A9 9 0 0 1 12 2Zm0 4.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm1 4.5h-2v7h2v-7Z"/>
+                </svg>
+                <div style="font-weight:700;color:#111827">Route selected</div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:flex-start">
+                  <svg viewBox='0 0 24 24' width="14" height="14" style="margin-top:1px;color:#6b7280">
+                    <path fill="currentColor" d="M12 2a6 6 0 1 1-4.24 1.76A6 6 0 0 1 12 2Zm0 8a2 2 0 1 0-2-2 2 2 0 0 0 2 2Z"/>
+                  </svg>
+                  <div>
+                    <div style="color:#6b7280">Distance</div>
+                    <div style="font-weight:600;color:#111827">
+                      ${meta.distanceMeters} <span style="color:#6b7280;font-weight:500">km</span>
+                      <span style="color:#9ca3af"> • ${meta.distance_mi} mi</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:8px;align-items:flex-start">
+                  <svg viewBox='0 0 24 24' width="14" height="14" style="margin-top:1px;color:#6b7280">
+                    <path fill="currentColor" d="M12 2a10 10 0 1 1-7.07 2.93A10 10 0 0 1 12 2Zm1 5h-2v5.2l4.2 2.52 1-1.66L13 10.6V7Z"/>
+                  </svg>
+                  <div>
+                    <div style="color:#6b7280">ETA</div>
+                    <div style="font-weight:600;color:#111827">~ ${meta.duration_formatted}</div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div style="height:1px;background:#f3f4f6;margin:6px 0 8px"></div>
+
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                <span style="
+                  display:inline-flex;align-items:center;gap:6px;
+                  border:1px solid #e5e7eb;border-radius:999px;
+                  padding:3px 8px;color:#374151;background:#f9fafb;font-size:11px;
+                ">
+                  <svg viewBox='0 0 24 24' width="12" height="12" style="color:#6b7280">
+                    <path fill="currentColor" d="M3 5h18v2H3zm0 6h18v2H3zm0 6h18v2H3z"/>
+                  </svg>
+                  ${meta.provider}
+                </span>
+              </div>
+            </div>`;
+        }
+
+        // Polylinede kullan
         const pl = this.addSelectablePolyline({
           map: this.map,
           id: meta.temporary_route_id,
@@ -316,17 +377,7 @@ export default {
           onSelect: (poly, ev) => {
             this.selectPolyline(poly);
 
-            const dKm = Number.isFinite(meta.distanceMeters) ? (meta.distanceMeters / 1000).toFixed(1) : null;
-
-            const content = `
-              <div style="min-width:220px;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff">
-                <div style="font-weight:600;margin-bottom:6px">Route Selected</div>
-                ${dKm ? `<div style="font-size:12px;color:#374151">Distance: ${dKm} km</div>` : ''}
-                ${meta.duration_formatted ? `<div style="font-size:12px;color:#374151">Estimated Time of Arrival: ~${meta.duration_formatted}</div>` : ''}
-                <div style="font-size:11px;color:#9ca3af">Source: ${meta.provider}</div>
-                <div style="font-size:11px;color:#9ca3af">_id : ${meta.temporary_route_id}</div>
-              </div>
-            `;
+            const content = buildRouteInfoContent(meta);
             this.infoWindow.setContent(content);
             this.infoWindow.setPosition(ev.latLng);
             this.infoWindow.open({ map: this.map });
@@ -383,9 +434,9 @@ export default {
 
         var decoded = [];
 
-        if ( this.store.calculated_route_detail_active ) decoded[0] = this.store.calculated_route_detail_overview_details;
+        if (this.store.calculated_route_detail_active) decoded[0] = this.store.calculated_route_detail_overview_details;
         else decoded = await this.getRouteDecodedPolyline(s, d);
-        
+
         this.decoded_overview_polyline_points = decoded;
         if (myToken !== this.buildToken) return;
 
@@ -399,9 +450,9 @@ export default {
 
   watch: {
     build_route_button_triggered: {
-      handler(newVal) { 
+      handler(newVal) {
         if (newVal) {
-          this.onBuildRoute(); 
+          this.onBuildRoute();
         }
       },
       immediate: true, deep: true

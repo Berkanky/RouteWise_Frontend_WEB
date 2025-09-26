@@ -28,7 +28,8 @@
       </div>
     </div>
   </header>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6 pb-[calc(96px+max(env(safe-area-inset-bottom),0px))] sm:pb-8">
+  <section
+    class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6 pb-[calc(96px+max(env(safe-area-inset-bottom),0px))] sm:pb-8">
 
     <!-- Yükleniyor -->
     <div v-if="isLoading" class="py-10 grid gap-4">
@@ -66,14 +67,6 @@
             <span
               class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
               <svg viewBox="0 0 24 24" class="h-4 w-4">
-                <path fill="currentColor"
-                  d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-6a1 1 0 0 1 1 1v2h-2V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v2h-2v-2a1 1 0 0 1 1-1ZM3 11H1v2h2v-2Zm20 0h-2v2h2v-2ZM5.64 4.22 4.22 5.64 5.64 7.06 7.06 5.64 5.64 4.22Zm13.14 13.14-1.42 1.42 1.42 1.42 1.42-1.42-1.42-1.42Zm0-11.72-1.42-1.42-1.42 1.42 1.42 1.42 1.42-1.42ZM7.06 18.36 5.64 16.94 4.22 18.36l1.42 1.42 1.42-1.42Z" />
-              </svg>
-              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail.CreatedDate) }}
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
-              <svg viewBox="0 0 24 24" class="h-4 w-4">
                 <path fill="currentColor" d="M17 9h-7V7h7m0 4h-7v-2h7m0 4h-7v-2h7M3 5h2v14H3z" />
               </svg>
               {{ calculated_route_detail?.RoutingPreference || '—' }}
@@ -85,6 +78,32 @@
               </svg>
               {{ calculated_route_detail?.TravelMode || '—' }}
             </span>
+            <div class="flex flex-wrap items-center gap-2 mt-1 text-[12px]">
+              <!-- Requested -->
+              <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
+               px-2.5 py-1.5 text-zinc-700">
+                <svg viewBox="0 0 24 24" class="h-4 w-4">
+                  <path fill="currentColor"
+                    d="M12 8a1 1 0 0 1 1 1v3.59l2.3 2.3-1.42 1.42L11 13.41V9a1 1 0 0 1 1-1Zm0-6a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
+                </svg>
+                <span class="text-zinc-600">Requested:</span>
+                <span class="font-medium text-zinc-700">
+                  {{ this.calculated_route_detail?.request_date }}
+                </span>
+              </span>
+
+              <!-- Created -->
+              <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
+               px-2.5 py-1.5 text-zinc-700">
+                <svg viewBox="0 0 24 24" class="h-4 w-4">
+                  <path fill="currentColor" d="M19 3H5v18l7-3 7 3V3Z" />
+                </svg>
+                <span class="text-zinc-600">Created:</span>
+                <span class="font-medium text-zinc-700">
+                  {{ this.calculated_route_detail?.CreatedDate }}
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -99,9 +118,9 @@
         </div>
         <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
           <p class="text-[12px] text-zinc-500">ETA</p>
-          <p class="text-[20px] font-semibold text-zinc-900">{{ calculated_route_detail?.AverageDestinationTime || '—'
+          <p class="text-[20px] font-semibold text-zinc-900">{{ calculated_route_detail?.AverageDestinationTimeFormatted
+            || '—'
           }}</p>
-          <p class="text-[12px] text-zinc-500">{{ calculated_route_detail?.AverageDestinationTimeSecond }}</p>
         </div>
         <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
           <p class="text-[12px] text-zinc-500">Fuel</p>
@@ -225,57 +244,112 @@
       <!-- Maliyet kırılımı -->
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
         <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Cost breakdown</h3>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="rounded-xl border border-zinc-100 bg-white p-4">
             <p class="text-[12px] text-zinc-500">Fuel price</p>
-            <p class="text-[18px] font-semibold text-zinc-900">$ {{ calculated_route_detail?.FuelPriceAtTransactionTime
-            }} <span class="text-[12px] text-zinc-500">/ gallon</span></p>
+            <div class="flex items-baseline justify-between gap-2">
+              <p class="text-[18px] font-semibold text-zinc-900">
+                $ {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
+              </p>
+              <span class="text-[11px] text-zinc-500 whitespace-nowrap">
+                {{ calculated_route_detail?.FuelPriceUnits }}
+              </span>
+            </div>
           </div>
+
           <div class="rounded-xl border border-zinc-100 bg-white p-4">
             <p class="text-[12px] text-zinc-500">Fuel total</p>
-            <p class="text-[18px] font-semibold text-zinc-900">$ {{ calculated_route_detail?.TotalGallonCost }}</p>
+            <p class="text-[18px] font-semibold text-zinc-900">
+              $ {{ calculated_route_detail?.TotalGallonCost }}
+            </p>
           </div>
+
           <div class="rounded-xl border border-zinc-100 bg-white p-4">
             <p class="text-[12px] text-zinc-500">Tolls</p>
-            <p class="text-[18px] font-semibold text-zinc-900">$ {{
-              calculated_route_detail?.TollRoadEstimatedPriceDollar }}</p>
+            <p class="text-[18px] font-semibold text-zinc-900">
+              $ {{ calculated_route_detail?.TollRoadEstimatedPriceDollar }}
+            </p>
+
+            <!-- Source -->
+            <span v-if="calculated_route_detail?.google_service_source"
+                  class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] text-sky-800">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z"/>
+              </svg>
+              <span class="font-semibold">Source:</span>
+              <span class="font-medium text-sky-900 truncate max-w-[140px] sm:max-w-none">
+                {{ calculated_route_detail?.google_service_source }}
+              </span>
+            </span>
           </div>
         </div>
+
+        <!-- Period + Source daha belirgin -->
+        <div class="mt-3 flex flex-wrap items-center gap-2 text-[12px]">
+          <!-- Units (aynı kalsın) -->
+          <span
+            class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+              <path fill="currentColor" d="M7 3h10v2H7v14h10v2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+            </svg>
+            <span class="font-medium">
+              {{ calculated_route_detail?.FuelPriceUnits }}
+            </span>
+          </span>
+
+          <!-- Price period (vurgulu) -->
+          <span
+            class="inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-amber-800">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+              <path fill="currentColor" d="M7 3v2H5v14a2 2 0 0 0 2 2h10V5h-2V3h-2v2H9V3H7Zm2 8h6v2H9v-2Z" />
+            </svg>
+            <span class="font-semibold">Price period:</span>
+            <span class="font-medium text-amber-900">
+              {{ this.store.FormatFuelPeriod?.(calculated_route_detail?.FuelPricePeriod) ||
+                calculated_route_detail?.FuelPricePeriod }}
+            </span>
+          </span>
+
+          <!-- Source (vurgulu) -->
+          <span
+            class="inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-sky-800">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+              <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
+            </svg>
+            <span class="font-semibold">Source:</span>
+            <span class="font-medium text-sky-900 truncate max-w-[140px] sm:max-w-none">
+              {{ calculated_route_detail?.fuel_details_source }}
+            </span>
+          </span>
+
+          <!-- FuelTypeDetail (aynı kalsın) -->
+          <span
+            class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-600">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+              <path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z" />
+            </svg>
+            <span class="font-medium text-zinc-700">
+              {{ calculated_route_detail?.FuelTypeDetail }}
+            </span>
+          </span>
+        </div>
+
         <div class="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3">
           <span class="text-[13px] text-zinc-500">Grand total</span>
-          <span class="text-[20px] font-semibold text-zinc-900">$ {{ calculated_route_detail?.TotalCost }}</span>
-        </div>
-
-        <div class="mt-2 flex flex-wrap items-center justify-between text-[12px] text-zinc-500">
-          <div class="inline-flex items-center gap-1">
-            <svg viewBox="0 0 24 24" class="h-4 w-4">
-              <path fill="currentColor"
-                d="M12 8a1 1 0 0 1 1 1v3.59l2.3 2.3-1.42 1.42L11 13.41V9a1 1 0 0 1 1-1Zm0-6a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
-            </svg>
-            <span class="text-zinc-600">Requested:</span>
-            <span class="font-medium text-zinc-700">
-              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail?.request_date) }}
-            </span>
-          </div>
-
-          <div class="inline-flex items-center gap-1">
-            <svg viewBox="0 0 24 24" class="h-4 w-4">
-              <path fill="currentColor" d="M19 3H5v18l7-3 7 3V3Z" />
-            </svg>
-            <span class="text-zinc-600">Created:</span>
-            <span class="font-medium text-zinc-700">
-              {{ this.store.GetCurrentDateFormatted(this.calculated_route_detail?.CreatedDate) }}
-            </span>
-          </div>
+          <span class="text-[20px] font-semibold text-zinc-900">
+            $ {{ calculated_route_detail?.TotalCost }}
+          </span>
         </div>
       </div>
+
 
       <!-- Araç bilgisi -->
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-[14px] font-semibold text-zinc-900">Vehicle</h3>
 
-          <!-- Öne çıkan rozetler (sadece Tailwind) -->
+          <!-- Öne çıkan rozetler -->
           <div class="hidden sm:flex items-center gap-2">
             <span v-if="calculated_route_detail?.VehicleId?.drive"
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
@@ -288,6 +362,18 @@
             <span v-if="calculated_route_detail?.VehicleId?.fueltype"
               class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] text-rose-700">
               {{ calculated_route_detail?.VehicleId?.fueltype }}
+            </span>
+
+            <!-- Vehicle dataset source (yeni) -->
+            <span v-if="calculated_route_detail?.vehicle_dataset_source"
+              class="inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[12px] text-sky-800">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
+              </svg>
+              <span class="font-semibold">Source:</span>
+              <span class="font-medium text-sky-900 truncate max-w-[160px] sm:max-w-none">
+                {{ calculated_route_detail?.vehicle_dataset_source }}
+              </span>
             </span>
           </div>
         </div>
@@ -526,7 +612,7 @@ export default {
     },
     goBack() {
       var Page = 1;
-      this.$router.push({ name: 'Home', query:{ Page: Page } });
+      this.$router.push({ name: 'Home', query: { Page: Page } });
     },
     prettyToll(code) {
       if (!code) return '—';
