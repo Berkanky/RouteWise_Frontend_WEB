@@ -633,7 +633,8 @@ export default {
             formatted_address: res.data.start_location_details.formatted_address,
             latitude: res.data.start_location_details.geometry.location.latitude,
             longitude: res.data.start_location_details.geometry.location.longitude,
-            StartLocation: res.data.start_location_details.StartLocation
+            StartLocation: res.data.start_location_details.StartLocation,
+            address_components_details: res.data.start_location_details.address_components_details
           };
 
           var destination_location_details = {
@@ -641,7 +642,8 @@ export default {
             formatted_address: res.data.destination_location_details.formatted_address,
             latitude: res.data.destination_location_details.geometry.location.latitude,
             longitude: res.data.destination_location_details.geometry.location.longitude,
-            DestinationLocation: res.data.destination_location_details.DestinationLocation
+            DestinationLocation: res.data.destination_location_details.DestinationLocation,
+            address_components_details: res.data.destination_location_details.address_components_details
           };
 
           this.store.StartLocation = start_location_details;
