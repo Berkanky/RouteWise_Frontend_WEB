@@ -3,7 +3,7 @@ import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
     WebAppName: 'RouteWise',
-    AppVersion:'1.0.9',
+    AppVersion:'1.1.0',
     Config: {},
     UserData: {},
 

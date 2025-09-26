@@ -63,43 +63,50 @@
               {{ calculated_route_detail?.Description || '—' }}
             </p>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span
-              class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
-              <svg viewBox="0 0 24 24" class="h-4 w-4">
-                <path fill="currentColor" d="M17 9h-7V7h7m0 4h-7v-2h7m0 4h-7v-2h7M3 5h2v14H3z" />
-              </svg>
-              {{ calculated_route_detail?.RoutingPreference || '—' }}
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
-              <svg viewBox="0 0 24 24" class="h-4 w-4">
-                <path fill="currentColor" d="M12 2 2 7l10 5 10-5-10-5Zm0 20L2 17v-7l10 5 10-5v7l-10 5Z" />
-              </svg>
-              {{ calculated_route_detail?.TravelMode || '—' }}
-            </span>
-            <div class="flex flex-wrap items-center gap-2 mt-1 text-[12px]">
+          <div class="flex flex-col sm:items-end gap-2">
+
+            <!-- 1) rota ayarları (aynı satır) -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
+                <svg viewBox="0 0 24 24" class="h-4 w-4">
+                  <path fill="currentColor" d="M17 9h-7V7h7m0 4h-7v-2h7m0 4h-7v-2h7M3 5h2v14H3z" />
+                </svg>
+                {{ calculated_route_detail?.RoutingPreference || '—' }}
+              </span>
+
+              <span
+                class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
+                <svg viewBox="0 0 24 24" class="h-4 w-4">
+                  <path fill="currentColor" d="M12 2 2 7l10 5 10-5-10-5Zm0 20L2 17v-7l10 5 10-5v7l-10 5Z" />
+                </svg>
+                {{ calculated_route_detail?.TravelMode || '—' }}
+              </span>
+            </div>
+
+            <!-- 2) tarih rozetleri (tek satır, tabular mono) -->
+            <div class="flex flex-wrap items-center gap-2">
               <!-- Requested -->
               <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
-               px-2.5 py-1.5 text-zinc-700">
+                 px-2.5 py-1.5 text-[12px] text-zinc-700">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
                   <path fill="currentColor"
                     d="M12 8a1 1 0 0 1 1 1v3.59l2.3 2.3-1.42 1.42L11 13.41V9a1 1 0 0 1 1-1Zm0-6a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
                 </svg>
                 <span class="text-zinc-600">Requested:</span>
-                <span class="font-medium text-zinc-700">
+                <span class="font-mono tabular-nums font-medium text-zinc-800 whitespace-nowrap">
                   {{ this.calculated_route_detail?.request_date }}
                 </span>
               </span>
 
               <!-- Created -->
               <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
-               px-2.5 py-1.5 text-zinc-700">
+                 px-2.5 py-1.5 text-[12px] text-zinc-700">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
                   <path fill="currentColor" d="M19 3H5v18l7-3 7 3V3Z" />
                 </svg>
                 <span class="text-zinc-600">Created:</span>
-                <span class="font-medium text-zinc-700">
+                <span class="font-mono tabular-nums font-medium text-zinc-800 whitespace-nowrap">
                   {{ this.calculated_route_detail?.CreatedDate }}
                 </span>
               </span>
@@ -273,9 +280,9 @@
 
             <!-- Source -->
             <span v-if="calculated_route_detail?.google_service_source"
-                  class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] text-sky-800">
+              class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] text-sky-800">
               <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z"/>
+                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
               </svg>
               <span class="font-semibold">Source:</span>
               <span class="font-medium text-sky-900 truncate max-w-[140px] sm:max-w-none">
