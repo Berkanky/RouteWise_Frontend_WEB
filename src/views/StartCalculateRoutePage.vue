@@ -633,7 +633,7 @@ export default {
             formatted_address: res.data.start_location_details.formatted_address,
             latitude: res.data.start_location_details.geometry.location.latitude,
             longitude: res.data.start_location_details.geometry.location.longitude,
-            StartLocation: res.data.destination_location_details.StartLocation
+            StartLocation: res.data.start_location_details.StartLocation
           };
 
           var destination_location_details = {
@@ -675,10 +675,9 @@ export default {
       this.isProcessing = true;
       this.build_route_button_triggered++;
       setTimeout(() => {
-        this.isProcessing = false; // Fake işlem bittikten sonra kapat
-      }, 1500); // (Bu örnek statik süre. Asıl response'a göre ayarlamalısın.)
+        this.isProcessing = false;
+      }, 1500);
     },
-
     async CathchMetaData(country_name) {
       var res = await axios.post(`/toll-passes`, { country_name: country_name }, {});
       if (res.status === 200) this.tollPassItems = res.data.toll_passes;
@@ -868,7 +867,7 @@ export default {
   watch: {
     form:{
       handler(newVal){
-        console.log("form : ", newVal);
+        //
       },
       immediate: true, deep: true
     },
