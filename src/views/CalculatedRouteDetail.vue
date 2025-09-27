@@ -469,10 +469,26 @@
         </dl>
       </div>
 
-
       <!-- Harita placeholder (polyline sonra) -->
       <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm overflow-hidden">
         <div class="px-4 pt-4">
+          <!-- Harita üst şerit: alternatif rota sayısı + meta -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <!-- Alternatif rota sayısı -->
+            <div class="inline-flex items-center gap-2">
+              <span class="text-[13px] text-zinc-600">Alternatif rota</span>
+              <span
+                class="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[12px] text-zinc-800">
+                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
+                  <path fill="currentColor" d="M4 6h16v2H4zm0 5h10v2H4zm0 5h16v2H4z" />
+                </svg>
+                <b class="tabular-nums">
+                  {{ this.calculated_route_detail.NumberOfMultipleRoute }}
+                </b>
+                <span class="text-zinc-500">adet</span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="h-[360px] sm:h-[420px] w-full bg-zinc-100 relative">
           <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
@@ -492,10 +508,6 @@
               </span>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button"
-                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-black text-white px-3 py-2 text-[13px] font-semibold hover:opacity-90 active:scale-[0.99]">
-                Recalculate
-              </button>
               <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
                 class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
                 Delete
