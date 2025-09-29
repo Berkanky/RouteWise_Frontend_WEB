@@ -768,6 +768,8 @@ export default {
         Person: this.form.Person,
         DriveType: this.form.DriveType,
         selected_polyline_temporary_id: this.selected_polyline_temporary_id,
+        StartLocationCountry: this.store.StartLocation?.address_components_details?.country,
+        DestinationLocationCountry: this.store.DestinationLocation?.address_components_details?.country
       };
       try {
         var res = await axios.post(`/start/calculate/route`, body, {});
@@ -869,7 +871,7 @@ export default {
   watch: {
     form:{
       handler(newVal){
-        //
+        console.log(newVal);
       },
       immediate: true, deep: true
     },

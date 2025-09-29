@@ -131,9 +131,22 @@
         </div>
         <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
           <p class="text-[12px] text-zinc-500">Fuel</p>
-          <p class="text-[20px] font-semibold text-zinc-900">{{ calculated_route_detail?.TotalGallon }} <span
-              class="text-[12px] text-zinc-500">gal</span></p>
-          <p class="text-[12px] text-zinc-500">@ ${{ calculated_route_detail?.FuelPriceAtTransactionTime }} / gal</p>
+
+          <!-- Miktarlar -->
+          <p class="text-[20px] font-semibold text-zinc-900">
+            {{ calculated_route_detail?.TotalGallon }}
+            <span class="text-[12px] text-zinc-500">gal</span>
+            <span class="mx-2 text-zinc-300">•</span>
+            {{ calculated_route_detail?.TotalLiter?.liter }}
+            <span class="text-[12px] text-zinc-500">L</span>
+          </p>
+
+          <!-- Fiyatlar -->
+          <p class="text-[12px] text-zinc-500">
+            @ ${{ calculated_route_detail?.FuelPriceAtTransactionTime }} / gal
+            <span class="mx-1 text-zinc-300">•</span>
+            {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.formatted_liter }}
+          </p>
         </div>
         <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
           <p class="text-[12px] text-zinc-500">Total cost</p>
@@ -235,12 +248,11 @@
             <li class="flex items-center justify-between">
               <span class="text-zinc-500">Luggage</span>
               <span class="font-medium">
-                <template v-if="calculated_route_detail?.LuggageWeightPound">
-                  {{ calculated_route_detail.LuggageWeightPound }} <span class="text-zinc-500">lb</span>
-                </template>
-                <template v-else>
-                  {{ calculated_route_detail?.LuggageWeight ?? '—' }} <span class="text-zinc-500">KG</span>
-                </template>
+                <span>{{ calculated_route_detail?.LuggageWeight }}</span>
+                <span class="text-zinc-500"> kg</span>
+                <span class="mx-1 text-zinc-300">•</span>
+                <span>{{ calculated_route_detail.LuggageWeightPound }}</span>
+                <span class="text-zinc-500"> lb</span>
               </span>
             </li>
           </ul>
@@ -255,13 +267,27 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="rounded-xl border border-zinc-100 bg-white p-4">
             <p class="text-[12px] text-zinc-500">Fuel price</p>
+
             <div class="flex items-baseline justify-between gap-2">
+              <!-- Sol: değerler (galon büyük, litre küçük alt satır) -->
               <p class="text-[18px] font-semibold text-zinc-900">
                 $ {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
+                <span class="block text-[12px] font-normal text-zinc-500">
+                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.liter }}
+                  <!-- ör: "$0.990 / L" -->
+                </span>
               </p>
-              <span class="text-[11px] text-zinc-500 whitespace-nowrap">
-                {{ calculated_route_detail?.FuelPriceUnits }}
-              </span>
+
+              <!-- Sağ: birimler (iki satır) -->
+              <div class="flex flex-col items-end leading-tight">
+                <span class="text-[11px] text-zinc-500 whitespace-nowrap">
+                  {{ calculated_route_detail?.FuelPriceUnits }}
+                  <!-- ör: $/GAL -->
+                </span>
+                <span class="text-[11px] text-zinc-500 whitespace-nowrap">
+                  $/L
+                </span>
+              </div>
             </div>
           </div>
 
