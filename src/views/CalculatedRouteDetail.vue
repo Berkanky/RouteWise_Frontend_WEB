@@ -273,7 +273,7 @@
               <p class="text-[18px] font-semibold text-zinc-900">
                 $ {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
                 <span class="block text-[12px] font-normal text-zinc-500">
-                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.liter }}
+                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.formatted_liter }}
                   <!-- ör: "$0.990 / L" -->
                 </span>
               </p>
@@ -283,9 +283,6 @@
                 <span class="text-[11px] text-zinc-500 whitespace-nowrap">
                   {{ calculated_route_detail?.FuelPriceUnits }}
                   <!-- ör: $/GAL -->
-                </span>
-                <span class="text-[11px] text-zinc-500 whitespace-nowrap">
-                  $/L
                 </span>
               </div>
             </div>
