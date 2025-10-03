@@ -259,121 +259,6 @@
         </div>
       </div>
 
-
-      <!-- Maliyet kırılımı -->
-      <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
-        <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Cost breakdown</h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="rounded-xl border border-zinc-100 bg-white p-4">
-            <p class="text-[12px] text-zinc-500">Fuel price</p>
-
-            <div class="flex items-baseline justify-between gap-2">
-              <!-- Sol: değerler (galon büyük, litre küçük alt satır) -->
-              <p class="text-[18px] font-semibold text-zinc-900">
-                $ {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
-                <span class="block text-[12px] font-normal text-zinc-500">
-                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.formatted_liter }}
-                  <!-- ör: "$0.990 / L" -->
-                </span>
-              </p>
-
-              <!-- Sağ: birimler (iki satır) -->
-              <div class="flex flex-col items-end leading-tight">
-                <span class="text-[11px] text-zinc-500 whitespace-nowrap">
-                  {{ calculated_route_detail?.FuelPriceUnits }}
-                  <!-- ör: $/GAL -->
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="rounded-xl border border-zinc-100 bg-white p-4">
-            <p class="text-[12px] text-zinc-500">Fuel total</p>
-            <p class="text-[18px] font-semibold text-zinc-900">
-              $ {{ calculated_route_detail?.TotalGallonCost }}
-            </p>
-          </div>
-
-          <div class="rounded-xl border border-zinc-100 bg-white p-4">
-            <p class="text-[12px] text-zinc-500">Tolls</p>
-            <p class="text-[18px] font-semibold text-zinc-900">
-              $ {{ calculated_route_detail?.TollRoadEstimatedPriceDollar }}
-            </p>
-
-            <!-- Source -->
-            <span v-if="calculated_route_detail?.google_service_source"
-              class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] text-sky-800">
-              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
-              </svg>
-              <span class="font-semibold">Source:</span>
-              <span class="font-medium text-sky-900 truncate max-w-[140px] sm:max-w-none">
-                {{ calculated_route_detail?.google_service_source }}
-              </span>
-            </span>
-          </div>
-        </div>
-
-        <!-- Period + Source daha belirgin -->
-        <div class="mt-3 flex flex-wrap items-center gap-2 text-[12px]">
-          <!-- Units (aynı kalsın) -->
-          <span
-            class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-              <path fill="currentColor" d="M7 3h10v2H7v14h10v2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
-            </svg>
-            <span class="font-medium">
-              {{ calculated_route_detail?.FuelPriceUnits }}
-            </span>
-          </span>
-
-          <!-- Price period (vurgulu) -->
-          <span
-            class="inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-amber-800">
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-              <path fill="currentColor" d="M7 3v2H5v14a2 2 0 0 0 2 2h10V5h-2V3h-2v2H9V3H7Zm2 8h6v2H9v-2Z" />
-            </svg>
-            <span class="font-semibold">Price period:</span>
-            <span class="font-medium text-amber-900">
-              {{ this.store.FormatFuelPeriod?.(calculated_route_detail?.FuelPricePeriod) ||
-                calculated_route_detail?.FuelPricePeriod }}
-            </span>
-          </span>
-
-          <!-- Source (vurgulu) -->
-          <span
-            class="inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-sky-800">
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-              <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
-            </svg>
-            <span class="font-semibold">Source:</span>
-            <span class="font-medium text-sky-900 truncate max-w-[140px] sm:max-w-none">
-              {{ calculated_route_detail?.fuel_details_source }}
-            </span>
-          </span>
-
-          <!-- FuelTypeDetail (aynı kalsın) -->
-          <span
-            class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-600">
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-              <path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z" />
-            </svg>
-            <span class="font-medium text-zinc-700">
-              {{ calculated_route_detail?.FuelTypeDetail }}
-            </span>
-          </span>
-        </div>
-
-        <div class="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3">
-          <span class="text-[13px] text-zinc-500">Grand total</span>
-          <span class="text-[20px] font-semibold text-zinc-900">
-            $ {{ calculated_route_detail?.TotalCost }}
-          </span>
-        </div>
-      </div>
-
-
       <!-- Araç bilgisi -->
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3">
@@ -389,21 +274,17 @@
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
               {{ calculated_route_detail?.VehicleId?.trany }}
             </span>
+            <span
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.FuelTypeDetail }}
+            </span>
             <span v-if="calculated_route_detail?.VehicleId?.fueltype"
-              class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] text-rose-700">
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
               {{ calculated_route_detail?.VehicleId?.fueltype }}
             </span>
-
-            <!-- Vehicle dataset source (yeni) -->
-            <span v-if="calculated_route_detail?.vehicle_dataset_source"
-              class="inline-flex items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1 text-[12px] text-sky-800">
-              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5">
-                <path fill="currentColor" d="M3 6h18v2H3v8h18V6H3Zm0 12h18v2H3v-2Z" />
-              </svg>
-              <span class="font-semibold">Source:</span>
-              <span class="font-medium text-sky-900 truncate max-w-[160px] sm:max-w-none">
-                {{ calculated_route_detail?.vehicle_dataset_source }}
-              </span>
+            <span
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.FuelPriceUnits }}
             </span>
           </div>
         </div>
@@ -490,6 +371,31 @@
             </dd>
           </div>
         </dl>
+      </div>
+
+      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm mt-6">
+        <div class="px-4 py-3 border-b border-zinc-100">
+          <h3 class="text-[14px] font-semibold text-zinc-900">Sources</h3>
+        </div>
+        <div class="p-4 space-y-2 text-[13px] text-zinc-700">
+          <p v-if="calculated_route_detail?.fuel_details_source">
+            <span class="text-zinc-500">Fuel:</span>
+            {{ calculated_route_detail.fuel_details_source }} - Data360
+          </p>
+          <p v-if="calculated_route_detail?.vehicle_dataset_source">
+            <span class="text-zinc-500">Vehicle:</span>
+            {{ calculated_route_detail.vehicle_dataset_source }}
+          </p>
+          <p v-if="calculated_route_detail?.google_service_source">
+            <span class="text-zinc-500">Google:</span>
+            {{ calculated_route_detail.google_service_source }}
+          </p>
+        </div>
+        <div class="px-4 pb-3">
+          <p class="text-[11px] text-zinc-500 leading-snug">
+            This data has been obtained from third-party services and contains estimated values.
+          </p>
+        </div>
       </div>
 
       <!-- Harita placeholder (polyline sonra) -->

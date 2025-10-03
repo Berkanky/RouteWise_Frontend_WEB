@@ -137,9 +137,8 @@
               </div>
 
               <!-- Cards under the map (refined with small radius and aesthetic headers) -->
-              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                <!-- Start Location Card -->
+              <div class="mt-6 grid gap-6">
+                <!-- 
                 <section v-if="this.form.StartLocation" class="bg-white border border-zinc-200 rounded-md shadow-xl">
                   <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
                     <h3 class="text-base font-semibold text-zinc-700 tracking-normal">
@@ -182,7 +181,6 @@
                   </div>
                 </section>
 
-                <!-- Destination Location Card -->
                 <section v-if="this.form.DestinationLocation"
                   class="bg-white border border-zinc-200 rounded-md shadow-xl">
                   <header class="px-4 py-3 bg-zinc-50 border-b border-zinc-200 rounded-t-md">
@@ -224,7 +222,7 @@
                       </div>
                     </dl>
                   </div>
-                </section>
+                </section> -->
 
                 <!-- Route Summary Card -->
                 <section v-if="this.selected_polyline_temporary_id"
