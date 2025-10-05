@@ -21,7 +21,7 @@
           </div>
           <div>
             <p class="text-gray-400">Fuel</p>
-            <p>{{ route.VehicleId.fueltype1 || '-' }}</p>
+            <p>{{ route.fueltype1 || '-' }}</p>
           </div>
           <div>
             <p class="text-gray-400">Fuel Cost</p>
@@ -34,11 +34,11 @@
           </div>
           <div>
             <p class="text-gray-400">Car</p>
-            <p>{{ route.VehicleId.make || '-' }} {{ route.VehicleId.model || '-' }}</p>
+            <p>{{ route.make || '-' }} {{ route.model || '-' }}</p>
           </div>
           <div>
             <p class="text-gray-400">Engine</p>
-            <p>{{ route.VehicleId.displ || '-' }}L</p>
+            <p>{{ route.displ || '-' }}L</p>
           </div>
         </div>
 
@@ -228,7 +228,6 @@ export default {
         if (typeof data.TotalCount === 'number') this.TotalCount = data.TotalCount;
 
         var list = Array.isArray(data.Routes) ? data.Routes : [];
-
         if (reset || this.Page === 1) this.routes = list;
         else this.routes = [...this.routes, ...list];
       } catch (err) {

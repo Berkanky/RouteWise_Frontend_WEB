@@ -434,7 +434,7 @@ export default {
 
         var decoded = [];
 
-        if (this.store.calculated_route_detail_active) decoded[0] = this.store.calculated_route_detail_overview_details;
+        if (this.store.calculated_route_detail_active) decoded = this.store.calculated_route_detail_overview_details;
         else decoded = await this.getRouteDecodedPolyline(s, d);
 
         this.decoded_overview_polyline_points = decoded;

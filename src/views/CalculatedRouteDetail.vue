@@ -115,45 +115,98 @@
         </div>
       </div>
 
-      <!-- KPI kartları -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
-          <p class="text-[12px] text-zinc-500">Distance</p>
-          <p class="text-[20px] font-semibold text-zinc-900">{{ calculated_route_detail?.DistanceKM }} <span
-              class="text-[12px] text-zinc-500">km</span></p>
-          <p class="text-[12px] text-zinc-500">{{ calculated_route_detail?.DistanceMIL }} mi</p>
+      <!-- Tek Kart, 3 set KPI alt alta -->
+      <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden">
+        <div class="mb-1 flex items-center justify-between">
+          <h3 class="text-[13px] font-semibold text-zinc-900">Route Summary</h3>
+          <span class="text-[11px] text-zinc-500">
+            {{ calculated_route_detail?.decrypted_calculated_route_polylines?.length }} Alternatif
+          </span>
         </div>
-        <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
-          <p class="text-[12px] text-zinc-500">ETA</p>
-          <p class="text-[20px] font-semibold text-zinc-900">{{ calculated_route_detail?.AverageDestinationTimeFormatted
-            || '—'
-          }}</p>
-        </div>
-        <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
-          <p class="text-[12px] text-zinc-500">Fuel</p>
 
-          <!-- Miktarlar -->
-          <p class="text-[20px] font-semibold text-zinc-900">
-            {{ calculated_route_detail?.TotalGallon }}
-            <span class="text-[12px] text-zinc-500">gal</span>
-            <span class="mx-2 text-zinc-300">•</span>
-            {{ calculated_route_detail?.TotalLiter?.liter }}
-            <span class="text-[12px] text-zinc-500">L</span>
-          </p>
+        <div class="divide-y divide-zinc-100">
+          <!-- Her alternatif -->
+          <section
+            v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
+            :key="key" class="relative py-3 lg:py-4 pr-4">
+            <!-- SAĞ kenarda ince renk şeridi -->
+            <div class="pointer-events-none absolute right-0 top-0 h-full w-[4px] rounded-r-md" :style="{
+              background: `linear-gradient(to bottom, 
+                          transparent 0%, 
+                          ${each_created_polyline?.StrokeColor || '#ccc'} 35%, 
+                          ${each_created_polyline?.StrokeColor || '#ccc'} 65%, 
+                          transparent 100%)`
+            }"></div>
 
-          <!-- Fiyatlar -->
-          <p class="text-[12px] text-zinc-500">
-            @ ${{ calculated_route_detail?.FuelPriceAtTransactionTime }} / gal
-            <span class="mx-1 text-zinc-300">•</span>
-            {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.formatted_liter }}
-          </p>
-        </div>
-        <div class="rounded-xl border border-zinc-100 bg-white p-4 shadow-sm">
-          <p class="text-[12px] text-zinc-500">Total cost</p>
-          <p class="text-[20px] font-semibold text-zinc-900">$ {{ calculated_route_detail?.TotalCost }}</p>
-          <p class="text-[12px] text-zinc-500">Tolls ${{ calculated_route_detail?.TollRoadEstimatedPriceDollar }}</p>
+            <!-- Rozet -->
+            <div class="mb-2">
+              <span
+                class="inline-flex items-center rounded-full border border-zinc-200/80 bg-zinc-50/60 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
+                Route #{{ key + 1 }}
+              </span>
+              <span v-if="each_created_polyline?.Name" class="ml-2 text-[11px] text-zinc-500">
+                {{ each_created_polyline.Name }}
+              </span>
+            </div>
+
+            <!-- KPI satırı -->
+            <div
+              class="grid grid-cols-1 md:grid-cols-4 gap-y-2 md:gap-4
+               md:[&>*:not(:first-child)]:pl-4 md:[&>*:not(:first-child)]:border-l md:[&>*:not(:first-child)]:border-zinc-100">
+              <!-- Distance -->
+              <div class="min-w-0">
+                <p class="text-[11px] text-zinc-500">Distance</p>
+                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                  {{ each_created_polyline?.DistanceKM }}
+                  <span class="text-[11px] font-normal text-zinc-500">km</span>
+                </p>
+                <p class="tabular-nums text-[11px] text-zinc-500">
+                  {{ each_created_polyline?.DistanceMIL }} mi
+                </p>
+              </div>
+
+              <!-- ETA -->
+              <div class="min-w-0">
+                <p class="text-[11px] text-zinc-500">ETA</p>
+                <p class="text-[16px] lg:text-[17px] font-semibold text-zinc-900 leading-snug">
+                  {{ each_created_polyline?.AverageDestinationTimeFormatted || '—' }}
+                </p>
+              </div>
+
+              <!-- Fuel -->
+              <div class="min-w-0">
+                <p class="text-[11px] text-zinc-500">Fuel</p>
+                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                  {{ each_created_polyline?.TotalGallon }}
+                  <span class="text-[11px] font-normal text-zinc-500">gal</span>
+                  <span class="mx-1.5 text-zinc-300">•</span>
+                  {{ each_created_polyline?.TotalLiter?.liter }}
+                  <span class="text-[11px] font-normal text-zinc-500">L</span>
+                </p>
+                <p class="tabular-nums text-[11px] text-zinc-500">
+                  @ ${{ calculated_route_detail?.FuelPriceAtTransactionTime }} / gal
+                  <span class="mx-1 text-zinc-300">•</span>
+                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.liter }} / L
+                </p>
+              </div>
+
+              <!-- Total cost -->
+              <div class="min-w-0">
+                <p class="text-[11px] text-zinc-500">Total cost</p>
+                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                  $ {{ each_created_polyline?.TotalCost || '' }}
+                </p>
+                <p class="tabular-nums text-[11px] text-zinc-500">
+                  Tolls ${{ each_created_polyline?.TollRoadEstimatedPriceDollar }}
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
+
+
+
 
       <!-- Başlangıç / Varış -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -510,7 +563,7 @@ export default {
     };
   },
   async mounted() {
-    this.store.calculated_route_detail_overview_details = {};
+    this.store.calculated_route_detail_overview_details = [];
 
     var { _id } = this.$route.params || {};
     await this.get_calculated_route_detail(_id);
@@ -518,7 +571,7 @@ export default {
     this.store.calculated_route_detail_active = true;
   },
   unmounted() {
-    this.store.calculated_route_detail_overview_details = {};
+    this.store.calculated_route_detail_overview_details = [];
     this.store.calculated_route_detail_active = false;
   },
   computed: {
@@ -600,7 +653,7 @@ export default {
             DestinationLocation: DestinationLocation
           };
 
-          var calculated_route_detail_overview_details = this.calculated_route_detail.overview_details;
+          var calculated_route_detail_overview_details = this.calculated_route_detail.decrypted_calculated_route_polylines.map(function (item) { return item.overview_details });
           this.store.calculated_route_detail_overview_details = calculated_route_detail_overview_details;
 
           this.store.calculated_route_detail_active = true;
