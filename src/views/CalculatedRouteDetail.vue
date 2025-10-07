@@ -114,20 +114,100 @@
           </div>
         </div>
       </div>
+      <!-- Fuel pricing basis (üst bilgi kartı) -->
+      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5">
+        <div class="flex items-center justify-between gap-3">
+          <!-- Sol: ikon + başlık -->
+          <div class="flex items-center gap-3 min-w-0">
+            <span
+              class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700">
+              <!-- fuel icon -->
+              <svg viewBox="0 0 24 24" class="h-5 w-5">
+                <path fill="currentColor"
+                  d="M3 3h10v18H3V3Zm12 3h2l3 3v8a3 3 0 0 1-6 0V9h1v8a2 2 0 1 0 4 0V9.83L17.17 8H15V6Z" />
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <h3 class="text-[14px] font-semibold text-zinc-900">Fuel pricing basis</h3>
+              <p class="text-[12px] text-zinc-500 truncate">
+                Fuel price and period used in cost calculations
+              </p>
+            </div>
+          </div>
+
+          <!-- Sağ: yakıt türü rozetleri -->
+          <div class="hidden sm:flex sm:flex-wrap items-center gap-2">
+            <span
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.FuelTypeDetail || '—' }}
+            </span>
+            <span v-if="calculated_route_detail?.VehicleId?.fueltype1"
+              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
+              {{ calculated_route_detail?.VehicleId?.fueltype1 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Değerler -->
+        <div
+          class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4
+           sm:[&>*:not(:first-child)]:pl-4 sm:[&>*:not(:first-child)]:border-l sm:[&>*:not(:first-child)]:border-zinc-100">
+          <!-- Price -->
+          <div class="min-w-0">
+            <p class="text-[11px] text-zinc-500">Price</p>
+            <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+              {{ calculated_route_detail?.FuelPriceAtTransactionTime || '—' }}
+            </p>
+          </div>
+
+          <!-- Units -->
+          <div class="min-w-0">
+            <p class="text-[11px] text-zinc-500">Units</p>
+            <p class="text-[16px] font-semibold text-zinc-900 leading-snug">
+              {{ calculated_route_detail?.FuelPriceUnits || '—' }}
+            </p>
+          </div>
+
+          <!-- Period -->
+          <div class="min-w-0">
+            <p class="text-[11px] text-zinc-500">Period</p>
+            <p class="font-mono tabular-nums text-[13px] text-zinc-900 leading-snug">
+              {{ calculated_route_detail?.FuelPricePeriod || '—' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- İnce ayraç + “bu bazla hesaplandı” satırı -->
+        <div class="mt-3 h-px bg-zinc-50"></div>
+        <p class="mt-2 text-[11px] text-zinc-500">
+          Pricing source:
+          <span class="font-mono tabular-nums text-zinc-700">
+            {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
+          </span>
+          <span class="mx-1 text-zinc-300">/</span>
+          <span class="font-mono tabular-nums text-zinc-700">
+            {{ calculated_route_detail?.FuelPriceUnits }}
+          </span>
+          <span class="mx-1 text-zinc-300">•</span>
+          <span class="font-mono tabular-nums text-zinc-700">
+            {{ calculated_route_detail?.FuelPricePeriod }}
+          </span>
+        </p>
+      </div>
+
 
       <!-- Tek Kart, 3 set KPI alt alta -->
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden">
         <div class="mb-1 flex items-center justify-between">
           <h3 class="text-[13px] font-semibold text-zinc-900">Route Summary</h3>
           <span class="text-[11px] text-zinc-500">
-            {{ calculated_route_detail?.decrypted_calculated_route_polylines?.length }} Alternatif
+            {{ calculated_route_detail?.decrypted_calculated_route_polylines?.length }} Alternative Route
           </span>
         </div>
 
         <div class="divide-y divide-zinc-100">
           <!-- Her alternatif -->
-          <section
-            v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
+          <section v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
             :key="key" class="relative py-3 lg:py-4 pr-4">
             <!-- SAĞ kenarda ince renk şeridi -->
             <div class="pointer-events-none absolute right-0 top-0 h-full w-[4px] rounded-r-md" :style="{
@@ -175,7 +255,7 @@
 
               <!-- Fuel -->
               <div class="min-w-0">
-                <p class="text-[11px] text-zinc-500">Fuel</p>
+                <p class="text-[11px] text-zinc-500">Fuel Consumption</p>
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
                   {{ each_created_polyline?.TotalGallon }}
                   <span class="text-[11px] font-normal text-zinc-500">gal</span>
@@ -183,30 +263,37 @@
                   {{ each_created_polyline?.TotalLiter?.liter }}
                   <span class="text-[11px] font-normal text-zinc-500">L</span>
                 </p>
-                <p class="tabular-nums text-[11px] text-zinc-500">
-                  @ ${{ calculated_route_detail?.FuelPriceAtTransactionTime }} / gal
-                  <span class="mx-1 text-zinc-300">•</span>
-                  {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.liter }} / L
-                </p>
               </div>
 
-              <!-- Total cost -->
+              <!-- Cost -->
               <div class="min-w-0">
-                <p class="text-[11px] text-zinc-500">Total cost</p>
+                <p class="text-[11px] text-zinc-500">Cost</p>
+
+                <!-- Toplam rakam -->
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                  $ {{ each_created_polyline?.TotalCost || '' }}
+                  $ {{ each_created_polyline?.TotalCost || '—' }}
                 </p>
-                <p class="tabular-nums text-[11px] text-zinc-500">
-                  Tolls ${{ each_created_polyline?.TollRoadEstimatedPriceDollar }}
-                </p>
+
+                <!-- Daha yumuşak ayraç -->
+                <div class="my-[6px] h-px bg-zinc-50"></div>
+
+                <!-- Kalem kalem döküm -->
+                <div class="text-[11px] text-zinc-500 space-y-1">
+                  <div class="grid grid-cols-[auto_auto] justify-between">
+                    <span class="truncate">Fuel</span>
+                    <span class="tabular-nums">$ {{ each_created_polyline?.TotalGallonCost }}</span>
+                  </div>
+                  <div class="grid grid-cols-[auto_auto] justify-between">
+                    <span class="truncate">Tolls</span>
+                    <span class="tabular-nums">$ {{ each_created_polyline?.TollRoadEstimatedPriceDollar }}</span>
+                  </div>
+                </div>
               </div>
+
             </div>
           </section>
         </div>
       </div>
-
-
-
 
       <!-- Başlangıç / Varış -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
