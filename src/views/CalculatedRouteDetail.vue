@@ -139,11 +139,7 @@
           <div class="hidden sm:flex sm:flex-wrap items-center gap-2">
             <span
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
-              {{ calculated_route_detail?.FuelTypeDetail || '—' }}
-            </span>
-            <span v-if="calculated_route_detail?.VehicleId?.fueltype1"
-              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
-              {{ calculated_route_detail?.VehicleId?.fueltype1 }}
+              {{ calculated_route_detail?.VehicleId?.fueltype1 || calculated_route_detail?.FuelTypeDetail || '—' }}
             </span>
           </div>
         </div>
@@ -559,9 +555,7 @@
             </div>
           </div>
         </div>
-        <div class="h-[360px] sm:h-[420px] w-full bg-zinc-100 relative">
-          <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
-        </div>
+        <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
       </div>
 
       <!-- Alt yapışkan eylem çubuğu -->

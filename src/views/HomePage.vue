@@ -1,65 +1,96 @@
 <template>
   <div class="min-h-screen bg-[#f4f6f9] px-3 py-6 sm:px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div v-for="(route, key) in routes" :key="key"
-        class="bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-5 hover:shadow-md transition duration-200">
+    <div class="min-h-screen bg-[#f4f6f9] px-3 py-6 sm:px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- 1 hesaplama = 1 kart -->
+        <!-- kart -->
+        <div v-for="(route, idx) in routes" :key="route._id || idx" class="h-full flex flex-col bg-white
+         -mx-3 rounded-none border-y border-gray-200 shadow-none
+         px-4 py-5
+         sm:mx-0 sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-sm
+         hover:shadow-md transition">
+          <!-- içerik -->
+          <div class="flex-1">
 
-        <div class="flex justify-between items-center mb-4">
-          <div>
-            <h2 class="text-[15px] sm:text-[16px] font-semibold text-gray-900">{{ route.Name }}</h2>
-            <p class="text-[12px] text-gray-500">{{ route.AverageDestinationTimeFormatted }}</p>
+            <!-- header sağ blok -->
+            <div class="text-right">
+              <div class="inline-flex items-center gap-2">
+                <span class="text-[10px] uppercase bg-black text-white px-2 py-1 tracking-wide rounded">
+                  {{ route.TravelMode || '—' }}
+                </span>
+                <span class="text-[11px] text-gray-500">
+                  {{ route.decrypted_calculated_route_polylines?.length || 0 }} Alternative
+                </span>
+              </div>
+            </div>
+
+            <!-- metrikler -->
+            <div
+              class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[13px] sm:text-[14px] text-gray-800 items-stretch">
+              <div class="rounded-lg border border-gray-200 p-3 h-full">
+                <p class="text-gray-400 text-[12px]">Best ETA</p>
+                <p class="font-medium leading-snug">{{ route.best_eta }}</p>
+              </div>
+              <div class="rounded-lg border border-gray-200 p-3 h-full">
+                <p class="text-gray-400 text-[12px]">Best Cost</p>
+                <p class="font-medium">${{ route.best_total_cost }}</p>
+              </div>
+              <div class="rounded-lg border border-gray-200 p-3 h-full">
+                <p class="text-gray-400 text-[12px]">Best Distance</p>
+                <p class="font-medium">{{ route.best_distance_mil }} mil</p>
+              </div>
+            </div>
+
+            <!-- alternatifler -->
+            <div class="mt-4 pb-2 mb-2 border-b border-gray-100">
+              <p class="text-[12px] text-gray-400 mb-1.5">Alternative Routes</p>
+              <div class="flex flex-wrap gap-1.5">
+                <span v-for="(alt, i) in route.decrypted_calculated_route_polylines" :key="alt._id || i"
+                  class="inline-flex items-center text-[11px] px-2 py-1 rounded-full border border-gray-200 text-gray-700">
+                  {{ alt.AverageDestinationTimeFormatted }} | {{ alt.DistanceMIL }} mil | ${{ alt.TotalCost }}
+                </span>
+              </div>
+              <span v-if="route.more_count > 0"
+                class="mt-2 inline-block text-[11px] px-2 py-1 rounded-full border border-dashed text-gray-500">
+                +{{ route.more_count }} more
+              </span>
+            </div>
+
+            <!-- araç bilgisi -->
+            <div class="mt-4 grid grid-cols-2 gap-3 text-[13px] text-gray-700">
+              <div>
+                <p class="text-gray-400 text-[12px]">Car</p>
+                <p>{{ route.VehicleId?.make || '—' }} {{ route.VehicleId?.model || '' }}</p>
+              </div>
+              <div>
+                <p class="text-gray-400 text-[12px]">Engine</p>
+                <p>{{ route.VehicleId?.displ || '—' }}L • {{ route.VehicleId?.fueltype1 || '—' }}</p>
+              </div>
+            </div>
           </div>
-          <span class="text-[10px] uppercase bg-black text-white px-2 py-1 tracking-wide rounded">
-            {{ route.TravelMode }}
-          </span>
+
+          <!-- footer -->
+          <div class="mt-auto pt-3 border-t flex items-center justify-between">
+            <p class="text-[11px] text-gray-400 leading-tight">
+              Total cost range: ${{ route.min_total_cost }}–{{ route.max_total_cost }}
+            </p>
+
+            <!-- native hissiyatlı buton -->
+            <button @click="handleViewDetail(route._id)" aria-label="View detail for {{ route.Name }}" class="w-full sm:w-auto h-10 px-4 rounded-lg
+         border border-gray-300 text-gray-800 font-semibold text-[13px] tracking-wide
+         bg-white
+         active:scale-[0.98] active:bg-gray-50
+         hover:border-gray-400 hover:bg-gray-50
+         transition-all duration-150 ease-in-out
+         shadow-[0_1px_3px_rgba(0,0,0,0.05)]
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/30">
+              View Detail
+            </button>
+
+
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-[13px] sm:text-[14px] text-gray-700">
-          <div>
-            <p class="text-gray-400">Distance</p>
-            <p>{{ route.DistanceKM || '-' }} km / {{ route.DistanceMIL || '-' }} mi</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Fuel</p>
-            <p>{{ route.fueltype1 || '-' }}</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Fuel Cost</p>
-            <p>${{ route.TotalGallonCost || '-' }}</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Toll</p>
-            <p v-if="route.TollRoadEstimatedPriceDollar">${{ route.TollRoadEstimatedPriceDollar }}</p>
-            <p v-else>Paid route information could not be obtained.</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Car</p>
-            <p>{{ route.make || '-' }} {{ route.model || '-' }}</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Engine</p>
-            <p>{{ route.displ || '-' }}L</p>
-          </div>
-        </div>
-
-        <div class="mt-5 flex justify-between items-start border-t pt-3">
-          <div class="text-[11px] text-gray-400 leading-tight">
-            <p class="mb-1">Created: {{ route.CreatedDate }}</p>
-            From {{ route.StartLocation }}<br />
-            To {{ route.DestinationLocation }}
-          </div>
-          <div class="text-right">
-            <p class="text-[12px] text-gray-400">Total Cost</p>
-            <p class="text-[15px] font-semibold text-black">${{ route.TotalCost }}</p>
-          </div>
-        </div>
-
-        <div class="mt-4 flex justify-center sm:justify-end">
-          <button @click="handleViewDetail(route._id)"
-            class="w-full sm:w-auto text-[12px] font-semibold tracking-wide uppercase px-4 py-2 border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out rounded-full">
-            View Detail
-          </button>
-        </div>
 
       </div>
     </div>
@@ -79,7 +110,7 @@
             </div>
 
             <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 dark:text-zinc-300 truncate">
-              {{ routes.length }} / {{ TotalCount }} gösteriliyor
+              {{ routes.length }} / {{ TotalCount }} Displaying
             </p>
           </div>
 
@@ -97,7 +128,7 @@
               <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
             </svg>
             <span class="text-[13px] font-medium">
-              {{ loading ? 'Yükleniyor' : 'Daha fazla' }}
+              {{ loading ? 'Loading' : 'More' }}
             </span>
           </button>
 
