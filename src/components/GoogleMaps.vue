@@ -9,10 +9,10 @@ import { UseStore } from '../stores/store';
 import { loadGoogleMapsSdk } from '../utils/maps';
 import axios from 'axios';
 
-// --- Polyline stilleri + hit-area
-const BASE_STYLE = { strokeColor: '#2563eb', strokeOpacity: 0.95, strokeWeight: 4, zIndex: 10 };
-const HOVER_STYLE = { strokeWeight: 6, zIndex: 20 };
-const SELECTED_STYLE = { strokeColor: '#ef4444', strokeWeight: 7, zIndex: 30 };
+var BASE_STYLE = { strokeColor: '#2563eb', strokeOpacity: 0.95, strokeWeight: 4, zIndex: 10 };
+var HOVER_STYLE = { strokeWeight: 6, zIndex: 20 };
+var SELECTED_STYLE = { strokeColor: '#ef4444', strokeWeight: 7, zIndex: 30 };
+
 function makeHitArea(path) {
   return new google.maps.Polyline({
     path,
@@ -53,6 +53,7 @@ export default {
     }
   },
   async mounted() {
+
     var GOOGLE_API_KEY = this.store.Config.GOOGLE_API_KEY;
     if (!GOOGLE_API_KEY) return;
     var default_center = { lat: 41.015137, lng: 28.97953 };
@@ -70,7 +71,7 @@ export default {
       zoom: 10,
       streetViewControl: false,
       mapTypeControl: false,
-      gestureHandling: 'cooperative', // tek parmak sayfa kaydırır, harita 2 parmakla taşınır
+      gestureHandling: 'cooperative',
       scrollwheel: false
     });
 
@@ -78,7 +79,6 @@ export default {
     this.center = center;
     this.infoWindow = new google.maps.InfoWindow();
 
-    // Haritada boş tıklama -> seçim temizle
     this.map.addListener('click', () => {
       this.clearSelection();
       this.infoWindow?.close();
@@ -99,9 +99,8 @@ export default {
 
       try { this.infoWindow?.close(); } catch (_) { }
 
-      // Eski polyline + hit-area'ları temizle
       if (Array.isArray(this.polylines) && this.polylines.length) {
-        for (const pl of this.polylines) {
+        for (var pl of this.polylines) {
           try { pl.__hit?.setMap(null); } catch { }
           try { pl.setMap?.(null); } catch { }
         }
@@ -128,7 +127,6 @@ export default {
       this.map = map;
       this.infoWindow = new google.maps.InfoWindow();
 
-      // Reset sonrası boş tıklama listener'ı tekrar bağla
       this.map.addListener('click', () => {
         this.clearSelection();
         this.infoWindow?.close();
@@ -236,7 +234,6 @@ export default {
       `;
     },
 
-    // Seçim yardımcıları
     clearSelection() {
       if (this.selectedPolyline) {
         this.selectedPolyline.__selected = false;
@@ -295,11 +292,11 @@ export default {
       if (!this.map || !Array.isArray(decodedPointsArray) || decodedPointsArray.length === 0) return;
 
       decodedPointsArray.forEach((decoded_route) => {
-        const pts = decoded_route?.decoded_overview_polyline_points || [];
+        var pts = decoded_route?.decoded_overview_polyline_points || [];
         if (!Array.isArray(pts) || pts.length < 2) return;
 
-        const path = pts.map(p => ({ lat: +p.lat, lng: +p.lng }));
-        const meta = {
+        var path = pts.map(p => ({ lat: +p.lat, lng: +p.lng }));
+        var meta = {
           routeIndex: decoded_route.route_index,
           distanceMeters: decoded_route.distance_meters,
           duration_formatted: decoded_route.duration_formatted,
@@ -309,7 +306,6 @@ export default {
           distance_mi: decoded_route.distance_mi
         };
 
-        // Küçük yardımcı: güzel içerik HTML'i
         function buildRouteInfoContent(meta) {
           return `
             <div style="
@@ -368,8 +364,7 @@ export default {
             </div>`;
         }
 
-        // Polylinede kullan
-        const pl = this.addSelectablePolyline({
+        var pl = this.addSelectablePolyline({
           map: this.map,
           id: meta.temporary_route_id,
           path,
@@ -377,7 +372,7 @@ export default {
           onSelect: (poly, ev) => {
             this.selectPolyline(poly);
 
-            const content = buildRouteInfoContent(meta);
+            var content = buildRouteInfoContent(meta);
             this.infoWindow.setContent(content);
             this.infoWindow.setPosition(ev.latLng);
             this.infoWindow.open({ map: this.map });
@@ -417,6 +412,7 @@ export default {
       var res = await axios.post(`/create/polyline`, {
         Latitude, Longitude, DestinationLocationLatitude, DestinationLocationLongitude
       });
+
       return res.status === 200 ? res.data.routes : [];
     },
 
@@ -433,7 +429,6 @@ export default {
         var d = { lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude };
 
         var decoded = [];
-
         if (this.store.calculated_route_detail_active) decoded = this.store.calculated_route_detail_overview_details;
         else decoded = await this.getRouteDecodedPolyline(s, d);
 
@@ -451,9 +446,7 @@ export default {
   watch: {
     build_route_button_triggered: {
       handler(newVal) {
-        if (newVal) {
-          this.onBuildRoute();
-        }
+        if (newVal) this.onBuildRoute();
       },
       immediate: true, deep: true
     },
@@ -461,19 +454,14 @@ export default {
     'store.StartLocation': {
       handler(newVal) {
         if (newVal && typeof newVal.latitude === "number" && typeof newVal.longitude === "number") {
+
           this.StartLocation = newVal;
-          const pos = { lat: newVal.latitude, lng: newVal.longitude };
+          var pos = { lat: newVal.latitude, lng: newVal.longitude };
           this.upsertMarker(pos, 'start_location', newVal);
 
-          // Odak mantığı:
-          const hasDest = !!(this.DestinationLocation && typeof this.DestinationLocation.latitude === "number" && typeof this.DestinationLocation.longitude === "number");
-          if (hasDest) {
-            // İki uç varsa tümünü sığdır
-            this.fitAll();
-          } else {
-            // Sadece start varsa yakınlaş
-            this.focusOn(pos, { zoomIfCloser: 14 });
-          }
+          var hasDest = !!(this.DestinationLocation && typeof this.DestinationLocation.latitude === "number" && typeof this.DestinationLocation.longitude === "number");
+          if (hasDest) this.fitAll();
+          else this.focusOn(pos, { zoomIfCloser: 14 });
         }
       },
       immediate: true, deep: true
@@ -482,16 +470,14 @@ export default {
     'store.DestinationLocation': {
       handler(newVal) {
         if (newVal && typeof newVal.latitude === "number" && typeof newVal.longitude === "number") {
+
           this.DestinationLocation = newVal;
-          const pos = { lat: newVal.latitude, lng: newVal.longitude };
+          var pos = { lat: newVal.latitude, lng: newVal.longitude };
           this.upsertMarker(pos, 'destination_location', newVal);
 
-          const hasStart = !!(this.StartLocation && typeof this.StartLocation.latitude === "number" && typeof this.StartLocation.longitude === "number");
-          if (hasStart) {
-            this.fitAll();
-          } else {
-            this.focusOn(pos, { zoomIfCloser: 13 });
-          }
+          var hasStart = !!(this.StartLocation && typeof this.StartLocation.latitude === "number" && typeof this.StartLocation.longitude === "number");
+          if (hasStart) this.fitAll(); 
+          else this.focusOn(pos, { zoomIfCloser: 13 });
         }
       },
       immediate: true, deep: true
@@ -505,12 +491,10 @@ export default {
 .gmap-wrap {
   position: relative;
   width: 100%;
-  /* Mobilde yeterli alan: min 260px, tipik 48vh, masaüstünde 520px’e kadar */
   height: clamp(260px, 48vh, 520px);
   margin-top: 15px;
 }
 
-/* Büyük ekranlarda eski 350px hissini korumak isteyenler için: */
 @media (min-width: 1024px) {
   .gmap-wrap {
     height: 350px;
@@ -525,7 +509,6 @@ export default {
   border-radius: 12px;
 }
 
-/* Güvenlik için: harita köşeleri taşmasın */
 .gmap-canvas :global(canvas) {
   border-radius: 12px;
 }

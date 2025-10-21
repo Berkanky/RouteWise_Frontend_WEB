@@ -12,6 +12,7 @@ var PasswordReset = () => import("../views/PasswordResetPage.vue");
 var StartCalculateRoute = () => import("../views/StartCalculateRoutePage.vue");
 var GoogleMaps = () => import("../views/GoogleMaps.vue");
 var CalculatedRouteDetail = () => import("../views/CalculatedRouteDetail.vue");
+var Account = () => import("../views/AccountPage.vue");
 
 var NotFound = { template: '<div class="p-6">404 – Sayfa bulunamadı</div>' };
 
@@ -81,6 +82,12 @@ var routes = [
     path: "/calculated/route/detail/:_id",
     name: "CalculatedRouteDetail",
     component: CalculatedRouteDetail,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/account",
+    name: "Account",
+    component: Account,
     meta: { requiresAuth: true },
   },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },

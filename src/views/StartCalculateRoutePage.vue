@@ -672,6 +672,7 @@ export default {
       if (selected_polyline_temporary_id) this.selected_polyline_temporary_id = selected_polyline_temporary_id;
     },
     CalculateRoute() {
+
       this.isProcessing = true;
       this.build_route_button_triggered++;
       setTimeout(() => {
@@ -869,7 +870,7 @@ export default {
   watch: {
     form:{
       handler(newVal){
-        console.log(newVal);
+        //console.log(newVal);
       },
       immediate: true, deep: true
     },

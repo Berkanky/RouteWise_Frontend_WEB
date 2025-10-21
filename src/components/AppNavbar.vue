@@ -15,6 +15,10 @@
             Home
           </button>
 
+          <button class="hover:text-[#e11d48]" @click="GoAccountPage">
+            Account
+          </button>
+
           <!-- Route: belirgin/pil -->
           <RouterLink
             to="/start/calculate/route"
@@ -92,6 +96,17 @@
                 >
                   <HomeIcon class="w-5 h-5"/>
                   <span>Home</span>
+                </button>
+
+                <button
+                  v-on:click="GoAccountPage()"
+                  :class="[
+                    'flex items-center gap-3 py-2.5 px-3 transition-colors',
+                    isActive('Account') ? 'text-zinc-900 font-medium bg-zinc-50' : 'text-zinc-500 hover:text-zinc-800'
+                  ]"
+                >
+                  <HomeIcon class="w-5 h-5"/>
+                  <span>Account</span>
                 </button>
 
                 <RouterLink
@@ -180,6 +195,9 @@ export default {
     }
   },
   methods: {
+    GoAccountPage(){
+      this.$router.push({ name:'Account', query:{ _id: this.store.UserData._id}});
+    },
     GoHomePage(){
       var Page = 1;
       this.$router.push({ name: 'Home', query:{ Page: Page } });

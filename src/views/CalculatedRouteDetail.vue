@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-zinc-100">
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-zinc-100 print:hidden">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <button type="button" @click="goBack()"
@@ -15,23 +15,10 @@
           </p>
         </div>
       </div>
-
-      <div class="flex items-center gap-2">
-        <span v-if="calculated_route_detail?.IsRouteCompleted === true"
-          class="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[12px] font-medium text-green-700">
-          <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Completed
-        </span>
-        <span v-else
-          class="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[12px] font-medium text-rose-700">
-          <span class="h-1.5 w-1.5 rounded-full bg-rose-600"></span> In progress
-        </span>
-      </div>
     </div>
   </header>
   <section
     class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6 pb-[calc(96px+max(env(safe-area-inset-bottom),0px))] sm:pb-8">
-
-    <!-- Yükleniyor -->
     <div v-if="isLoading" class="py-10 grid gap-4">
       <div class="h-20 rounded-xl bg-zinc-100 animate-pulse"></div>
       <div class="grid sm:grid-cols-3 gap-4">
@@ -41,18 +28,13 @@
       </div>
       <div class="h-80 rounded-xl bg-zinc-100 animate-pulse"></div>
     </div>
-
-    <!-- Hata -->
     <div v-else-if="errorMessage" class="mt-6">
       <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-700">
         {{ errorMessage }}
       </div>
     </div>
-
-    <!-- İçerik -->
     <div v-else class="space-y-6 sm:space-y-8">
-      <!-- Özet üst: isim/araç ve meta -->
-      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5">
+      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5 no-overflow">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="space-y-1">
             <h2 class="text-[18px] sm:text-[20px] font-semibold text-zinc-900">
@@ -64,8 +46,6 @@
             </p>
           </div>
           <div class="flex flex-col sm:items-end gap-2">
-
-            <!-- 1) rota ayarları (aynı satır) -->
             <div class="flex flex-wrap items-center gap-2">
               <span
                 class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
@@ -74,7 +54,6 @@
                 </svg>
                 {{ calculated_route_detail?.RoutingPreference || '—' }}
               </span>
-
               <span
                 class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-[12px] text-zinc-700">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
@@ -83,10 +62,7 @@
                 {{ calculated_route_detail?.TravelMode || '—' }}
               </span>
             </div>
-
-            <!-- 2) tarih rozetleri (tek satır, tabular mono) -->
             <div class="flex flex-wrap items-center gap-2">
-              <!-- Requested -->
               <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
                  px-2.5 py-1.5 text-[12px] text-zinc-700">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
@@ -98,8 +74,6 @@
                   {{ this.calculated_route_detail?.request_date }}
                 </span>
               </span>
-
-              <!-- Created -->
               <span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50
                  px-2.5 py-1.5 text-[12px] text-zinc-700">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
@@ -114,14 +88,11 @@
           </div>
         </div>
       </div>
-      <!-- Fuel pricing basis (üst bilgi kartı) -->
-      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5">
+      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5 no-overflow">
         <div class="flex items-center justify-between gap-3">
-          <!-- Sol: ikon + başlık -->
           <div class="flex items-center gap-3 min-w-0">
             <span
               class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700">
-              <!-- fuel icon -->
               <svg viewBox="0 0 24 24" class="h-5 w-5">
                 <path fill="currentColor"
                   d="M3 3h10v18H3V3Zm12 3h2l3 3v8a3 3 0 0 1-6 0V9h1v8a2 2 0 1 0 4 0V9.83L17.17 8H15V6Z" />
@@ -134,8 +105,6 @@
               </p>
             </div>
           </div>
-
-          <!-- Sağ: yakıt türü rozetleri -->
           <div class="hidden sm:flex sm:flex-wrap items-center gap-2">
             <span
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
@@ -143,28 +112,21 @@
             </span>
           </div>
         </div>
-
-        <!-- Değerler -->
         <div
           class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4
            sm:[&>*:not(:first-child)]:pl-4 sm:[&>*:not(:first-child)]:border-l sm:[&>*:not(:first-child)]:border-zinc-100">
-          <!-- Price -->
           <div class="min-w-0">
             <p class="text-[11px] text-zinc-500">Price</p>
             <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
               {{ calculated_route_detail?.FuelPriceAtTransactionTime || '—' }}
             </p>
           </div>
-
-          <!-- Units -->
           <div class="min-w-0">
             <p class="text-[11px] text-zinc-500">Units</p>
             <p class="text-[16px] font-semibold text-zinc-900 leading-snug">
               {{ calculated_route_detail?.FuelPriceUnits || '—' }}
             </p>
           </div>
-
-          <!-- Period -->
           <div class="min-w-0">
             <p class="text-[11px] text-zinc-500">Period</p>
             <p class="font-mono tabular-nums text-[13px] text-zinc-900 leading-snug">
@@ -172,8 +134,6 @@
             </p>
           </div>
         </div>
-
-        <!-- İnce ayraç + “bu bazla hesaplandı” satırı -->
         <div class="mt-3 h-px bg-zinc-50"></div>
         <p class="mt-2 text-[11px] text-zinc-500">
           Pricing source:
@@ -190,31 +150,24 @@
           </span>
         </p>
       </div>
-
-
-      <!-- Tek Kart, 3 set KPI alt alta -->
-      <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden">
+      <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden no-overflow">
         <div class="mb-1 flex items-center justify-between">
           <h3 class="text-[13px] font-semibold text-zinc-900">Route Summary</h3>
           <span class="text-[11px] text-zinc-500">
             {{ calculated_route_detail?.decrypted_calculated_route_polylines?.length }} Alternative Route
           </span>
         </div>
-
         <div class="divide-y divide-zinc-100">
-          <!-- Her alternatif -->
           <section v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
             :key="key" class="relative py-3 lg:py-4 pr-4">
-            <!-- SAĞ kenarda ince renk şeridi -->
             <div class="pointer-events-none absolute right-0 top-0 h-full w-[4px] rounded-r-md" :style="{
-              background: `linear-gradient(to bottom, 
-                          transparent 0%, 
-                          ${each_created_polyline?.StrokeColor || '#ccc'} 35%, 
-                          ${each_created_polyline?.StrokeColor || '#ccc'} 65%, 
-                          transparent 100%)`
+              background: `linear-gradient(to bottom,
+                transparent 0%,
+                ${each_created_polyline?.StrokeColor || '#ccc'} 35%,
+                ${each_created_polyline?.StrokeColor || '#ccc'} 65%,
+                transparent 100%)
+              `
             }"></div>
-
-            <!-- Rozet -->
             <div class="mb-2">
               <span
                 class="inline-flex items-center rounded-full border border-zinc-200/80 bg-zinc-50/60 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
@@ -224,13 +177,10 @@
                 {{ each_created_polyline.Name }}
               </span>
             </div>
-
-            <!-- KPI satırı -->
-            <div
-              class="grid grid-cols-1 md:grid-cols-4 gap-y-2 md:gap-4
-               md:[&>*:not(:first-child)]:pl-4 md:[&>*:not(:first-child)]:border-l md:[&>*:not(:first-child)]:border-zinc-100">
-              <!-- Distance -->
-              <div class="min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-y-2 md:gap-4
+               md:[&>*:not(:first-child)]:pl-4 md:[&>*:not(:first-child)]:border-l md:[&>*:not(:first-child)]:border-zinc-100
+               grid-print-block">
+              <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">Distance</p>
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
                   {{ each_created_polyline?.DistanceKM }}
@@ -240,17 +190,13 @@
                   {{ each_created_polyline?.DistanceMIL }} mi
                 </p>
               </div>
-
-              <!-- ETA -->
-              <div class="min-w-0">
+              <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">ETA</p>
                 <p class="text-[16px] lg:text-[17px] font-semibold text-zinc-900 leading-snug">
                   {{ each_created_polyline?.AverageDestinationTimeFormatted || '—' }}
                 </p>
               </div>
-
-              <!-- Fuel -->
-              <div class="min-w-0">
+              <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">Fuel Consumption</p>
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
                   {{ each_created_polyline?.TotalGallon }}
@@ -260,20 +206,12 @@
                   <span class="text-[11px] font-normal text-zinc-500">L</span>
                 </p>
               </div>
-
-              <!-- Cost -->
-              <div class="min-w-0">
+              <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">Cost</p>
-
-                <!-- Toplam rakam -->
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
                   $ {{ each_created_polyline?.TotalCost || '—' }}
                 </p>
-
-                <!-- Daha yumuşak ayraç -->
                 <div class="my-[6px] h-px bg-zinc-50"></div>
-
-                <!-- Kalem kalem döküm -->
                 <div class="text-[11px] text-zinc-500 space-y-1">
                   <div class="grid grid-cols-[auto_auto] justify-between">
                     <span class="truncate">Fuel</span>
@@ -285,52 +223,110 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </section>
         </div>
       </div>
-
-      <!-- Başlangıç / Varış -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm no-overflow">
           <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Start</h3>
           <div class="text-[13px] text-zinc-700">
             <p class="font-medium">{{ calculated_route_detail?.StartLocation || '—' }}</p>
             <div class="mt-2 grid grid-cols-3 gap-2 text-[12px] text-zinc-500">
-              <div><span class="text-zinc-400">Locality</span>
+              <div>
+                <span class="text-zinc-400">Locality</span>
                 <div>{{ calculated_route_detail?.StartLocationDetail?.address_components_details?.locality || '—' }}
                 </div>
               </div>
-              <div><span class="text-zinc-400">State</span>
+              <div>
+                <span class="text-zinc-400">State</span>
                 <div>{{ calculated_route_detail?.StartLocationDetail?.address_components_details?.state || '—' }}</div>
               </div>
-              <div><span class="text-zinc-400">Country</span>
+              <div>
+                <span class="text-zinc-400">Country</span>
                 <div>{{ calculated_route_detail?.StartLocationDetail?.address_components_details?.country || '—' }}
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  class="w-4 h-4 text-zinc-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M2.458 12C3.732 6.943 7.428 3 12 3c4.572 0 8.268 3.943 9.542 9H2.458Z" />
+                </svg>
+                <div>
+                  <span class="text-zinc-400">Latitude</span>
+                  <div>{{ calculated_route_detail?.StartLocationLatitude?.toFixed(6) || '—' }}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  class="w-4 h-4 text-zinc-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 21c-4.418 0-8-3.582-8-8a8 8 0 1 1 16 0c0 4.418-3.582 8-8 8Z" />
+                  <circle cx="12" cy="13" r="2" stroke-width="1.5" />
+                </svg>
+                <div>
+                  <span class="text-zinc-400">Longitude</span>
+                  <div>{{ calculated_route_detail?.StartLocationLongitude?.toFixed(6) || '—' }}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm no-overflow">
           <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Destination</h3>
           <div class="text-[13px] text-zinc-700">
             <p class="font-medium">{{ calculated_route_detail?.DestinationLocation || '—' }}</p>
             <div class="mt-2 grid grid-cols-3 gap-2 text-[12px] text-zinc-500">
-              <div><span class="text-zinc-400">Locality</span>
+              <div>
+                <span class="text-zinc-400">Locality</span>
                 <div>{{ calculated_route_detail?.DestinationLocationDetail?.address_components_details?.locality || '—'
-                }}</div>
+                }}
+                </div>
               </div>
-              <div><span class="text-zinc-400">State</span>
+              <div>
+                <span class="text-zinc-400">State</span>
                 <div>{{ calculated_route_detail?.DestinationLocationDetail?.address_components_details?.state || '—' }}
                 </div>
               </div>
-              <div><span class="text-zinc-400">Country</span>
+              <div>
+                <span class="text-zinc-400">Country</span>
                 <div>{{ calculated_route_detail?.DestinationLocationDetail?.address_components_details?.country || '—'
-                }}</div>
+                }}
+                </div>
               </div>
             </div>
-
+            <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  class="w-4 h-4 text-zinc-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M2.458 12C3.732 6.943 7.428 3 12 3c4.572 0 8.268 3.943 9.542 9H2.458Z" />
+                </svg>
+                <div>
+                  <span class="text-zinc-400">Latitude</span>
+                  <div>{{ calculated_route_detail?.DestinationLocationLatitude?.toFixed(6) || '—' }}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  class="w-4 h-4 text-zinc-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 21c-4.418 0-8-3.582-8-8a8 8 0 1 1 16 0c0 4.418-3.582 8-8 8Z" />
+                  <circle cx="12" cy="13" r="2" stroke-width="1.5" />
+                </svg>
+                <div>
+                  <span class="text-zinc-400">Longitude</span>
+                  <div>{{ calculated_route_detail?.DestinationLocationLongitude?.toFixed(6) || '—' }}</div>
+                </div>
+              </div>
+            </div>
             <div v-if="calculated_route_detail?.DestinationLocationDetail?.error"
               class="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-[12px] text-rose-700">
               <strong class="font-semibold">Address warning:</strong>
@@ -339,18 +335,14 @@
           </div>
         </div>
       </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-4">
-        <!-- Toll passes -->
-        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm no-overflow">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-[14px] font-semibold text-zinc-900">Toll passes</h3>
             <span class="text-[12px] text-zinc-500">
               {{ (calculated_route_detail?.TollPass || []).length }} item
             </span>
           </div>
-
-          <!-- Mobil: 2 kolon. >=sm: auto-fit grid; tüm chip'ler aynı genişlikte kutulara oturur -->
           <div class="grid grid-cols-2 gap-2
              sm:[grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))] sm:gap-2">
             <span v-for="(tp, i) in (calculated_route_detail?.TollPass || [])" :key="i" class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50
@@ -359,16 +351,13 @@
                 :style="{ backgroundColor: i % 2 === 0 ? '#ef4444' : '#111827' }"></span>
               <span class="truncate max-w-full whitespace-nowrap">{{ prettyToll(tp) }}</span>
             </span>
-
             <span v-if="!(calculated_route_detail?.TollPass || []).length"
               class="text-[13px] text-zinc-500 col-span-2 sm:col-[1/-1]">
               No passes
             </span>
           </div>
         </div>
-
-        <!-- Trip options -->
-        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+        <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm no-overflow">
           <h3 class="text-[14px] font-semibold text-zinc-900 mb-3">Trip options</h3>
           <ul class="space-y-2 text-[13px] text-zinc-700">
             <li class="flex items-center justify-between">
@@ -394,14 +383,12 @@
           </ul>
         </div>
       </div>
-
-      <!-- Araç bilgisi -->
-      <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm">
+      <div
+        class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm print-keep print-overflow-visible no-overflow">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-[14px] font-semibold text-zinc-900">Vehicle</h3>
-
-          <!-- Öne çıkan rozetler -->
-          <div class="hidden sm:flex items-center gap-2">
+          <div
+            class="hidden sm:flex items-center gap-2 print-block print:[grid-template-columns:repeat(2,minmax(0,1fr))]">
             <span v-if="calculated_route_detail?.VehicleId?.drive"
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
               {{ calculated_route_detail?.VehicleId?.drive }}
@@ -424,17 +411,15 @@
             </span>
           </div>
         </div>
-
-        <!-- Sadece util class: dl/dt/dd + grid -->
-        <dl class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 grid-print-block">
           <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
             <dt class="text-zinc-500 text-[12px] leading-none mb-1">Make</dt>
             <dd class="text-[13px] font-medium text-zinc-900">{{ calculated_route_detail?.VehicleId?.make || '—' }}</dd>
           </div>
           <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
             <dt class="text-zinc-500 text-[12px] leading-none mb-1">Model</dt>
-            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.model ||
-              '—' }}</dd>
+            <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.model
+              || '—' }}</dd>
           </div>
           <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
             <dt class="text-zinc-500 text-[12px] leading-none mb-1">Base Model</dt>
@@ -485,8 +470,6 @@
             <dd class="text-[13px] font-medium text-zinc-900 truncate">{{ calculated_route_detail?.VehicleId?.vclass ||
               '—' }}</dd>
           </div>
-
-          <!-- MPG üçlü tek hücrede -->
           <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
             <dt class="text-zinc-500 text-[12px] leading-none mb-1">MPG</dt>
             <dd class="text-[13px] font-medium text-zinc-900">
@@ -508,38 +491,9 @@
           </div>
         </dl>
       </div>
-
-      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm mt-6">
-        <div class="px-4 py-3 border-b border-zinc-100">
-          <h3 class="text-[14px] font-semibold text-zinc-900">Sources</h3>
-        </div>
-        <div class="p-4 space-y-2 text-[13px] text-zinc-700">
-          <p v-if="calculated_route_detail?.fuel_details_source">
-            <span class="text-zinc-500">Fuel:</span>
-            {{ calculated_route_detail.fuel_details_source }} - Data360
-          </p>
-          <p v-if="calculated_route_detail?.vehicle_dataset_source">
-            <span class="text-zinc-500">Vehicle:</span>
-            {{ calculated_route_detail.vehicle_dataset_source }}
-          </p>
-          <p v-if="calculated_route_detail?.google_service_source">
-            <span class="text-zinc-500">Google:</span>
-            {{ calculated_route_detail.google_service_source }}
-          </p>
-        </div>
-        <div class="px-4 pb-3">
-          <p class="text-[11px] text-zinc-500 leading-snug">
-            This data has been obtained from third-party services and contains estimated values.
-          </p>
-        </div>
-      </div>
-
-      <!-- Harita placeholder (polyline sonra) -->
-      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm overflow-hidden">
+      <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm overflow-hidden print:hidden">
         <div class="px-4 pt-4">
-          <!-- Harita üst şerit: alternatif rota sayısı + meta -->
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <!-- Alternatif rota sayısı -->
             <div class="inline-flex items-center gap-2">
               <span class="text-[13px] text-zinc-600">Alternatif rota</span>
               <span
@@ -550,16 +504,95 @@
                 <b class="tabular-nums">
                   {{ this.calculated_route_detail.NumberOfMultipleRoute }}
                 </b>
-                <span class="text-zinc-500">adet</span>
+                <span class="text-zinc-500">period</span>
               </span>
             </div>
           </div>
         </div>
         <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
       </div>
+      <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm no-overflow"
+        v-if="calculated_route_detail?.exported_pdf_files.length">
+        <div class="flex items-center justify-between mb-3 cursor-pointer select-none"
+          @click="showExported = !showExported">
+          <h3 class="text-[14px] font-semibold text-zinc-900">Exported PDFs</h3>
+          <span class="text-[12px] text-zinc-500">
+            {{ (calculated_route_detail?.exported_pdf_files || []).length }} item
+          </span>
+        </div>
+        <ul v-show="showExported" class="grid gap-3 sm:gap-4">
+          <li v-for="file in calculated_route_detail.exported_pdf_files" :key="file._id"
+            class="rounded-xl border border-zinc-100 bg-white p-3 sm:p-4 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700 shrink-0"
+                    title="PDF">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5">
+                      <path fill="currentColor"
+                        d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5" />
+                    </svg>
+                  </span>
+                  <div class="min-w-0">
+                    <h4 class="text-[13px] sm:text-[14px] font-semibold text-zinc-900 truncate">
+                      {{ file?.FileName || 'document.pdf' }}
+                      <span class="text-zinc-400">/</span>
+                      <span class="text-zinc-700">{{
+                        file?.file_size_formatted || '—'
+                        }}</span>
+                    </h4>
 
-      <!-- Alt yapışkan eylem çubuğu -->
-      <div class="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+                    <div class="mt-1 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 text-[12px] text-zinc-600">
+                      <span class="truncate">
+                        <span class="text-zinc-500">Type:</span>
+                        <span class="font-mono">{{
+                          file?.ContentType || 'application/pdf'
+                          }}</span>
+                      </span>
+                      <span class="truncate">
+                        <span class="text-zinc-500">Created:</span>
+                        <span class="font-mono tabular-nums">{{
+                          file?.created_date || '—'
+                          }}</span>
+                      </span>
+                      <span class="truncate">
+                        <span class="text-zinc-500">FileId:</span>
+                        <span class="font-mono">{{ file?.FileId }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
+                <button type="button" @click="redownload_exported_pdf(file.FileId, file.FileName)"
+                  class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99]"
+                  :disabled="pdf_creating_process_started">
+                  <svg viewBox="0 0 24 24" class="h-4 w-4">
+                    <path fill="currentColor" d="M5 20h14v-2H5m7-3 5-5h-3V4h-4v6H7l5 5Z" />
+                  </svg>
+                  {{ pdf_creating_process_started ? 'Preparing…' : 'Re-download' }}
+                </button>
+
+                <button type="button" @click="delete_exported_pdf(file._id)"
+                  class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
+                  <svg viewBox="0 0 24 24" class="h-4 w-4">
+                    <path fill="currentColor" d="M6 7h12l-1 13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7Zm3-4h6l1 2H8l1-2Z" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm text-[13px] text-zinc-600 no-overflow"
+        v-else>
+        No exported PDFs for this route yet.
+      </div>
+      <div
+        class="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.5rem)] print:hidden">
         <div class="mx-auto max-w-6xl">
           <div class="rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur
                 shadow-lg px-3 py-2 flex items-center justify-between">
@@ -571,6 +604,27 @@
               </span>
             </div>
             <div class="flex items-center gap-2">
+              <div class="relative inline-block">
+                <details class="group relative">
+                  <summary
+                    class="inline-flex select-none list-none items-center rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 cursor-pointer">
+                    Export
+                    <svg viewBox="0 0 24 24" class="h-4 w-4 ml-1 transition-transform group-open:rotate-180">
+                      <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                    </svg>
+                  </summary>
+                  <div
+                    class="absolute right-0 bottom-full mb-2 z-40 w-56 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg">
+                    <button :disabled="this.pdf_creating_process_started" @click="create_pdf_service"
+                      class="w-full px-3 py-2 text-left text-[13px] hover:bg-zinc-50 rounded-md flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" class="h-4 w-4">
+                        <path fill="currentColor" d="M5 20h14v-2H5m14-9h-5V3H8a2 2 0 0 0-2 2v10h13V9Z" />
+                      </svg>
+                      {{ this.pdf_creating_process_started ? 'PDF is being created, please wait.' : 'Download as PDF' }}
+                    </button>
+                  </div>
+                </details>
+              </div>
               <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
                 class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
                 Delete
@@ -579,9 +633,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Desktop sticky -->
-      <div class="hidden sm:block sticky bottom-3 z-30">
+      <div class="hidden sm:block sticky bottom-3 z-30 print:hidden">
         <div class="mx-auto max-w-6xl">
           <div
             class="rounded-2xl border border-zinc-200 bg-white shadow-lg px-4 py-3 flex items-center justify-between">
@@ -593,6 +645,27 @@
               </span>
             </div>
             <div class="flex items-center gap-2">
+              <div class="relative inline-block">
+                <details class="group relative">
+                  <summary
+                    class="inline-flex select-none list-none items-center rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 cursor-pointer">
+                    Export
+                    <svg viewBox="0 0 24 24" class="h-4 w-4 ml-1 transition-transform group-open:rotate-180">
+                      <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                    </svg>
+                  </summary>
+                  <div
+                    class="absolute right-0 bottom-full mb-2 z-40 w-56 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg">
+                    <button :disabled="this.pdf_creating_process_started" @click="create_pdf_service"
+                      class="w-full px-3 py-2 text-left text-[13px] hover:bg-zinc-50 rounded-md flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" class="h-4 w-4">
+                        <path fill="currentColor" d="M5 20h14v-2H5m14-9h-5V3H8a2 2 0 0 0-2 2v10h13V9Z" />
+                      </svg>
+                      {{ this.pdf_creating_process_started ? 'PDF is being created, please wait.' : 'Download as PDF' }}
+                    </button>
+                  </div>
+                </details>
+              </div>
               <button @click="delete_calculated_route(calculated_route_detail._id)" type="button"
                 class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-4 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]">
                 Delete
@@ -601,15 +674,10 @@
           </div>
         </div>
       </div>
-
-      <!-- ID çıktı (debug) -->
-      <div class="text-[12px] text-zinc-400 text-center">
-        {{ this.store.AppVersion }} - {{ calculated_route_detail?._id }}
-      </div>
     </div>
     <div v-if="successMessage" class="fixed left-1/2 -translate-x-1/2 top-16 z-[100]
-                w-[calc(100%-2rem)] max-w-2xl rounded-xl border border-green-200
-                bg-green-50 p-4 text-green-700 text-sm shadow-lg">
+          w-[calc(100%-2rem)] max-w-2xl rounded-xl border border-green-200
+          bg-green-50 p-4 text-green-700 text-sm shadow-lg">
       {{ successMessage }} <span v-if="countdown">({{ countdown }})</span>
     </div>
   </section>
@@ -621,9 +689,6 @@ import axios from 'axios';
 import { UseStore } from '../stores/store';
 export default {
   name: 'CalculatedRouteDetail',
-  props: {
-    data: { type: Object, required: false, default: null } // harici prop da kabul
-  },
   components: {
     GoogleMaps
   },
@@ -640,18 +705,25 @@ export default {
       calculated_route_detail: {},
       build_route_button_triggered: 0,
       successMessage: '',
-      countdown: 0
+      countdown: 0,
+      jwt_token: null,
+      pdf_creating_process_started: false,
+      showExported: false
     };
   },
-  async mounted() {
+  async created() {
+    this.jwt_token = null;
+    this.pdf_creating_process_started = false;
     this.store.calculated_route_detail_overview_details = [];
+    this.store.calculated_route_detail_active = false;
+
+    var { Token } = this.$route.query;
+    if (Token) this.jwt_token = Token;
 
     var { _id } = this.$route.params || {};
-    await this.get_calculated_route_detail(_id);
-
-    this.store.calculated_route_detail_active = true;
+    if (_id) await this.get_calculated_route_detail(_id);
   },
-  unmounted() {
+  async beforeUnmount(){
     this.store.calculated_route_detail_overview_details = [];
     this.store.calculated_route_detail_active = false;
   },
@@ -672,14 +744,42 @@ export default {
     }
   },
   methods: {
+    async redownload_exported_pdf(_id, file_name) {
+      try {
+        var res = await axios.get(`/download/pdf/${_id}`, {
+          responseType: 'blob',
+          withCredentials: true,
+        });
+
+        var cd = res.headers['content-disposition'];
+        var match = cd && cd.match(/filename="?([^"]+)"?/);
+        var filename = match ? decodeURIComponent(match[1]) : `${file_name}.pdf`;
+
+        var blob = new Blob([res.data], { type: 'application/pdf' });
+        var url = URL.createObjectURL(blob);
+
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('PDF indirilemedi:', err);
+      }
+    },
     async delete_calculated_route(_id) {
       try {
         var res = await axios.delete(`/delete/calculated/route/${_id}`);
+
         if (res.status >= 200 && res.status < 300) {
-          // Başarıyla silindi
+
           this.successMessage = "The route has been successfully deleted. You will be redirected to the main screen in 5 seconds.";
           this.countdown = 5;
+
           try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch { };
+
           var interval = setInterval(() => {
             this.countdown--;
             if (this.countdown <= 0) {
@@ -687,75 +787,100 @@ export default {
               this.$router.push({ name: 'Home' });
             }
           }, 1000);
+
         }
+        else return;
       } catch (err) {
         this.errorMessage = "An error occurred during the deletion process.";
       }
     },
     goBack() {
-      var Page = 1;
-      this.$router.push({ name: 'Home', query: { Page: Page } });
+      this.$router.push({ name: 'Home', query: { Page: 1 } });
     },
     prettyToll(code) {
       if (!code) return '—';
-      // "US_WA_GOOD_TO_GO" -> "US WA | GOOD TO GO"
+
       var parts = String(code).split('_');
       if (parts.length <= 1) return code;
+
       var country = parts[0] || '';
       var state = parts[1] || '';
       var name = parts.slice(2).join(' ').replace(/\s+/g, ' ').trim();
+
       return `${country} ${state} | ${name}`;
     },
+    async create_pdf_service() {
+
+      this.pdf_creating_process_started = true;
+      var calculated_route_id = this.calculated_route_detail._id;
+
+      try {
+
+        var res = await axios.post("/create/pdf", { RouteId: calculated_route_id }, { responseType: "blob" });
+        this.pdf_creating_process_started = false;
+
+        if (!res.status === 200) return;
+
+        var blob = new Blob([res.data], { type: "application/pdf" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+
+        a.href = url;
+        a.download = "routewise.pdf";
+        a.click();
+        URL.revokeObjectURL(url);
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async get_calculated_route_detail(_id) {
+
       this.isLoading = true;
       this.errorMessage = '';
-      let res = null;
+
       try {
-        res = await axios.post('/calculated/route/detail', { _id });
-        if (res?.status === 200 && res?.data?.decrypted_calculated_route_detail) {
-          this.calculated_route_detail = res.data.decrypted_calculated_route_detail;
 
-          var StartLocation = this.calculated_route_detail.StartLocation;
-          var DestinationLocation = this.calculated_route_detail.DestinationLocation;
+        var res = await axios.post('/calculated/route/detail', { _id }, { headers: { "Authorization": "Bearer " + this.jwt_token } });
 
-          var start_location_details = {
-            place_id: this.calculated_route_detail.StartLocationDetail.place_id,
-            formatted_address: this.calculated_route_detail.StartLocationDetail.formatted_address,
-            latitude: this.calculated_route_detail.StartLocationDetail.geometry.location.latitude,
-            longitude: this.calculated_route_detail.StartLocationDetail.geometry.location.longitude,
-            StartLocation: StartLocation
-          };
+        if (res.status !== 200) return this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
 
-          var destination_location_details = {
-            place_id: this.calculated_route_detail.DestinationLocationDetail.place_id,
-            formatted_address: this.calculated_route_detail.DestinationLocationDetail.formatted_address,
-            latitude: this.calculated_route_detail.DestinationLocationDetail.geometry.location.latitude,
-            longitude: this.calculated_route_detail.DestinationLocationDetail.geometry.location.longitude,
-            DestinationLocation: DestinationLocation
-          };
+        this.calculated_route_detail = res.data.decrypted_calculated_route_detail;
+        
+        var StartLocation = this.calculated_route_detail.StartLocation;
+        var DestinationLocation = this.calculated_route_detail.DestinationLocation;
 
-          var calculated_route_detail_overview_details = this.calculated_route_detail.decrypted_calculated_route_polylines.map(function (item) { return item.overview_details });
-          this.store.calculated_route_detail_overview_details = calculated_route_detail_overview_details;
+        var start_location_details = {
+          place_id: this.calculated_route_detail.StartLocationDetail.place_id,
+          formatted_address: this.calculated_route_detail.StartLocationDetail.formatted_address,
+          latitude: this.calculated_route_detail.StartLocationDetail.geometry.location.latitude,
+          longitude: this.calculated_route_detail.StartLocationDetail.geometry.location.longitude,
+          StartLocation: StartLocation
+        };
 
-          this.store.calculated_route_detail_active = true;
+        var destination_location_details = {
+          place_id: this.calculated_route_detail.DestinationLocationDetail.place_id,
+          formatted_address: this.calculated_route_detail.DestinationLocationDetail.formatted_address,
+          latitude: this.calculated_route_detail.DestinationLocationDetail.geometry.location.latitude,
+          longitude: this.calculated_route_detail.DestinationLocationDetail.geometry.location.longitude,
+          DestinationLocation: DestinationLocation
+        };
 
-          var THIS = this;
-          setTimeout(function () {
-            THIS.store.StartLocation = start_location_details;
-            THIS.store.DestinationLocation = destination_location_details;
-            THIS.build_route_button_triggered++;
-          }, 1500);
+        var calculated_route_detail_overview_details = this.calculated_route_detail.decrypted_calculated_route_polylines.map(function (item) { return item.overview_details });
 
-        } else {
-          this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
-        }
-      } catch (err) {
-        // Kodu orada burada boğduysan en azından söyle bari
-        this.errorMessage = err?.response?.data?.message || 'Veri çekilirken bir sorun oluştu.';
-      } finally {
-        // Konsolda gör, ama uygulamayı patlatma
-        try { console.debug('route/detail response:', res); } catch { }
+        this.store.calculated_route_detail_overview_details = calculated_route_detail_overview_details;
+        this.store.calculated_route_detail_active = true;
+
+        var THIS = this;
+        setTimeout(function () {
+          THIS.store.StartLocation = start_location_details;
+          THIS.store.DestinationLocation = destination_location_details;
+          THIS.build_route_button_triggered++;
+        }, 1500);
+
         this.isLoading = false;
+      } catch (err) {
+        this.errorMessage = err?.response?.data?.message || 'Veri çekilirken bir sorun oluştu.';
       }
     }
   }
@@ -763,7 +888,6 @@ export default {
 </script>
 
 <style scoped>
-/* Native hissi için küçük dokunuşlar */
 :focus-visible {
   outline: 2px solid rgba(239, 68, 68, 0.65);
   outline-offset: 2px;

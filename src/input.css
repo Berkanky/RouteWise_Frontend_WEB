@@ -1,12 +1,60 @@
+/* input.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   html { @apply antialiased; }
-  body {
-     @apply bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-100;
-     @apply overflow-hidden;
-   }
-  
+  body { @apply bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-100; }
+}
+
+/* Tek A4 kaynağı: */
+@page { size: A4; margin: 12mm; }
+
+/* PRINT RESET – agresif ama gerekli */
+@media print {
+  html, body {
+    width: auto !important;
+    max-width: none !important;
+    background: #fff !important;
+    overflow: visible !important;
+  }
+
+  /* Pozisyon bozanları öldür */
+  .sticky, .fixed { position: static !important; top: auto !important; bottom: auto !important; }
+
+  /* Görsel efektler PDF’te sapıtır */
+  * { box-shadow: none !important; filter: none !important; }
+  .backdrop-blur, [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  [style*="transform"], .transform { transform: none !important; }
+
+  /* Sadece küçük kartlarda no-break kullan; büyük kapsayıcılarda kaldır */
+  .no-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .no-overflow { overflow: visible !important; }
+
+  /* Grid’i blok yapınca kolon paddings/border-left’ler kalmasın */
+  .grid-print-block { display: block !important; }
+  .grid-print-block > * {
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+
+  /* Her tür dropdown, harita vs. gizle */
+  .print-hide, .print:hidden, .print\:hidden { display: none !important; }
+
+  /* Yazı yoğunluğu daha iyi dursun */
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+
+  /* Sayfa taşmasını kesmek için bölümleri işaretle */
+  .print-keep {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Long sections için izin ver: */
+  .print-overflow-visible { overflow: visible !important; }
 }
