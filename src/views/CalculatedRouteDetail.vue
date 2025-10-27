@@ -845,6 +845,9 @@ export default {
 
         if (!res.status === 200) return;
 
+        if( share_type === 1 ) this.calculated_route_detail.exported_pdf_files = res.data.exported_pdf_files; 
+        if( share_type === 2 ) this.calculated_route_detail.shared_link = res.data.shared_link;
+
       } catch (err) {
         console.log(err);
       }
