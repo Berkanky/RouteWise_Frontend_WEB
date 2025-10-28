@@ -512,33 +512,35 @@
         <GoogleMaps :build_route_button_triggered="this.build_route_button_triggered" />
       </div>
 
-      <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-6 shadow-sm no-overflow">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <div>
+      <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-6 shadow-sm">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div class="min-w-0">
             <h3 class="text-[14px] font-semibold text-zinc-900">Share / Generate PDF</h3>
             <p class="text-[12px] text-zinc-500">You can share a link or generate a PDF for this route.</p>
           </div>
-          <span class="inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-[12px]"
-            :class="(this.pdf_creating_process_started === true) ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'">
+
+          <span class="inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-[12px] whitespace-nowrap"
+            :class="(pdf_creating_process_started === true)
+              ? 'border-amber-200 bg-amber-50 text-amber-700'
+              : 'border-emerald-200 bg-emerald-50 text-emerald-700'">
             <svg viewBox="0 0 24 24" class="h-4 w-4"
-              :class="(this.pdf_creating_process_started === true) ? 'animate-pulse' : ''">
-              <path fill="currentColor" :d="(this.pdf_creating_process_started === true)
+              :class="(pdf_creating_process_started === true) ? 'animate-pulse' : ''">
+              <path fill="currentColor" :d="(pdf_creating_process_started === true)
                 ? 'M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2Z'
                 : 'M9 16.17 5.53 12.7l-1.41 1.41L9 19 20.29 7.71 18.88 6.3 9 16.17Z'" />
             </svg>
-            <span>{{ (this.pdf_creating_process_started === true) ? 'Processing...' : 'Ready' }}</span>
+            <span>{{ (pdf_creating_process_started === true) ? 'Processing...' : 'Ready' }}</span>
           </span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div class="rounded-xl border border-zinc-100 bg-white p-4 sm:p-5">
             <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Options</h4>
 
-            <div class="grid sm:grid-cols-2 gap-3">
-              <button type="button" v-on:click="share_route_service(2)"
-                class="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2.5 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99]"
-                :disabled="this.pdf_creating_process_started === true">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button type="button" @click="share_route_service(2)"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2.5 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99] disabled:opacity-60"
+                :disabled="pdf_creating_process_started === true">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
                   <path fill="currentColor"
                     d="M10.59 13.41a1.98 1.98 0 0 1 0-2.82l2.82-2.82a2 2 0 1 1 2.83 2.83l-.88.88 1.41 1.41.88-.88a4 4 0 1 0-5.66-5.66l-2.82 2.82a4 4 0 0 0 0 5.66l.42.42 1.41-1.41-.41-.41Z" />
@@ -548,9 +550,9 @@
                 Share Link
               </button>
 
-              <button type="button" v-on:click="share_route_service(1)"
-                class="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-3 py-2.5 text-[13px] font-semibold hover:bg-amber-100 active:scale-[0.99]"
-                :disabled="this.pdf_creating_process_started === true">
+              <button type="button" @click="share_route_service(1)"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-3 py-2.5 text-[13px] font-semibold hover:bg-amber-100 active:scale-[0.99] disabled:opacity-60"
+                :disabled="pdf_creating_process_started === true">
                 <svg viewBox="0 0 24 24" class="h-4 w-4">
                   <path fill="currentColor" d="M13 12h4l-5 5-5-5h4V4h2v8Z" />
                 </svg>
@@ -559,11 +561,11 @@
             </div>
 
             <div class="mt-4 rounded-lg border border-zinc-100 bg-zinc-50 p-3">
-              <div class="flex items-center gap-2 text-[12px]">
+              <div class="flex flex-wrap items-center gap-2 text-[12px]">
                 <span class="inline-flex h-2 w-2 rounded-full"
-                  :class="(this.pdf_creating_process_started === true) ? 'bg-amber-500 animate-pulse' : 'bg-emerald-600'"></span>
+                  :class="(pdf_creating_process_started === true) ? 'bg-amber-500 animate-pulse' : 'bg-emerald-600'"></span>
                 <span class="text-zinc-700">
-                  {{ (this.pdf_creating_process_started === true)
+                  {{ (pdf_creating_process_started === true)
                     ? 'Process started. Please wait until it finishes...'
                     : 'Process completed. See the result on the right.' }}
                 </span>
@@ -574,8 +576,8 @@
           <div class="rounded-xl border border-zinc-100 bg-white p-4 sm:p-5">
             <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Generated PDF</h4>
 
-            <div class="flex items-start justify-between gap-3 rounded-lg border border-zinc-100 p-3 sm:p-4"
-              v-if="(this.calculated_route_detail?.exported_pdf_files?.length || 0) > 0">
+            <div v-if="(calculated_route_detail?.exported_pdf_files?.length || 0) > 0"
+              class="flex flex-wrap items-start justify-between gap-3 rounded-lg border border-zinc-100 p-3 sm:p-4">
               <div class="flex items-start gap-3 min-w-0">
                 <span
                   class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700 shrink-0"
@@ -585,39 +587,29 @@
                       d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5" />
                   </svg>
                 </span>
-
                 <div class="min-w-0">
                   <div class="text-[13px] sm:text-[14px] font-semibold text-zinc-900 truncate">
-                    {{ this.calculated_route_detail?.exported_pdf_files?.[0]?.FileName || 'document.pdf' }}
+                    {{ calculated_route_detail?.exported_pdf_files?.[0]?.FileName || 'document.pdf' }}
                   </div>
-                  <div class="mt-1 text-[12px] text-zinc-600">
+                  <div class="mt-1 text-[12px] text-zinc-600 flex flex-wrap gap-1">
                     <span class="text-zinc-500">Created:</span>
                     <span class="font-mono tabular-nums">
-                      {{ this.calculated_route_detail?.exported_pdf_files?.[0]?.["created_date"] || '—' }}
+                      {{ calculated_route_detail?.exported_pdf_files?.[0]?.['created_date'] || '—' }}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
-                <button type="button"
-                  @click="redownload_exported_pdf(this.calculated_route_detail.exported_pdf_files[0].FileId, this.calculated_route_detail.exported_pdf_files[0].FileName)"
-                  class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99]"
-                  :disabled="this.pdf_creating_process_started === true">
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full sm:w-auto">
+                <button type="button" @click="redownload_exported_pdf(
+                  calculated_route_detail.exported_pdf_files[0].FileId,
+                  calculated_route_detail.exported_pdf_files[0].FileName
+                )"
+                  class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99] disabled:opacity-60">
                   <svg viewBox="0 0 24 24" class="h-4 w-4">
                     <path fill="currentColor" d="M5 20h14v-2H5m7-3 5-5h-3V4h-4v6H7l5 5Z" />
                   </svg>
                   Download
-                </button>
-
-                <button type="button"
-                  @click="delete_exported_pdf(this.calculated_route_detail.exported_pdf_files[0]._id)"
-                  class="inline-flex items-center gap-2 rounded-lg border border-rose-600 text-rose-700 px-3 py-2 text-[13px] font-semibold hover:bg-rose-50 active:scale-[0.99]"
-                  :disabled="this.pdf_creating_process_started === true">
-                  <svg viewBox="0 0 24 24" class="h-4 w-4">
-                    <path fill="currentColor" d="M6 7h12l-1 13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7Zm3-4h6l1 2H8l1-2Z" />
-                  </svg>
-                  Delete
                 </button>
               </div>
             </div>
@@ -634,32 +626,36 @@
                 <span class="font-semibold text-zinc-900">Shared Link</span>
               </div>
 
-              <div class="grid sm:grid-cols-3 gap-2 sm:gap-3">
-                <div class="sm:col-span-2 flex items-center gap-2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2 flex flex-wrap items-center gap-1 min-w-0">
                   <span class="text-zinc-500 shrink-0">URL:</span>
-                  <a class="truncate underline decoration-dotted hover:opacity-80"
-                    :href="this.calculated_route_detail?.shared_link?.formatted_url || '#'" target="_blank" rel="noopener">
+                  <a class="truncate underline decoration-dotted hover:opacity-80 break-all"
+                    :href="calculated_route_detail?.shared_link?.formatted_url || '#'" target="_blank" rel="noopener">
                     Visit Link
                   </a>
+                  <button type="button"
+                    class="ml-1 inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white px-2 py-1 text-[11px] font-medium text-zinc-700 hover:bg-zinc-100 active:scale-[0.97]"
+                    @click="copySharedLink">
+                    Copy
+                  </button>
                 </div>
-                <div class="flex items-center gap-2">
+
+                <div class="flex flex-wrap items-center gap-1">
                   <span class="text-zinc-500 shrink-0">Expires At:</span>
-                  <span class="font-mono tabular-nums">
-                    {{ this.calculated_route_detail?.shared_link?.ExpiresDate || '—' }}
+                  <span class="font-mono tabular-nums break-all">
+                    {{ calculated_route_detail?.shared_link?.ExpiresDate || '—' }}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div v-if="!(this.calculated_route_detail?.exported_pdf_files?.length)"
+            <div v-if="!(calculated_route_detail?.exported_pdf_files?.length)"
               class="mt-3 rounded-lg border border-zinc-100 bg-white p-3 text-[12px] text-zinc-600">
               No generated PDFs for this route yet.
             </div>
           </div>
         </div>
       </div>
-
-
       <div
         class="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.5rem)] print:hidden">
         <div class="mx-auto max-w-6xl">
@@ -768,6 +764,18 @@ export default {
     }
   },
   methods: {
+    copySharedLink() {
+      var link = this.calculated_route_detail?.shared_link?.formatted_url;
+      if (!link) return;
+
+      navigator.clipboard.writeText(link)
+        .then(() => {
+          this.$q.notify({ type: 'positive', message: 'Link copied!' });
+        })
+        .catch(() => {
+          console.error('Clipboard erişimi reddedildi');
+        });
+    },
     async redownload_exported_pdf(_id, file_name) {
       try {
         var res = await axios.get(`/download/pdf/${_id}`, {
@@ -845,8 +853,8 @@ export default {
 
         if (!res.status === 200) return;
 
-        if( share_type === 1 ) this.calculated_route_detail.exported_pdf_files = res.data.exported_pdf_files; 
-        if( share_type === 2 ) this.calculated_route_detail.shared_link = res.data.shared_link;
+        if (share_type === 1) this.calculated_route_detail.exported_pdf_files = res.data.exported_pdf_files;
+        if (share_type === 2) this.calculated_route_detail.shared_link = res.data.shared_link;
 
       } catch (err) {
         console.log(err);
@@ -859,7 +867,7 @@ export default {
 
       try {
 
-        var res = await axios.post('/calculated/route/detail', { _id }, { headers:{ "Authorization": "Bearer " + Token  } });
+        var res = await axios.post('/calculated/route/detail', { _id }, { headers: { "Authorization": "Bearer " + Token } });
 
         if (res.status !== 200) return this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
 

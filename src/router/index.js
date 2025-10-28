@@ -86,7 +86,7 @@ var routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/shared/calculated/route/detail",
+    path: "/shared/calculated/route/detail/:share_id",
     name: "SharedCalculatedRouteDetail",
     component: SharedCalculatedRouteDetail,
     meta: { requiresAuth: false },

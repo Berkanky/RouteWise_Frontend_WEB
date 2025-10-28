@@ -562,8 +562,8 @@ export default {
     this.store.calculated_route_detail_overview_details = [];
     this.store.calculated_route_detail_active = false;
 
-    var { calculated_route_id, Token, share_id } = this.$route.query;
-    if (calculated_route_id && Token && share_id ) await this.get_calculated_route_detail(calculated_route_id, share_id, Token);
+    var { share_id } = this.$route.params;
+    await this.get_calculated_route_detail(share_id);
   },
   async beforeUnmount() {
 
@@ -599,14 +599,14 @@ export default {
 
       return `${country} ${state} | ${name}`;
     },
-    async get_calculated_route_detail(_id, share_id, Token) {
-      console.log(_id, share_id, Token);
+    async get_calculated_route_detail(share_id) {
+
       this.isLoading = true;
       this.errorMessage = '';
 
       try {
 
-        var res = await axios.post('/shared/calculated/route/detail', { _id, ShareId: share_id }, { headers: { "Authorization": "Bearer " + Token } });
+        var res = await axios.post('/shared/calculated/route/detail', { ShareId: share_id } );
 
         if (res.status !== 200) return this.errorMessage = res.data.message || 'Error. ';
 
