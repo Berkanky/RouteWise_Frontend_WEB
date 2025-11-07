@@ -1,8 +1,6 @@
 <template>
   <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 pb-8 flex items-start justify-center min-h-[80vh]">
     <div class="w-full max-w-md bg-white md:rounded-xl md:shadow-md md:border md:border-zinc-200 px-6 py-10">
-      
-      <!-- Back Button -->
       <button
         @click="goBackLogin"
         class="mb-6 flex items-center text-sm text-zinc-600 hover:text-black transition"
@@ -18,16 +16,12 @@
         </svg>
         Back to Login
       </button>
-
-      <!-- Heading -->
       <h1 class="text-2xl font-bold text-black text-center">
         Enter your security code
       </h1>
       <p class="mt-2 text-sm text-zinc-500 text-center">
         Enter the 6-digit code from your authenticator app
       </p>
-
-      <!-- OTP Inputs -->
       <div class="mt-6 flex justify-center gap-2 md:gap-3" @paste.prevent="onPaste">
         <input
           v-for="(v, i) in code"
@@ -42,13 +36,9 @@
           class="h-12 w-12 md:h-14 md:w-14 text-center text-lg font-medium text-black border border-zinc-300 rounded-lg bg-zinc-50 focus:bg-white focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition"
         />
       </div>
-
-      <!-- Error -->
       <p v-if="error" class="mt-4 text-sm text-red-600 text-center">
         {{ error }}
       </p>
-
-      <!-- Verify Button -->
       <div class="mt-6 w-full">
         <button
           :disabled="loading || otpString.length !== 6"
@@ -70,6 +60,7 @@
 </template>
 
 <script>
+
 import axios from "axios";
 import { UseStore } from "../stores/store";
 
@@ -93,7 +84,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      const first = this.$refs.box?.[0];
+      var first = this.$refs.box?.[0];
       if (first) first.focus();
     });
   },
@@ -105,65 +96,74 @@ export default {
       this.$router.replace({ name: "Login" });
     },
     onInput(i, e) {
-      const val = (e.target.value || "").replace(/\D/g, "");
+
+      var val = (e.target.value || "").replace(/\D/g, "");
+
       this.code[i] = val.slice(-1);
-      const next = this.$refs.box?.[i + 1];
+
+      var next = this.$refs.box?.[i + 1];
+
       if (val && next) next.focus();
     },
     onKeydown(i, e) {
       if (e.key === "Backspace" && !this.code[i]) {
-        const prev = this.$refs.box?.[i - 1];
+        var prev = this.$refs.box?.[i - 1];
         if (prev) prev.focus();
       }
       if (e.key === "ArrowLeft") {
-        const prev = this.$refs.box?.[i - 1];
+        var prev = this.$refs.box?.[i - 1];
         if (prev) prev.focus();
       }
       if (e.key === "ArrowRight") {
-        const next = this.$refs.box?.[i + 1];
+        var next = this.$refs.box?.[i + 1];
         if (next) next.focus();
       }
     },
     onPaste(e) {
-      const text = (e.clipboardData?.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+      var text = (e.clipboardData?.getData("text") || "").replace(/\D/g, "").slice(0, 6);
       if (!text) return;
       for (let i = 0; i < 6; i++) {
         this.code[i] = text[i] || "";
       }
-      const idx = Math.min(text.length, 5);
-      const el = this.$refs.box?.[idx];
+      var idx = Math.min(text.length, 5);
+      var el = this.$refs.box?.[idx];
       if (el) el.focus();
     },
     async onSubmit() {
+
       this.error = "";
+
       if (this.otpString.length !== 6) return;
+
       try {
+
         this.loading = true;
-        const res = await axios.post("/TOTP/verify", {
+        var res = await axios.post("/TOTP/verify", {
           Code: this.otpString,
           IsRemindDeviceActive: this.store.LoginData.IsRemindDeviceActive,
         });
-        if (res.status === 200) {
-          this.store.UserData.Active = true;
-          const redir = this.$route.query.redirect;
-          if (typeof redir === "string" && redir) {
-            this.$router.replace(redir);
-          } else {
 
-            var Page = 1;
-            this.$router.push({ name: 'Home', query:{ Page: Page } });
-          }
-        }
+        if( res.status !== 200 ) return this.error = res.data.message;
+
+        this.store.UserData.Active = true;
+
+        var redir = this.$route.query.redirect;
+        if (typeof redir === "string" && redir) return this.$router.replace(redir);
+  
+        this.$router.push({ name: 'Home', query:{ Page: 1 } });
+
       } catch (e) {
-        this.error =
-          e?.response?.data?.message || "Invalid or expired code. Please try again.";
+
+        this.error = e?.response?.data?.message || "Invalid or expired code. Please try again.";
         this.code = ["", "", "", "", "", ""];
-        const first = this.$refs.box?.[0];
-        if (first) first.focus();
+        var first = this.$refs.box?.[0];
+        if (first) return first.focus();
+
       } finally {
-        this.loading = false;
+
+        return this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>

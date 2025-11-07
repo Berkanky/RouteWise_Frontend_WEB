@@ -1,14 +1,10 @@
 <template>
   <Disclosure as="header" class="fixed top-0 left-0 right-0 w-full bg-white shadow-sm backdrop-blur z-50">
-    <!-- Top Bar -->
     <div class="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center">
-      <!-- Left: Logo -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2" v-on:click="GoHomePage">
         <img src="../images/RouteWise-3D-İcon.png" alt="RouteWise Logo" class="h-6 w-6" />
         <span class="text-lg font-semibold text-zinc-900">RouteWise</span>
       </div>
-
-      <!-- Desktop Nav (centered) -->
       <div class="hidden md:flex flex-1 justify-center">
         <nav v-if="Active" class="flex items-center gap-6 text-sm font-medium text-zinc-600">
           <button class="hover:text-[#e11d48]" @click="GoHomePage">
@@ -18,8 +14,6 @@
           <button class="hover:text-[#e11d48]" @click="GoAccountPage">
             Account
           </button>
-
-          <!-- Route: belirgin/pil -->
           <RouterLink
             to="/start/calculate/route"
             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#e11d48] text-white font-semibold shadow hover:opacity-90 active:scale-[0.98]"
@@ -29,8 +23,6 @@
           </RouterLink>
         </nav>
       </div>
-
-      <!-- Desktop Logout (sağ) -->
       <div v-if="Active" class="hidden md:flex">
         <RouterLink
           @click="LogoutService"
@@ -40,8 +32,6 @@
           Logout
         </RouterLink>
       </div>
-
-      <!-- Mobile Toggle -->
       <button
         v-if="Active"
         @click="toggleMobileMenu(true)"
@@ -52,27 +42,19 @@
         </svg>
       </button>
     </div>
-
-    <!-- Mobile Drawer -->
     <teleport to="body">
       <transition name="slide-fade">
         <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[100] md:hidden">
-          <!-- Overlay -->
           <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]" @click="toggleMobileMenu(false)"></div>
-
-          <!-- Drawer (sağ köşelerde radius YOK) -->
           <div
             class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-[100] overflow-y-auto flex flex-col justify-between rounded-none"
             :style="{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }"
           >
-            <!-- Header (radius yok) -->
             <div class="relative h-40 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 flex flex-col items-center justify-center text-zinc-800">
               <img src="../images/RouteWise-3D-İcon.png" class="h-14 w-14 mb-2 drop-shadow" alt="App Logo" />
               <p class="font-semibold">{{ store.UserData?.UserName || 'User' }}</p>
               <p class="text-xs text-zinc-500 opacity-80">Created: {{ formatDate(store.UserData?.CreatedDate) }}</p>
             </div>
-
-            <!-- CTA: Route (merkezde iri) -->
             <div class="px-3 mt-3" v-if="Active">
               <RouterLink
                 to="/start/calculate/route"
@@ -83,8 +65,6 @@
                 Start Route
               </RouterLink>
             </div>
-
-            <!-- Navigation -->
             <div class="flex-1 mt-2">
               <nav class="flex flex-col text-zinc-700 text-sm font-normal mt-3 space-y-1" v-if="Active" >
                 <button
@@ -97,7 +77,6 @@
                   <HomeIcon class="w-5 h-5"/>
                   <span>Home</span>
                 </button>
-
                 <button
                   v-on:click="GoAccountPage()"
                   :class="[
@@ -108,7 +87,6 @@
                   <HomeIcon class="w-5 h-5"/>
                   <span>Account</span>
                 </button>
-
                 <RouterLink
                   to="/start/calculate/route"
                   @click="toggleMobileMenu(false)"
@@ -122,8 +100,6 @@
                 </RouterLink>
               </nav>
             </div>
-
-            <!-- Bottom: Latest + Version + Logout (radius yok) -->
             <div class="px-3">
               <div
                 class="mb-4 p-3 bg-zinc-50 flex items-center justify-between hover:bg-zinc-100 transition-all cursor-pointer"
@@ -136,11 +112,9 @@
                 </div>
                 <ChevronRightIcon class="h-4 w-4 text-zinc-400" />
               </div>
-
               <p class="text-center text-[10px] text-zinc-400 mb-3 opacity-70">
                 app_version {{ store.AppVersion }}
               </p>
-
               <button
                 @click="() => { LogoutService(); toggleMobileMenu(false); }"
                 class="w-full px-5 py-3 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 border-t border-zinc-200 shadow-[0_-1px_2px_rgba(0,0,0,0.05)]"
@@ -199,40 +173,40 @@ export default {
       this.$router.push({ name:'Account', query:{ _id: this.store.UserData._id}});
     },
     GoHomePage(){
-      var Page = 1;
-      this.$router.push({ name: 'Home', query:{ Page: Page } });
+
+      this.$router.push({ name: 'Home', query:{ Page: 1 } });
       this.toggleMobileMenu(false);
     },
     async LogoutService() {
       try {
-        const res = await axios.put("/logout")
-        if (res.status === 200) {
-          this.store.ResetPiniaStore()
-          this.$router.replace({ name: 'Login' })
-        }
+
+        var res = await axios.put("/logout");
+        if (res.status !== 200) return;
+
+        this.store.ResetPiniaStore();
+        this.$router.replace({ name: 'Login' });
+
       } catch (err) {
-        console.log(err)
+        console.log(err);
+        return;
       }
     },
     toggleMobileMenu(open) {
-      this.isMobileMenuOpen = open
-      document.body.classList.toggle('overflow-hidden', open)
+      this.isMobileMenuOpen = open;
+      document.body.classList.toggle('overflow-hidden', open);
     },
     formatDate(dateStr) {
-      if (!dateStr) return '-'
-      const date = new Date(dateStr)
+
+      if (!dateStr) return '-';
+      var date = new Date(dateStr);
       return date.toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      })
+      });
     },
     isActive(name) {
-      return this.$route.name === name
-    },
-    goToRecentRoutes() {
-      this.toggleMobileMenu(false)
-      this.$router.push('/history')
+      return this.$route.name === name;
     }
   },
   watch: {

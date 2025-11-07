@@ -1,21 +1,12 @@
 <template>
   <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 pb-8 flex items-start justify-center min-h-[80vh]">
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 md:bg-white md:rounded-xl md:border md:border-zinc-200 md:shadow-sm md:overflow-hidden">
-      
-      <!-- Left: Register Form -->
       <div class="w-full px-4 py-10 sm:px-6 md:px-12 md:py-16 flex flex-col justify-center">
         <div class="w-full max-w-md mx-auto text-center md:text-left">
-          <!-- Logo -->
           <img src="../images/AppIconRouteWise-4 1.svg" alt="Routewise Logo" class="w-24 h-24 mx-auto md:mx-0 mb-8" />
-          
-          <!-- Heading -->
           <h1 class="text-2xl font-bold text-black mb-2">Create your account</h1>
           <p class="text-sm text-zinc-500 mb-8">Start your journey with RouteWise.</p>
-
-          <!-- Form -->
           <form @submit.prevent="onSubmit" novalidate class="text-left">
-
-            <!-- Username -->
             <div class="mb-4">
               <input
                 v-model.trim="form.UserName"
@@ -29,8 +20,6 @@
               />
               <p v-if="IsUserNameUsed" class="text-sm text-red-600 mt-1">This username is already taken.</p>
             </div>
-
-            <!-- Password -->
             <div class="mb-4 relative">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -44,8 +33,6 @@
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
             </div>
-
-            <!-- Confirm Password -->
             <div class="mb-4 relative">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -59,13 +46,9 @@
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
             </div>
-
-            <!-- Error -->
             <p v-if="error" class="text-sm text-red-600 text-center mt-3">
               {{ error }}
             </p>
-
-            <!-- Register Button -->
             <button
               :disabled="loading || IsUserNameUsed"
               class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white font-semibold shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition mt-4">
@@ -78,8 +61,6 @@
                 Processing…
               </span>
             </button>
-
-            <!-- Already have account -->
             <p class="mt-6 text-center text-sm text-zinc-600">
               Already have an account?
               <RouterLink to="/login" class="text-black underline hover:text-zinc-800 font-medium">
@@ -89,8 +70,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Right: Illustration -->
       <div class="hidden md:block bg-zinc-100">
         <img src="../images/background.jpg" alt="Register illustration" class="w-full h-full object-cover" />
       </div>
@@ -141,7 +120,7 @@ export default {
       this.$router.push({ name: "RegisterTOTPVerify" });
     },
     WatchUserName() {
-      const UserName = this.form.UserName?.trim();
+      var UserName = this.form.UserName?.trim();
       if (!UserName) {
         this.IsUserNameUsed = false;
         return;
@@ -180,7 +159,8 @@ export default {
       };
     },
     sendWS(payload) {
-      const data = JSON.stringify(payload);
+
+      var data = JSON.stringify(payload);
       if (this.socket && this.socket.readyState === WebSocket.OPEN) this.socket.send(data);
       else this.sendQueue.push(data);
     },
@@ -190,7 +170,7 @@ export default {
       }
     },
     scheduleReconnect() {
-      const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts++), 15000);
+      var delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts++), 15000);
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = setTimeout(() => this.WSConnect(), delay);
     },
@@ -216,46 +196,50 @@ export default {
       }
       this.socket = null;
     },
-    async TOTPSetupStartService() {
-      try {
-        const res = await axios.post("/TOTP/setup/start");
-        if (res.status === 200) {
-          this.store.RegisterData.QRDataUrl = res.data.QRDataUrl;
-          this.store.RegisterData.ManualSecret = res.data.ManualSecret;
-          this.$router.push({ name: "RegisterTOTPVerify" });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
     async onSubmit() {
       this.error = "";
+
       if (!this.form.UserName || !this.form.Password || !this.form.PasswordConfirm) {
+
         this.error = "Please fill in all fields.";
         return;
       }
+
       if (this.IsUserNameUsed) {
+
         this.error = "Please choose another username.";
         return;
       }
       if (this.form.Password !== this.form.PasswordConfirm) {
+
         this.error = "Passwords do not match.";
         return;
       }
       try {
+
         this.loading = true;
-        const res = await axios.post("/TOTP/setup/login", {
+
+        var res = await axios.post("/TOTP/setup/login", {
           UserName: this.form.UserName,
           Password: this.form.Password,
           PasswordConfirm: this.form.PasswordConfirm,
         });
-        if (res.status === 200) {
-          this.store.RegisterData = this.form;
-          this.TOTPSetupStartService();
-        }
+
+        if( res.status !== 200 ) return this.error = res.data.message;
+
+        this.store.RegisterData = this.form;
+
+        this.store.TOTPSetupData.QRDataUrl = res.data.QRDataUrl;
+        this.store.TOTPSetupData.ManualSecret = res.data.ManualSecret;
+        this.store.TOTPSetupData.UserName = this.form.UserName;
+
+        this.$router.push({ name: "RegisterTOTPVerify" });
+
       } catch (e) {
+
         this.error = e?.response?.data?.message || "Registration failed.";
       } finally {
+
         this.loading = false;
       }
     },

@@ -6,11 +6,9 @@
         <div class="flex min-h-full items-center justify-center p-4">
           <DialogPanel class="w-full max-w-md rounded-2xl bg-white dark:bg-zinc-800 p-6 shadow-xl">
             <DialogTitle class="text-lg font-semibold">Modal Başlık</DialogTitle>
-
             <div class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
               İçerik buraya.
             </div>
-
             <div class="mt-4 flex justify-end gap-2">
               <button class="px-3 py-1.5 rounded-lg border" @click="open = false">İptal</button>
               <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white" @click="open = false">
@@ -38,7 +36,6 @@ export default {
   emits: ['update:modelValue'],
 
   computed: {
-    // v-model <-> 'open' köprüsü
     open: {
       get() { return this.modelValue },
       set(v) { this.$emit('update:modelValue', v) }

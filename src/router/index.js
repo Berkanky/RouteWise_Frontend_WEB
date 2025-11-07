@@ -4,13 +4,12 @@ import axios from "axios";
 var HomePage = () => import("../views/HomePage.vue");
 var LoginPage = () => import("../views/LoginPage.vue");
 var LoginTOTPVerify = () => import("../views/LoginTOTPVerifyPage.vue");
-var RegisterTOTPVerify = () => import("../views/RegisterTOTPVerifyPage.vue");
+var TOTPVerify = () => import("../views/TOTPVerifyPage.vue");
 var Register = () => import("../views/RegisterPage.vue");
 var PasswordResetStart = () => import("../views/PasswordResetStartPage.vue");
 var PasswordResetVerify= () => import("../views/PasswordResetVerifyPage.vue");
 var PasswordReset = () => import("../views/PasswordResetPage.vue");
 var StartCalculateRoute = () => import("../views/StartCalculateRoutePage.vue");
-var GoogleMaps = () => import("../views/GoogleMaps.vue");
 var CalculatedRouteDetail = () => import("../views/CalculatedRouteDetail.vue");
 var SharedCalculatedRouteDetail = () => import("../views/TemporaryCalculatedRouteDetail.vue");
 var Account = () => import("../views/AccountPage.vue");
@@ -38,9 +37,9 @@ var routes = [
     meta: { guestOnly: true },
   },
   {
-    path: "/register/TOTP/verify",
-    name: "RegisterTOTPVerify",
-    component: RegisterTOTPVerify,
+    path: "/TOTP/verify",
+    name: "TOTPVerify",
+    component: TOTPVerify,
     meta: { guestOnly: true },
   },
   {
@@ -71,12 +70,6 @@ var routes = [
     path: "/start/calculate/route",
     name: "StartCalculateRoute",
     component: StartCalculateRoute,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/map",
-    name: "GoogleMaps",
-    component: GoogleMaps,
     meta: { requiresAuth: true },
   },
   {

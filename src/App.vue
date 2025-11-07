@@ -104,5 +104,4 @@ body,
     padding-bottom: calc(env(safe-area-inset-bottom) + 56px);
   }
 }
-
 </style>

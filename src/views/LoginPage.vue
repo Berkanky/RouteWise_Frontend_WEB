@@ -3,54 +3,37 @@
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 
          md:bg-white md:rounded-xl md:border md:border-zinc-250
          md:shadow-sm md:overflow-hidden">
-
-      <!-- Left: Form -->
       <div class="w-full px-4 py-10 sm:px-6 md:px-12 md:py-16 flex flex-col justify-center">
         <div class="w-full max-w-md mx-auto text-center md:text-left">
-          <!-- Logo -->
           <img src="../images/AppIconRouteWise-4 1.svg" alt="Routewise Logo" class="w-24 h-24 mx-auto md:mx-0 mb-8" />
-
-          <!-- Heading -->
           <h1 class="text-2xl font-bold text-black mb-2">Welcome to Routewise</h1>
           <p class="text-sm text-zinc-500 mb-8">
             Login and unlock smarter travel with Routewise.
           </p>
-
-          <!-- Form -->
           <form @submit.prevent="onSubmit" novalidate class="text-left">
-            <!-- Username -->
             <div class="mb-4">
-              <input v-model.trim="form.UserName" type="text" autocomplete="username"
-                placeholder="username"
+              <input v-model.trim="form.UserName" type="text" autocomplete="username" placeholder="username"
                 class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition" />
             </div>
-
-            <!-- Password -->
             <div class="mb-4">
               <input :type="showPassword ? 'text' : 'password'" v-model="form.Password" autocomplete="current-password"
                 placeholder="********"
                 class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition" />
             </div>
-
-            <!-- Remember this device -->
             <div class="flex items-center mb-6 text-sm text-zinc-700">
               <input id="remember" type="checkbox" v-model="form.IsRemindDeviceActive"
                 class="mr-2 rounded border-zinc-300 text-black" />
               <label for="remember">Remember this device</label>
             </div>
-
             <div class="flex justify-end mb-6">
-              <RouterLink to="/password/reset/start" class="text-sm text-black underline hover:text-zinc-800 font-medium">
+              <RouterLink to="/password/reset/start"
+                class="text-sm text-black underline hover:text-zinc-800 font-medium">
                 Forgot password?
               </RouterLink>
             </div>
-
-            <!-- Error -->
             <p v-if="error" class="text-red-500 text-sm text-center mt-3">
               {{ error }}
             </p>
-
-            <!-- Submit -->
             <button :disabled="loading"
               class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white font-semibold shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
               <span v-if="!loading">Continue</span>
@@ -62,7 +45,6 @@
                 Processing…
               </span>
             </button>
-
             <p class="mt-6 text-center text-sm text-zinc-600">
               Don’t have an account?
               <RouterLink to="/register" class="text-black underline hover:text-zinc-800 font-medium">
@@ -72,8 +54,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Right: Illustration (only desktop) -->
       <div class="hidden md:block bg-zinc-100">
         <img src="../images/background.jpg" alt="Login Illustration" class="w-full h-full object-cover" />
       </div>
@@ -108,28 +88,29 @@ export default {
   },
   methods: {
     async onSubmit() {
+
       this.error = "";
 
-      if (!this.form.UserName || !this.form.Password) {
-        this.error = "Please fill in both fields.";
-        return;
-      }
+      if (!this.form.UserName || !this.form.Password) return this.error = "Please fill in both fields.";
 
       try {
         this.loading = true;
-        const res = await axios.post("/login", {
+        var res = await axios.post("/login", {
           UserName: this.form.UserName,
           Password: this.form.Password,
         });
 
-        if (res.status === 200) {
-          this.store.LoginData = this.form;
-          this.$router.push({ name: "LoginTOTPVerify" });
-        }
+        if (res.status !== 200) return this.error = res.data.message;
+
+        this.store.LoginData = this.form;
+        this.$router.push({ name: "LoginTOTPVerify" });
+
       } catch (e) {
-        this.error = e?.response?.data?.message || "Login failed.";
+
+        return this.error = e?.response?.data?.message || "Login failed.";
       } finally {
-        this.loading = false;
+        
+        return this.loading = false;
       }
     },
   },

@@ -1,7 +1,6 @@
 <template>
   <section class="mx-auto w-full max-w-md sm:max-w-lg px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center">
     <div class="w-full">
-      <!-- Heading -->
       <header class="mb-6 sm:mb-8">
         <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900">
           Verify it’s you
@@ -10,11 +9,8 @@
           Use your authenticator app or a backup code.
         </p>
       </header>
-
-      <!-- Card -->
       <div class="md:rounded-3xl md:border md:border-zinc-200 md:bg-white md:shadow-sm p-6 sm:p-10">
         <TabGroup :selectedIndex="tabIndex" @change="tabIndex = $event">
-          <!-- Tabs -->
           <TabList class="grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 p-1">
             <Tab v-slot="{ selected }" as="template">
               <button
@@ -37,10 +33,7 @@
               </button>
             </Tab>
           </TabList>
-
-          <!-- Panels -->
           <TabPanels class="mt-5">
-            <!-- TOTP -->
             <TabPanel>
               <form @submit.prevent="onSubmit" novalidate>
                 <label class="block text-sm font-medium text-zinc-800 mb-1">
@@ -63,7 +56,6 @@
                     @input="totpCode = totpCode.replace(/\D/g, '').slice(0, 6)"
                   />
                 </div>
-
                 <div class="mt-3 flex items-center justify-between">
                   <span class="text-xs text-zinc-600">Time‑based 6‑digit code.</span>
                   <a
@@ -74,11 +66,9 @@
                     Sign in
                   </a>
                 </div>
-
                 <p v-if="error" class="mt-4 text-sm text-red-600">
                   {{ error }}
                 </p>
-
                 <button
                   :disabled="loading || totpCode.length !== 6"
                   class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
@@ -94,8 +84,6 @@
                 </button>
               </form>
             </TabPanel>
-
-            <!-- BACKUP CODE -->
             <TabPanel>
               <form @submit.prevent="onSubmit" novalidate>
                 <label class="block text-sm font-medium text-zinc-800 mb-1">
@@ -120,7 +108,6 @@
                       .slice(0, 11)"
                   />
                 </div>
-
                 <div class="mt-3 flex items-center justify-between">
                   <span class="text-xs text-zinc-600">One‑time use. It will be invalidated after success.</span>
                   <a
@@ -131,11 +118,9 @@
                     Sign in
                   </a>
                 </div>
-
                 <p v-if="error" class="mt-4 text-sm text-red-600">
                   {{ error }}
                 </p>
-
                 <button
                   :disabled="loading || backupCode.length < 8"
                   class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
@@ -183,16 +168,14 @@ export default {
       this.error = "";
       this.loading = true;
       try {
-        const Code = this.tabIndex === 0 ? this.totpCode : this.backupCode;
-        const Type = this.tabIndex === 0 ? "authenticator_app_code" : "backup_code";
 
-        if (Type === "authenticator_app_code" && Code.replace(/\D/g, "").length !== 6) {
-          this.loading = false;
-          return;
-        }
+        var Code = this.tabIndex === 0 ? this.totpCode : this.backupCode;
+        var Type = this.tabIndex === 0 ? "authenticator_app_code" : "backup_code";
+
+        if (Type === "authenticator_app_code" && Code.replace(/\D/g, "").length !== 6) return this.loading = false;
 
         if (Type === "backup_code") {
-          const re = /^[A-Z0-9]{5}-[A-Z0-9]{5}$/;
+          var re = /^[A-Z0-9]{5}-[A-Z0-9]{5}$/;
           if (!re.test(Code)) {
             this.loading = false;
             this.error = "Backup code format is invalid. Example: BDQMM-KSG49";
@@ -200,13 +183,17 @@ export default {
           }
         }
 
-        const res = await axios.post("/password/reset/verify", { Code, Type });
-        if (res.status === 200) this.$router.push({ name: "PasswordReset" });
-        else this.error = res.data.message;
+        var res = await axios.post("/password/reset/verify", { Code, Type });
+        if (res.status !== 200) return this.error = res.data.message;
+
+        this.$router.push({ name: "PasswordReset", query:{ Type: Type } });
+
       } catch {
-        this.uniformFail();
+
+        return this.uniformFail();
       } finally {
-        this.loading = false;
+
+        return this.loading = false;
       }
     },
   },

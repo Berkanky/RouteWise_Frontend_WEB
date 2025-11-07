@@ -56,6 +56,7 @@ export default {
 
     var GOOGLE_API_KEY = this.store.Config.GOOGLE_API_KEY;
     if (!GOOGLE_API_KEY) return;
+
     var default_center = { lat: 41.015137, lng: 28.97953 };
 
     await loadGoogleMapsSdk(GOOGLE_API_KEY);
@@ -63,6 +64,7 @@ export default {
     var el = document.getElementById("gmap");
     var start = this.StartLocation || {};
     var center = {};
+
     if (typeof start.latitude === "number" && typeof start.longitude === "number") center = { lat: start.latitude, lng: start.longitude };
     if (Object.keys(center).length !== 2) center = default_center;
 
@@ -86,6 +88,7 @@ export default {
   },
   methods: {
     focusOn(pos, opts = {}) {
+
       if (!this.map || !pos) return;
       var { zoomIfCloser = 14 } = opts;
 
@@ -95,6 +98,7 @@ export default {
       if (curZoom < zoomIfCloser) setTimeout(() => { try { this.map.setZoom(zoomIfCloser); } catch { } }, 120);
     },
     hardResetMap() {
+
       if (!this.map) return;
 
       try { this.infoWindow?.close(); } catch (_) { }
@@ -105,6 +109,7 @@ export default {
           try { pl.setMap?.(null); } catch { }
         }
       }
+
       this.polylines = [];
       this.selectedPolyline = null;
       this.selected_polyline_temporary_id = null;
@@ -132,15 +137,11 @@ export default {
         this.infoWindow?.close();
       });
 
-      if (this.StartLocation?.latitude && this.StartLocation?.longitude) {
-        this.upsertMarker({ lat: this.StartLocation.latitude, lng: this.StartLocation.longitude }, "start_location", this.StartLocation);
-      }
-      if (this.DestinationLocation?.latitude && this.DestinationLocation?.longitude) {
-        this.upsertMarker({ lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude }, "destination_location", this.DestinationLocation);
-      }
+      if (this.StartLocation?.latitude && this.StartLocation?.longitude) this.upsertMarker({ lat: this.StartLocation.latitude, lng: this.StartLocation.longitude }, "start_location", this.StartLocation);
+      if (this.DestinationLocation?.latitude && this.DestinationLocation?.longitude) this.upsertMarker({ lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude }, "destination_location", this.DestinationLocation);
     },
-
     upsertMarker(position, title, meta = {}) {
+      
       if (!this.map) return;
       if (!position || typeof position.lat !== "number" || typeof position.lng !== "number") return;
 
@@ -177,7 +178,6 @@ export default {
       this.markersByKey[title] = marker;
       this.attachMarkerClickCard(marker, title, meta);
     },
-
     attachMarkerClickCard(marker, title, meta) {
       var isAdvanced = "position" in marker && !marker.setPosition;
       var eventName = isAdvanced ? "gmp-click" : "click";
@@ -193,7 +193,6 @@ export default {
         }
       });
     },
-
     buildCardHtml(title, meta) {
       var name = meta.StartLocation || (meta.formatted_address || '').split(',')[0] || '';
       var address = meta.formatted_address || '';
@@ -233,9 +232,9 @@ export default {
         </div>
       `;
     },
-
     clearSelection() {
       if (this.selectedPolyline) {
+
         this.selectedPolyline.__selected = false;
         this.selectedPolyline.setOptions(BASE_STYLE);
         this.selectedPolyline = null;
@@ -247,6 +246,7 @@ export default {
         this.selectedPolyline.__selected = false;
         this.selectedPolyline.setOptions(BASE_STYLE);
       }
+
       pl.__selected = true;
       pl.setOptions(SELECTED_STYLE);
       this.selectedPolyline = pl;
@@ -256,7 +256,6 @@ export default {
       this.$emit("selected_polyline_temporary_id", this.selected_polyline_temporary_id);
       this.$emit("selected_polyline_detail", selected_polyline_detail);
     },
-
     addSelectablePolyline({ map, id, path, meta = {}, onSelect }) {
       var pl = new google.maps.Polyline({
         path,
@@ -287,7 +286,6 @@ export default {
       pl.__hit = hit;
       return pl;
     },
-
     drawRoute(decodedPointsArray) {
       if (!this.map || !Array.isArray(decodedPointsArray) || decodedPointsArray.length === 0) return;
 
@@ -379,12 +377,12 @@ export default {
           }
         });
 
-        if (decoded_route.StrokeColor) pl.setOptions({ strokeColor: decoded_route.StrokeColor });
+        if (decoded_route?.StrokeColor) pl.setOptions({ strokeColor: decoded_route.StrokeColor });
         this.polylines.push(pl);
       });
     },
-
     fitAll() {
+
       if (!this.map) return;
       var bounds = new google.maps.LatLngBounds();
 
@@ -402,8 +400,8 @@ export default {
 
       if (!bounds.isEmpty()) this.map.fitBounds(bounds);
     },
-
     async getRouteDecodedPolyline(start, dest) {
+
       var Latitude = start.lat;
       var Longitude = start.lng;
       var DestinationLocationLatitude = dest.lat;
@@ -415,7 +413,6 @@ export default {
 
       return res.status === 200 ? res.data.routes : [];
     },
-
     async onBuildRoute() {
       if (!this.isRouteReady || this.isBuilding) return;
 
@@ -429,16 +426,21 @@ export default {
         var d = { lat: this.DestinationLocation.latitude, lng: this.DestinationLocation.longitude };
 
         var decoded = [];
+
         if (this.store.calculated_route_detail_active) decoded = this.store.calculated_route_detail_overview_details;
         else decoded = await this.getRouteDecodedPolyline(s, d);
+
+        if( !decoded.length ) return;
 
         this.decoded_overview_polyline_points = decoded;
         if (myToken !== this.buildToken) return;
 
-        this.drawRoute(decoded || []);
+        this.drawRoute(decoded);
         this.fitAll();
+
       } finally {
-        if (myToken === this.buildToken) this.isBuilding = false;
+
+        if (myToken === this.buildToken) return this.isBuilding = false;
       }
     }
   },
@@ -460,8 +462,8 @@ export default {
           this.upsertMarker(pos, 'start_location', newVal);
 
           var hasDest = !!(this.DestinationLocation && typeof this.DestinationLocation.latitude === "number" && typeof this.DestinationLocation.longitude === "number");
-          if (hasDest) this.fitAll();
-          else this.focusOn(pos, { zoomIfCloser: 14 });
+          if (hasDest) return this.fitAll();
+          else return this.focusOn(pos, { zoomIfCloser: 14 });
         }
       },
       immediate: true, deep: true
@@ -476,14 +478,13 @@ export default {
           this.upsertMarker(pos, 'destination_location', newVal);
 
           var hasStart = !!(this.StartLocation && typeof this.StartLocation.latitude === "number" && typeof this.StartLocation.longitude === "number");
-          if (hasStart) this.fitAll(); 
-          else this.focusOn(pos, { zoomIfCloser: 13 });
+          if (hasStart) return this.fitAll(); 
+          else return this.focusOn(pos, { zoomIfCloser: 13 });
         }
       },
       immediate: true, deep: true
     }
   }
-
 };
 </script>
 
@@ -498,7 +499,6 @@ export default {
 @media (min-width: 1024px) {
   .gmap-wrap {
     height: 350px;
-    /* lg ve üstü */
   }
 }
 

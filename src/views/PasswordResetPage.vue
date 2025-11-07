@@ -1,39 +1,26 @@
 <template>
   <section class="mx-auto w-full max-w-md sm:max-w-lg px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center">
     <div class="w-full">
-      <!-- Success alert -->
       <div
         v-if="success"
         class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 flex items-start gap-2"
         role="status"
         aria-live="polite"
       >
-        <svg class="h-5 w-5 mt-0.5" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm-1 14-4-4 1.414-1.414L11 12.172l5.586-5.586L18 8l-7 8Z"
-          />
+        <svg class="h-5 w-5 mt-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm-1 14-4-4 1.414-1.414L11 12.172l5.586-5.586L18 8l-7 8Z" />
         </svg>
         <div class="text-sm">
-          <strong>Password updated.</strong> Redirecting to sign in…
+          <strong>Password updated.</strong> Choose your next step.
         </div>
       </div>
-
-      <!-- Card -->
       <div class="md:rounded-3xl md:border md:border-zinc-200 md:bg-white md:shadow-sm p-6 sm:p-10">
         <header class="mb-6 sm:mb-8">
-          <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900">
-            Set a new password
-          </h1>
-          <p class="mt-2 text-center text-sm text-zinc-600">
-            Choose a strong password you haven’t used before.
-          </p>
+          <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900">Set a new password</h1>
+          <p class="mt-2 text-center text-sm text-zinc-600">Choose a strong password you haven’t used before.</p>
         </header>
-
         <form @submit.prevent="onSubmit" novalidate>
-          <!-- Password -->
-          <label class="block text-sm font-medium text-zinc-800 mb-1">
-            New password
-          </label>
+          <label class="block text-sm font-medium text-zinc-800 mb-1">New password</label>
           <div class="relative">
             <input
               :type="showPass ? 'text' : 'password'"
@@ -51,20 +38,14 @@
               aria-label="Toggle password visibility"
               :disabled="success"
             >
-              <svg v-if="!showPass" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z"
-                />
+              <svg v-if="!showPass" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z" />
               </svg>
-              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z"
-                />
+              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z" />
               </svg>
             </button>
           </div>
-
-          <!-- Hints -->
           <ul class="mt-2 space-y-1 text-xs">
             <li :class="hintClass(minLenOk)">• At least 8 characters</li>
             <li :class="hintClass(upperOk)">• Uppercase letter</li>
@@ -72,11 +53,7 @@
             <li :class="hintClass(numberOk)">• Number</li>
             <li :class="hintClass(symbolOk)">• Symbol</li>
           </ul>
-
-          <!-- Confirm -->
-          <label class="block text-sm font-medium text-zinc-800 mt-5 mb-1">
-            Confirm password
-          </label>
+          <label class="block text-sm font-medium text-zinc-800 mt-5 mb-1">Confirm password</label>
           <div class="relative">
             <input
               :type="showConfirm ? 'text' : 'password'"
@@ -93,50 +70,75 @@
               aria-label="Toggle confirm password visibility"
               :disabled="success"
             >
-              <svg v-if="!showConfirm" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z"
-                />
+              <svg v-if="!showConfirm" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5Zm0 11.25A3.75 3.75 0 1 1 12 8.25a3.75 3.75 0 0 1 0 7.5Z" />
               </svg>
-              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z"
-                />
+              <svg v-else class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="m3.28 2.22 18.5 18.5-1.06 1.06-3.09-3.1A12.27 12.27 0 0 1 12 19.5C7 19.5 2.73 16.39 1 12c.84-2.12 2.3-3.9 4.12-5.17L2.22 3.28 3.28 2.22Zm8.72 5.03a3.75 3.75 0 0 1 3.75 3.75c0 .5-.1.98-.28 1.42l-4.89-4.89c.44-.18.92-.28 1.42-.28Z" />
               </svg>
             </button>
           </div>
-
-          <!-- Error -->
-          <p v-if="error" class="mt-4 text-sm text-red-600">
-            {{ error }}
-          </p>
-
-          <!-- Submit -->
+          <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
           <button
+            v-if="!success"
             :disabled="loading || !formOk || success"
             class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
           >
             <span v-if="!loading">Save new password</span>
             <span v-else class="inline-flex items-center gap-2">
-              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                <circle
-                  class="opacity-30"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="3"
-                />
-                <path
-                  d="M22 12a10 10 0 0 1-10 10"
-                  stroke="currentColor"
-                  stroke-width="3"
-                />
+              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+                <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
               </svg>
               Saving…
             </span>
           </button>
         </form>
+        <div v-if="success" class="mt-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              v-if="this.Type == 'backup_code'"
+              type="button"
+              v-on:click="this.go_totp_setup_page()"
+              class="group rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 p-4 shadow-sm transition flex items-center justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-zinc-100 flex items-center justify-center">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 3a1 1 0 0 1 1 1v5.382l3.447 2.3a1 1 0 0 1-1.1 1.664l-4-2.667A1 1 0 0 1 11 12V6a1 1 0 0 1 1-1Z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-zinc-900">TOTP Setup</div>
+                  <div class="text-xs text-zinc-500">Authenticator’ı yeniden kur</div>
+                </div>
+              </div>
+              <svg class="h-5 w-5 text-zinc-400 group-hover:text-zinc-700" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9.293 6.293a1 1 0 0 1 1.414 0L16.414 12l-5.707 5.707a1 1 0 0 1-1.414-1.414L13.586 12 9.293 7.707a1 1 0 0 1 0-1.414Z"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              v-on:click="this.go_login_page();"
+              class="group rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 p-4 shadow-sm transition flex items-center justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-zinc-100 flex items-center justify-center">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 3a1 1 0 1 0 0 2h6v14h-6a1 1 0 1 0 0 2h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-7Zm.293 6.293a1 1 0 1 0-1.414 1.414L10.586 12l-1.707 1.707a1 1 0 1 0 1.414 1.414L13.414 12l-3.121-2.707Z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-zinc-900">Login Page</div>
+                  <div class="text-xs text-zinc-500">Giriş sayfasına dön</div>
+                </div>
+              </div>
+              <svg class="h-5 w-5 text-zinc-400 group-hover:text-zinc-700" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9.293 6.293a1 1 0 0 1 1.414 0L16.414 12l-5.707 5.707a1 1 0 0 1-1.414-1.414L13.586 12 9.293 7.707a1 1 0 0 1 0-1.414Z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -144,11 +146,12 @@
 
 <script>
 import axios from "axios";
-
+import { UseStore } from '../stores/store';
 export default {
   name: "PasswordResetPage",
   data() {
     return {
+      Type: "",
       password: "",
       confirmPassword: "",
       showPass: false,
@@ -160,6 +163,12 @@ export default {
       redirectTimer: null,
     };
   },
+  setup(){
+    const store = UseStore();
+    return{
+      store
+    }
+  },
   computed: {
     minLenOk()   { return this.password.length >= 8; },
     upperOk()    { return /[A-Z]/.test(this.password); },
@@ -170,7 +179,35 @@ export default {
     matchOk()    { return this.confirmPassword.length > 0 && this.password === this.confirmPassword; },
     formOk()     { return this.strongOk && this.matchOk; },
   },
+  created(){
+    var { Type } = this.$route.query;
+    this.Type = Type;
+  },
   methods: {
+    async go_totp_setup_page(){
+
+      this.error = "";
+      this.loading = true;
+
+      try{
+        var res = await axios.post("/start/TOTP/setup");
+        if( res.status !== 200 ) return this.error = res.data.message || "Please try again.";
+
+        this.store.TOTPSetupData.QRDataUrl = res.data.QRDataUrl;
+        this.store.TOTPSetupData.ManualSecret = res.data.ManualSecret;
+        this.store.TOTPSetupData.UserName = res.data.UserName;
+        
+        this.$router.push({ name: "TOTPVerify"});
+      }catch(err){
+
+        this.error = err?.response?.data?.message || "Please try again. ";
+      }finally{
+        this.loading = false;
+      }
+    },
+    go_login_page(){
+      this.$router.push({ name: 'Login' });
+    },
     hintClass(ok) {
       return ok ? "text-emerald-600" : "text-zinc-500";
     },
@@ -179,32 +216,31 @@ export default {
     },
     async onSubmit() {
       if (!this.formOk || this.success) return;
+
       this.error = "";
       this.loading = true;
 
       try {
-        const res = await axios.post("/password/reset/complete", {
+        var res = await axios.post("/password/reset/complete", {
           Password: this.password,
           PasswordConfirm: this.confirmPassword,
+          Type: this.Type
         });
 
-        if (res.status === 200) {
-          this.success = true;
-          this.redirectTimer = setTimeout(() => {
-            this.$router.push({ name: "Login" });
-          }, 2000);
-        } else {
-          this.error = res?.data?.message || "Please try again.";
-        }
+        if (res.status !== 200) return this.error = res?.data?.message || "Please try again.";
+        
+        this.success = true; 
       } catch {
+
         this.uniformFail();
       } finally {
+
         this.loading = false;
       }
     },
   },
   beforeUnmount() {
     if (this.redirectTimer) clearTimeout(this.redirectTimer);
-  },
+  }
 };
 </script>

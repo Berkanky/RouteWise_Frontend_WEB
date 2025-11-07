@@ -1,7 +1,6 @@
 <template>
   <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-16 pb-12">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <!-- LEFT: QR + MANUAL SECRET -->
       <div>
         <h1 class="text-2xl md:text-3xl font-bold text-zinc-900">
           Set up two‑factor authentication
@@ -9,14 +8,12 @@
         <p class="mt-2 text-sm text-zinc-600">
           Scan the QR code with your authenticator app or enter the manual key.
         </p>
-
         <div
           class="mt-6 rounded-3xl border border-rose-200 bg-white shadow-md p-6 sm:p-8"
         >
           <div
             class="flex flex-col md:flex-row md:items-start gap-4 md:gap-6"
           >
-            <!-- QR -->
             <div class="self-center md:self-start">
               <img
                 :src="qrDataUrl || placeholderQR"
@@ -24,8 +21,6 @@
                 class="w-36 h-36 md:w-44 md:h-44 rounded-md border border-rose-200/60 object-contain bg-white"
               />
             </div>
-
-            <!-- Manual secret -->
             <div class="grow min-w-0">
               <label
                 class="block text-sm font-medium text-zinc-800"
@@ -48,7 +43,6 @@
                   Copy
                 </button>
               </div>
-
               <p
                 class="mt-3 inline-flex flex-wrap items-center gap-2 text-xs text-zinc-600"
               >
@@ -62,8 +56,6 @@
           </div>
         </div>
       </div>
-
-      <!-- RIGHT: ENTER CODE -->
       <div>
         <h2 class="text-xl md:text-2xl font-semibold text-zinc-900">
           Enter the 6‑digit code
@@ -71,7 +63,6 @@
         <p class="mt-2 text-sm text-zinc-600">
           Open the app and type the current code.
         </p>
-
         <div class="mt-5">
           <label
             class="block text-sm font-medium text-zinc-800"
@@ -87,7 +78,6 @@
             This account will be protected with 2FA.
           </p>
         </div>
-
         <div
           class="mt-6 flex items-center justify-start gap-2 md:gap-3"
           @paste.prevent="onPaste"
@@ -106,16 +96,14 @@
             class="h-12 w-10 md:h-12 md:w-12 text-center text-lg md:text-xl font-medium rounded-lg border border-rose-200/60 bg-rose-50/40 text-zinc-900 outline-none focus:bg-white focus:border-rose-400 focus:ring-2 focus:ring-rose-300 transition"
           />
         </div>
-
         <p v-if="error" class="mt-4 text-sm text-red-600">
           {{ error }}
         </p>
-
         <button
           :disabled="
             loading ||
             otpString.length !== 6 ||
-            RegisterTOTPVerifyBoardingStatus
+            TOTPVerifyBoardingStatus
           "
           @click="onVerify"
           class="mt-6 w-full lg:w-[360px] rounded-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
@@ -144,7 +132,6 @@
             Verifying…
           </span>
         </button>
-
         <p class="mt-4 text-[13px] text-zinc-600">
           Already registered?
           <RouterLink
@@ -155,8 +142,6 @@
         </p>
       </div>
     </div>
-
-    <!-- MODAL: backup codes -->
     <div
       v-if="showCodesModal"
       class="fixed inset-0 z-50 flex items-center justify-center"
@@ -165,7 +150,6 @@
         class="absolute inset-0 bg-black/40"
         aria-hidden="true"
       ></div>
-
       <div
         class="relative w-full max-w-lg rounded-3xl bg-white shadow-xl border border-rose-200 p-6 sm:p-8 mx-4"
       >
@@ -191,7 +175,6 @@
             </li>
           </ul>
         </div>
-
         <div class="mt-5 flex flex-wrap gap-2">
           <button
             @click="downloadCodes"
@@ -229,16 +212,16 @@ import {
 import { UseStore } from "../stores/store";
 
 export default {
-  name: "RegisterTOTPVerify",
+  name: "TOTPVerify",
   setup() {
-    const store = UseStore();
+    var store = UseStore();
     return {
       store,
     };
   },
   data() {
     return {
-      RegisterTOTPVerifyBoardingStatus: false,
+      TOTPVerifyBoardingStatus: false,
       backupCodes: [],
       showCodesModal: false,
       qrDataUrl: "",
@@ -260,28 +243,32 @@ export default {
     },
   },
   async mounted() {
-    const { QRDataUrl, ManualSecret, UserName } = this.store.RegisterData;
+
+    var { QRDataUrl, ManualSecret, UserName } = this.store.TOTPSetupData;
+
     this.qrDataUrl = QRDataUrl;
     this.manualSecret = ManualSecret;
     this.username = UserName;
   },
   beforeRouteLeave(to, from){
-    this.store.RegisterData = {};
+    this.store.TOTPSetupData = {};
   },
   methods: {
     downloadCodes() {
+
       if (!this.backupCodes?.length) return;
-      const now = new Date().toISOString().replace(/[:.]/g, "-");
-      const fileName = `backup-codes-${this.username || 'user'}-${now}.txt`;
-      const header = `These are your one-time backup codes.\nStore them securely. Each can be used once.\n\nUsername: ${this.username}\nGenerated: ${new Date().toISOString()}\n\n`;
-      const body = this.backupCodes
+
+      var now = new Date().toISOString().replace(/[:.]/g, "-");
+      var fileName = `backup-codes-${this.username || 'user'}-${now}.txt`;
+      var header = `These are your one-time backup codes.\nStore them securely. Each can be used once.\n\nUsername: ${this.username}\nGenerated: ${new Date().toISOString()}\n\n`;
+      var body = this.backupCodes
         .map((c, i) => `${String(i + 1).padStart(2, '0')}. ${c}`)
         .join('\n');
-      const blob = new Blob([header + body + '\n'], {
+      var blob = new Blob([header + body + '\n'], {
         type: 'text/plain;charset=utf-8',
       });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
       a.href = url;
       a.download = fileName;
       a.click();
@@ -289,7 +276,8 @@ export default {
     },
     copyCodes() {
       if (!this.backupCodes?.length) return;
-      const body = this.backupCodes.join('\n');
+
+      var body = this.backupCodes.join('\n');
       navigator.clipboard?.writeText(body);
     },
     continueToLogin() {
@@ -298,24 +286,31 @@ export default {
     },
     async onVerify() {
       this.error = '';
+      
       if (this.otpString.length !== 6) return;
+
       try {
+
         this.loading = true;
-        const res = await axios.post('/TOTP/setup/verify', {
+        var res = await axios.post('/TOTP/setup/verify', {
           Code: this.otpString,
         });
-        if (res.status === 200) {
-          this.showCodesModal = true;
-          this.backupCodes = res.data.Plain_Codes;
-          this.RegisterTOTPVerifyBoardingStatus = true;
-        }
+
+        if (res.status !== 200) return this.error = res.data.message;
+
+        this.showCodesModal = true;
+        this.backupCodes = res.data.Plain_Codes;
+        this.TOTPVerifyBoardingStatus = true;
+
       } catch (e) {
-        this.error =
-          e?.response?.data?.message || 'Invalid code, please try again.';
+
+        this.error = e?.response?.data?.message || 'Invalid code, please try again.';
         this.code = ['', '', '', '', '', ''];
-        const first = this.$refs.box?.[0];
+        var first = this.$refs.box?.[0];
         if (first) first.focus();
+
       } finally {
+
         this.loading = false;
       }
     },
@@ -324,47 +319,46 @@ export default {
       navigator.clipboard?.writeText(this.manualSecret);
     },
     onInput(i, e) {
-      const val = (e.target.value || '').replace(/\\D/g, '');
+      var val = (e.target.value || '').replace(/\\D/g, '');
       if (!val) {
         this.code[i] = '';
         return;
       }
       this.code[i] = val.slice(-1);
-      const next = this.$refs.box?.[i + 1];
+      var next = this.$refs.box?.[i + 1];
       if (next) next.focus();
     },
     onKeydown(i, e) {
       if (e.key === 'Backspace' && !this.code[i]) {
-        const prev = this.$refs.box?.[i - 1];
+        var prev = this.$refs.box?.[i - 1];
         if (prev) prev.focus();
       }
       if (e.key === 'ArrowLeft') {
-        const prev = this.$refs.box?.[i - 1];
+        var prev = this.$refs.box?.[i - 1];
         if (prev) prev.focus();
       }
       if (e.key === 'ArrowRight') {
-        const next = this.$refs.box?.[i + 1];
+        var next = this.$refs.box?.[i + 1];
         if (next) next.focus();
       }
     },
     onPaste(e) {
-      const text = (e.clipboardData?.getData('text') || '')
+      var text = (e.clipboardData?.getData('text') || '')
         .replace(/\\D/g, '')
         .slice(0, 6);
       if (!text) return;
       for (let i = 0; i < 6; i++) this.code[i] = text[i] || '';
-      const idx = Math.min(text.length, 5);
-      const el = this.$refs.box?.[idx];
+      var idx = Math.min(text.length, 5);
+      var el = this.$refs.box?.[idx];
       if (el) el.focus();
     },
   },
   directives: {
-    // v-float-tip="'text'"
     floatTip: {
       mounted(el, binding) {
-        let tooltipEl = null;
-        let cleanup = null;
-        const show = () => {
+        var tooltipEl = null;
+        var cleanup = null;
+        var show = () => {
           if (tooltipEl) return;
           tooltipEl = document.createElement('div');
           tooltipEl.textContent = binding.value || '';
@@ -384,7 +378,7 @@ export default {
             });
           });
         };
-        const hide = () => {
+        var hide = () => {
           if (cleanup) cleanup();
           cleanup = null;
           if (tooltipEl) {
@@ -406,8 +400,8 @@ export default {
       },
       unmounted(el) {
         if (el._floatTipDestroy) el._floatTipDestroy();
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>

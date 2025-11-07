@@ -513,149 +513,111 @@
       </div>
 
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-6 shadow-sm">
+
         <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div class="min-w-0">
-            <h3 class="text-[14px] font-semibold text-zinc-900">Share / Generate PDF</h3>
-            <p class="text-[12px] text-zinc-500">You can share a link or generate a PDF for this route.</p>
+            <h3 class="text-[14px] font-semibold text-zinc-900">Share Link</h3>
+            <p class="text-[12px] text-zinc-500">Create a shareable link for this route.</p>
           </div>
 
           <span class="inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-[12px] whitespace-nowrap"
-            :class="(pdf_creating_process_started === true)
+            :class="share_route_service_started === true
               ? 'border-amber-200 bg-amber-50 text-amber-700'
               : 'border-emerald-200 bg-emerald-50 text-emerald-700'">
             <svg viewBox="0 0 24 24" class="h-4 w-4"
-              :class="(pdf_creating_process_started === true) ? 'animate-pulse' : ''">
-              <path fill="currentColor" :d="(pdf_creating_process_started === true)
+              :class="share_route_service_started === true ? 'animate-pulse' : ''">
+              <path fill="currentColor" :d="share_route_service_started === true
                 ? 'M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2Z'
                 : 'M9 16.17 5.53 12.7l-1.41 1.41L9 19 20.29 7.71 18.88 6.3 9 16.17Z'" />
             </svg>
-            <span>{{ (pdf_creating_process_started === true) ? 'Processing...' : 'Ready' }}</span>
+            <span>{{ share_route_service_started === true ? 'Processing...' : 'Ready' }}</span>
           </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 gap-4 sm:gap-6">
+
           <div class="rounded-xl border border-zinc-100 bg-white p-4 sm:p-5">
-            <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Options</h4>
+            <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Action</h4>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button type="button" @click="share_route_service(2)"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2.5 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99] disabled:opacity-60"
-                :disabled="pdf_creating_process_started === true">
-                <svg viewBox="0 0 24 24" class="h-4 w-4">
-                  <path fill="currentColor"
-                    d="M10.59 13.41a1.98 1.98 0 0 1 0-2.82l2.82-2.82a2 2 0 1 1 2.83 2.83l-.88.88 1.41 1.41.88-.88a4 4 0 1 0-5.66-5.66l-2.82 2.82a4 4 0 0 0 0 5.66l.42.42 1.41-1.41-.41-.41Z" />
-                  <path fill="currentColor"
-                    d="M13.41 10.59a1.98 1.98 0 0 1 0 2.82l-2.82 2.82a2 2 0 1 1-2.83-2.83l.88-.88-1.41-1.41-.88.88a4 4 0 1 0 5.66 5.66l2.82-2.82a4 4 0 0 0 0-5.66l-.42-.42-1.41 1.41.41.41Z" />
-                </svg>
-                Share Link
-              </button>
-
-              <button type="button" @click="share_route_service(1)"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-3 py-2.5 text-[13px] font-semibold hover:bg-amber-100 active:scale-[0.99] disabled:opacity-60"
-                :disabled="pdf_creating_process_started === true">
-                <svg viewBox="0 0 24 24" class="h-4 w-4">
-                  <path fill="currentColor" d="M13 12h4l-5 5-5-5h4V4h2v8Z" />
-                </svg>
-                Generate PDF
-              </button>
-            </div>
+            <button type="button" @click="share_route_service(2)"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 text-indigo-800 px-3 py-2.5 text-[13px] font-semibold hover:bg-indigo-100 active:scale-[0.99] disabled:opacity-60"
+              :disabled="share_route_service_started === true">
+              <svg viewBox="0 0 24 24" class="h-4 w-4">
+                <path fill="currentColor"
+                  d="M10.59 13.41a1.98 1.98 0 0 1 0-2.82l2.82-2.82a2 2 0 1 1 2.83 2.83l-.88.88 1.41 1.41.88-.88a4 4 0 1 0-5.66-5.66l-2.82 2.82a4 4 0 0 0 0 5.66l.42.42 1.41-1.41-.41-.41Z" />
+                <path fill="currentColor"
+                  d="M13.41 10.59a1.98 1.98 0 0 1 0 2.82l-2.82 2.82a2 2 0 1 1-2.83-2.83l.88-.88-1.41-1.41-.88.88a4 4 0 1 0 5.66 5.66l2.82-2.82a4 4 0 0 0 0-5.66l-.42-.42-1.41 1.41.41.41Z" />
+              </svg>
+              Create / Refresh Share Link
+            </button>
 
             <div class="mt-4 rounded-lg border border-zinc-100 bg-zinc-50 p-3">
               <div class="flex flex-wrap items-center gap-2 text-[12px]">
                 <span class="inline-flex h-2 w-2 rounded-full"
-                  :class="(pdf_creating_process_started === true) ? 'bg-amber-500 animate-pulse' : 'bg-emerald-600'"></span>
+                  :class="share_route_service_started === true ? 'bg-amber-500 animate-pulse' : 'bg-emerald-600'"></span>
                 <span class="text-zinc-700">
-                  {{ (pdf_creating_process_started === true)
+                  {{ share_route_service_started === true
                     ? 'Process started. Please wait until it finishes...'
-                    : 'Process completed. See the result on the right.' }}
+                    : 'Process completed. If a link exists, it appears below.' }}
                 </span>
               </div>
             </div>
           </div>
 
           <div class="rounded-xl border border-zinc-100 bg-white p-4 sm:p-5">
-            <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Generated PDF</h4>
+            <h4 class="text-[13px] font-semibold text-zinc-900 mb-3">Shared Link</h4>
 
-            <div v-if="(calculated_route_detail?.exported_pdf_files?.length || 0) > 0"
+            <div v-if="calculated_route_detail?.shared_link?.formatted_url"
               class="flex flex-wrap items-start justify-between gap-3 rounded-lg border border-zinc-100 p-3 sm:p-4">
               <div class="flex items-start gap-3 min-w-0">
                 <span
-                  class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700 shrink-0"
-                  title="PDF">
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 shrink-0"
+                  title="Link">
                   <svg viewBox="0 0 24 24" class="h-5 w-5">
                     <path fill="currentColor"
-                      d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5" />
+                      d="M3.9 12a4.1 4.1 0 0 1 4.1-4.1h3V6H8A6 6 0 0 0 8 18h3v-1.9H8A4.1 4.1 0 0 1 3.9 12Zm7-1h-3v2h3v-2Zm1 1a4.1 4.1 0 0 1 4.1-4.1H19A6 6 0 1 1 19 18h-3v-1.9h3A4.1 4.1 0 0 0 12.9 12Z" />
                   </svg>
                 </span>
                 <div class="min-w-0">
                   <div class="text-[13px] sm:text-[14px] font-semibold text-zinc-900 truncate">
-                    {{ calculated_route_detail?.exported_pdf_files?.[0]?.FileName || 'document.pdf' }}
+                    Public Share URL
                   </div>
                   <div class="mt-1 text-[12px] text-zinc-600 flex flex-wrap gap-1">
-                    <span class="text-zinc-500">Created:</span>
-                    <span class="font-mono tabular-nums">
-                      {{ calculated_route_detail?.exported_pdf_files?.[0]?.['created_date'] || '—' }}
+                    <span class="text-zinc-500 shrink-0">URL:</span>
+                    <a class="truncate underline decoration-dotted hover:opacity-80 break-all"
+                      :href="calculated_route_detail.shared_link.formatted_url" target="_blank" rel="noopener">
+                      Visit Link
+                    </a>
+                  </div>
+                  <div class="mt-1 text-[12px] text-zinc-600 flex flex-wrap gap-1">
+                    <span class="text-zinc-500 shrink-0">Expires At:</span>
+                    <span class="font-mono tabular-nums break-all">
+                      {{ calculated_route_detail.shared_link.ExpiresDate || '—' }}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full sm:w-auto">
-                <button type="button" @click="redownload_exported_pdf(
-                  calculated_route_detail.exported_pdf_files[0].FileId,
-                  calculated_route_detail.exported_pdf_files[0].FileName
-                )"
-                  class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99] disabled:opacity-60">
+                <button type="button"
+                  class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-[13px] font-semibold hover:bg-zinc-50 active:scale-[0.99]"
+                  @click="copySharedLink">
                   <svg viewBox="0 0 24 24" class="h-4 w-4">
-                    <path fill="currentColor" d="M5 20h14v-2H5m7-3 5-5h-3V4h-4v6H7l5 5Z" />
+                    <path fill="currentColor"
+                      d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z" />
                   </svg>
-                  Download
+                  Copy
                 </button>
               </div>
             </div>
 
-            <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-4 text-[12px] text-zinc-600 mt-3">
-              <div class="flex items-center gap-2 mb-2">
-                <span
-                  class="inline-flex h-6 w-6 items-center justify-center rounded-md border border-indigo-200 bg-indigo-50 text-indigo-700">
-                  <svg viewBox="0 0 24 24" class="h-4 w-4">
-                    <path fill="currentColor"
-                      d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12Zm9-5a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z" />
-                  </svg>
-                </span>
-                <span class="font-semibold text-zinc-900">Shared Link</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="sm:col-span-2 flex flex-wrap items-center gap-1 min-w-0">
-                  <span class="text-zinc-500 shrink-0">URL:</span>
-                  <a class="truncate underline decoration-dotted hover:opacity-80 break-all"
-                    :href="calculated_route_detail?.shared_link?.formatted_url || '#'" target="_blank" rel="noopener">
-                    Visit Link
-                  </a>
-                  <button type="button"
-                    class="ml-1 inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white px-2 py-1 text-[11px] font-medium text-zinc-700 hover:bg-zinc-100 active:scale-[0.97]"
-                    @click="copySharedLink">
-                    Copy
-                  </button>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-1">
-                  <span class="text-zinc-500 shrink-0">Expires At:</span>
-                  <span class="font-mono tabular-nums break-all">
-                    {{ calculated_route_detail?.shared_link?.ExpiresDate || '—' }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="!(calculated_route_detail?.exported_pdf_files?.length)"
-              class="mt-3 rounded-lg border border-zinc-100 bg-white p-3 text-[12px] text-zinc-600">
-              No generated PDFs for this route yet.
+            <div v-else class="rounded-lg border border-zinc-100 bg-zinc-50 p-4 text-[12px] text-zinc-600 mt-3">
+              No shared link created yet. Use the button above to create one.
             </div>
           </div>
         </div>
       </div>
+
       <div
         class="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.5rem)] print:hidden">
         <div class="mx-auto max-w-6xl">
@@ -729,12 +691,12 @@ export default {
       build_route_button_triggered: 0,
       successMessage: '',
       countdown: 0,
-      pdf_creating_process_started: false,
+      share_route_service_started: false,
       showExported: false
     };
   },
   async created() {
-    this.pdf_creating_process_started = false;
+    this.share_route_service_started = false;
     this.store.calculated_route_detail_overview_details = [];
     this.store.calculated_route_detail_active = false;
 
@@ -843,13 +805,13 @@ export default {
     },
     async share_route_service(share_type) {
 
-      this.pdf_creating_process_started = true;
+      this.share_route_service_started = true;
       var calculated_route_id = this.calculated_route_detail._id;
 
       try {
 
         var res = await axios.post("/share/route", { RouteId: calculated_route_id, ShareType: share_type });
-        this.pdf_creating_process_started = false;
+        this.share_route_service_started = false;
 
         if (!res.status === 200) return;
 

@@ -3,7 +3,7 @@ import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
     WebAppName: 'RouteWise',
-    AppVersion:'1.3.1',
+    AppVersion:'1.6.0',
     Config: {},
     UserData: {},
 
@@ -11,6 +11,7 @@ export const UseStore = defineStore("UseStore", {
       IsRemindDeviceActive: true
     },
     RegisterData: {},
+    TOTPSetupData:{},
 
     StartLocation:{},
     DestinationLocation:{},
