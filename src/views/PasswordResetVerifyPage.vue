@@ -1,48 +1,52 @@
 <template>
-  <section class="mx-auto w-full max-w-md sm:max-w-lg px-4 sm:px-6 pt-16 pb-12 flex items-center justify-center">
-    <div class="w-full">
+  <section class="min-h-[88vh] w-full px-4 sm:px-6 py-10 flex items-center justify-center bg-white">
+    <div class="w-full max-w-lg">
       <header class="mb-6 sm:mb-8">
-        <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900">
+        <h1 class="text-center text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
           Verify it’s you
         </h1>
         <p class="mt-2 text-center text-sm text-zinc-600">
           Use your authenticator app or a backup code.
         </p>
       </header>
-      <div class="md:rounded-3xl md:border md:border-zinc-200 md:bg-white md:shadow-sm p-6 sm:p-10">
+
+      <div class="rounded-2xl bg-white ring-1 ring-zinc-100 shadow-sm p-6 sm:p-8">
         <TabGroup :selectedIndex="tabIndex" @change="tabIndex = $event">
-          <TabList class="grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 p-1">
+          <!-- Tabs -->
+          <TabList class="grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 p-1 ring-1 ring-inset ring-zinc-200">
             <Tab v-slot="{ selected }" as="template">
               <button
-                class="w-full rounded-md py-2 text-sm font-medium transition focus:outline-none"
+                type="button"
+                class="w-full rounded-md py-2 text-sm font-medium transition
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20"
                 :class="selected
-                  ? 'bg-white shadow border border-zinc-200 text-zinc-900'
-                  : 'text-zinc-600 hover:text-zinc-900'"
-              >
+                  ? 'bg-white shadow-sm ring-1 ring-inset ring-zinc-200 text-zinc-900'
+                  : 'text-zinc-600 hover:text-zinc-900'">
                 Authenticator Code
               </button>
             </Tab>
             <Tab v-slot="{ selected }" as="template">
               <button
-                class="w-full rounded-md py-2 text-sm font-medium transition focus:outline-none"
+                type="button"
+                class="w-full rounded-md py-2 text-sm font-medium transition
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20"
                 :class="selected
-                  ? 'bg-white shadow border border-zinc-200 text-zinc-900'
-                  : 'text-zinc-600 hover:text-zinc-900'"
-              >
+                  ? 'bg-white shadow-sm ring-1 ring-inset ring-zinc-200 text-zinc-900'
+                  : 'text-zinc-600 hover:text-zinc-900'">
                 Backup Code
               </button>
             </Tab>
           </TabList>
-          <TabPanels class="mt-5">
+
+          <TabPanels class="mt-6">
+            <!-- Authenticator -->
             <TabPanel>
-              <form @submit.prevent="onSubmit" novalidate>
-                <label class="block text-sm font-medium text-zinc-800 mb-1">
-                  6‑digit code
-                </label>
+              <form @submit.prevent="onSubmit" novalidate class="space-y-3">
+                <label class="block text-sm font-medium text-zinc-800">6-digit code</label>
                 <div class="relative">
                   <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2 4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3Z" />
+                    <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2 4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3Z"/>
                     </svg>
                   </span>
                   <input
@@ -52,84 +56,87 @@
                     maxlength="6"
                     placeholder="123456"
                     autocomplete="one-time-code"
-                    class="w-full rounded-lg border border-zinc-200 bg-zinc-50 placeholder:text-zinc-400 text-zinc-900 pl-10 pr-3 py-3 tracking-widest text-center outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
-                    @input="totpCode = totpCode.replace(/\D/g, '').slice(0, 6)"
-                  />
+                    class="w-full rounded-lg bg-zinc-50 text-zinc-900 placeholder:text-zinc-400
+                           pl-10 pr-3 py-3 tracking-widest text-center
+                           ring-1 ring-inset ring-zinc-200
+                           focus:bg-white focus:ring-2 focus:ring-zinc-900/20 outline-none transition"
+                    @input="totpCode = totpCode.replace(/\D/g, '').slice(0, 6)" />
                 </div>
-                <div class="mt-3 flex items-center justify-between">
-                  <span class="text-xs text-zinc-600">Time‑based 6‑digit code.</span>
-                  <a
-                    href="/login"
-                    class="text-xs underline text-black hover:text-zinc-800"
-                    v-float-tip="'Back to sign in.'"
-                  >
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-zinc-600">Time-based 6-digit code.</span>
+                  <a href="/login" class="text-xs underline text-zinc-900 hover:opacity-80" v-float-tip="'Back to sign in.'">
                     Sign in
                   </a>
                 </div>
-                <p v-if="error" class="mt-4 text-sm text-red-600">
+
+                <p v-if="error" class="text-sm text-red-600">
                   {{ error }}
                 </p>
+
                 <button
                   :disabled="loading || totpCode.length !== 6"
-                  class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
-                >
+                  class="w-full mt-2 rounded-full bg-zinc-900 hover:bg-black text-white font-semibold
+                         py-3 text-sm shadow-sm disabled:opacity-60 disabled:cursor-not-allowed
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 transition">
                   <span v-if="!loading">Continue</span>
                   <span v-else class="inline-flex items-center gap-2">
-                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
-                      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
+                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3"/>
                     </svg>
                     Verifying…
                   </span>
                 </button>
               </form>
             </TabPanel>
+
+            <!-- Backup -->
             <TabPanel>
-              <form @submit.prevent="onSubmit" novalidate>
-                <label class="block text-sm font-medium text-zinc-800 mb-1">
-                  Backup code
-                </label>
+              <form @submit.prevent="onSubmit" novalidate class="space-y-3">
+                <label class="block text-sm font-medium text-zinc-800">Backup code</label>
                 <div class="relative">
                   <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M14 2a6 6 0 1 0 4.24 10.24l3.39 3.39V19h-3v3h-3v-3h-2.36l-1.05-1.05 2.41-2.41A6 6 0 0 0 14 2Z" />
+                    <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M14 2a6 6 0 1 0 4.24 10.24l3.39 3.39V19h-3v3h-3v-3h-2.36l-1.05-1.05 2.41-2.41A6 6 0 0 0 14 2Z"/>
                     </svg>
                   </span>
                   <input
                     v-model.trim="backupCode"
                     type="text"
                     placeholder="e.g. BDQMM-KSG49"
-                    class="w-full rounded-lg border border-zinc-200 bg-zinc-50 placeholder:text-zinc-400 text-zinc-900 pl-10 pr-3 py-3 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
+                    class="w-full rounded-lg bg-zinc-50 text-zinc-900 placeholder:text-zinc-400
+                           pl-10 pr-3 py-3 ring-1 ring-inset ring-zinc-200
+                           focus:bg-white focus:ring-2 focus:ring-zinc-900/20 outline-none transition"
                     @input="backupCode = backupCode
                       .toUpperCase()
                       .replace(/[^A-Z0-9]/g, '')
                       .replace(/(.{5})/g, '$1-')
                       .replace(/-$/, '')
-                      .slice(0, 11)"
-                  />
+                      .slice(0, 11)" />
                 </div>
-                <div class="mt-3 flex items-center justify-between">
-                  <span class="text-xs text-zinc-600">One‑time use. It will be invalidated after success.</span>
-                  <a
-                    href="/login"
-                    class="text-xs underline text-black hover:text-zinc-800"
-                    v-float-tip="'Back to sign in.'"
-                  >
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-zinc-600">One-time use. It will be invalidated after success.</span>
+                  <a href="/login" class="text-xs underline text-zinc-900 hover:opacity-80" v-float-tip="'Back to sign in.'">
                     Sign in
                   </a>
                 </div>
-                <p v-if="error" class="mt-4 text-sm text-red-600">
+
+                <p v-if="error" class="text-sm text-red-600">
                   {{ error }}
                 </p>
+
                 <button
                   :disabled="loading || backupCode.length < 8"
-                  class="mt-6 w-full rounded-full bg-black hover:bg-zinc-900 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 text-sm shadow-sm transition"
-                >
+                  class="w-full mt-2 rounded-full bg-zinc-900 hover:bg-black text-white font-semibold
+                         py-3 text-sm shadow-sm disabled:opacity-60 disabled:cursor-not-allowed
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 transition">
                   <span v-if="!loading">Continue</span>
                   <span v-else class="inline-flex items-center gap-2">
-                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
-                      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
+                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3"/>
                     </svg>
                     Verifying…
                   </span>

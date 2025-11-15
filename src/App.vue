@@ -40,7 +40,7 @@ export default {
   },
   computed:{
     is_mobile_active() {
-      var auth_pages = ["Login", "LoginTOTPVerify", "RegisterTOTPVerify", "PasswordResetStart", "PasswordResetVerify", "PasswordReset", "Register"];
+      var auth_pages = ["Login", "LoginTOTPVerify", "TOTPVerify", "PasswordResetStart", "PasswordResetVerify", "PasswordReset", "Register"];
       var current_route_name = this.$route.name;
 
       var is_current_route_auth_page = auth_pages.some(function(item){ return item === current_route_name});

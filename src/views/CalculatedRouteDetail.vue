@@ -153,10 +153,49 @@
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden no-overflow">
         <div class="mb-1 flex items-center justify-between">
           <h3 class="text-[13px] font-semibold text-zinc-900">Route Summary</h3>
-          <span class="text-[11px] text-zinc-500">
-            {{ calculated_route_detail?.decrypted_calculated_route_polylines?.length }} Alternative Route
+          <div class="relative">
+            <select v-model="selected_currency" @change="on_currency_change($event.target.value)" class="block w-full appearance-none rounded-lg border border-zinc-200 bg-white pl-3 pr-8 py-1.5
+           text-[11px] text-zinc-700 shadow-sm focus:outline-none focus:ring-1 focus:ring-zinc-300
+           hover:bg-zinc-50 cursor-pointer">
+              <option disabled value="">Select Currency</option>
+
+              <option v-for="c in avaliable_currencies" :key="c.CurrencyCode" :value="c.CurrencyCode">
+                {{ c.CurrencyCode }} - {{ c.Name }}
+              </option>
+            </select>
+
+            <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-zinc-500">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div 
+          v-if="Object.keys(this.calculate_currency_service_fx_data).length"
+          class="mt-3 mb-4 rounded-md bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-[10px] text-zinc-500">
+        <div class="flex flex-wrap gap-x-6 gap-y-1">
+          <span>
+            <span class="font-medium text-zinc-700">Period: </span>
+            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.period }} </span>
+          </span>
+
+          <span>
+            <span class="font-medium text-zinc-700">Base / Target: </span>
+            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.base_currency }} / {{ this.calculate_currency_service_fx_data.target_currency }} </span>
+          </span>
+
+          <span>
+            <span class="font-medium text-zinc-700">Rate: </span>
+            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.formatted_rate }} </span>
+          </span>
+
+          <span>
+            <span class="font-medium text-zinc-700">Requested At: </span>
+            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.request_date }} </span>
           </span>
         </div>
+      </div>
         <div class="divide-y divide-zinc-100">
           <section v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
             :key="key" class="relative py-3 lg:py-4 pr-4">
@@ -209,17 +248,17 @@
               <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">Cost</p>
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                  $ {{ each_created_polyline?.TotalCost || '—' }}
+                   {{ each_created_polyline?.TotalCost || '—' }}
                 </p>
                 <div class="my-[6px] h-px bg-zinc-50"></div>
                 <div class="text-[11px] text-zinc-500 space-y-1">
                   <div class="grid grid-cols-[auto_auto] justify-between">
                     <span class="truncate">Fuel</span>
-                    <span class="tabular-nums">$ {{ each_created_polyline?.TotalGallonCost }}</span>
+                    <span class="tabular-nums"> {{ each_created_polyline?.TotalGallonCost }}</span>
                   </div>
                   <div class="grid grid-cols-[auto_auto] justify-between">
                     <span class="truncate">Tolls</span>
-                    <span class="tabular-nums">$ {{ each_created_polyline?.TollRoadEstimatedPriceDollar }}</span>
+                    <span class="tabular-nums"> {{ each_created_polyline?.TollRoadEstimatedPriceDollar }}</span>
                   </div>
                 </div>
               </div>
@@ -692,7 +731,10 @@ export default {
       successMessage: '',
       countdown: 0,
       share_route_service_started: false,
-      showExported: false
+      showExported: false,
+      avaliable_currencies: [],
+      selected_currency: '',
+      calculate_currency_service_fx_data: {}
     };
   },
   async created() {
@@ -704,6 +746,8 @@ export default {
 
     var { _id } = this.$route.params || {};
     if (_id) await this.get_calculated_route_detail(_id, Token);
+
+    await this.get_avaliable_currencies();
   },
   async beforeUnmount() {
     this.store.calculated_route_detail_overview_details = [];
@@ -726,6 +770,48 @@ export default {
     }
   },
   methods: {
+    async on_currency_change(val){
+      var currency_code = val;
+      this.errorMessage = '';
+
+      try{
+        var response = await axios.post('/calculate/currency', { _id: this.calculated_route_detail._id, currency_code: currency_code });
+        if( response.status !== 200 ) return this.errorMessage = response?.data?.message || 'An error occurred while selecting the currency. Please try again later.';
+
+        this.calculate_currency_service_fx_data = response.data.data.fx;
+        Object.assign(this.calculate_currency_service_fx_data, { request_date: response.data.data.request_date_formatted });
+
+        var calculate_currency_results = response.data.data.results;
+        for(var i = 0; i < calculate_currency_results.length; i++){
+          var row_data = calculate_currency_results[i];
+          var finded_polyline_data = this.calculated_route_detail.decrypted_calculated_route_polylines.find(function(item){ return item.RouteId == row_data.polyline_id});
+          if( finded_polyline_data ) {
+            finded_polyline_data.TollRoadEstimatedPriceDollar = row_data.converted_cost.toll_road_cost.formatted_value;
+            finded_polyline_data.TotalGallonCost = row_data.converted_cost.fuel_cost.formatted_value;
+            finded_polyline_data.TotalCost = row_data.converted_cost.total_cost.formatted_value;
+          }
+        };
+
+      }catch(err){
+        this.errorMessage = err?.response?.data?.message || 'An error occurred while selecting the currency. Please try again later.';
+      }
+    },
+    async get_avaliable_currencies() {
+      this.errorMessage = '';
+
+      try {
+        var response = await axios.get('/currencies');
+        if (response.status !== 200) return this.errorMessage = res.data.message;
+
+        this.avaliable_currencies = response?.data?.frankfurter_service_response_data?.detailed_rates;
+
+        var default_selected_currency = this.avaliable_currencies.find(function(item){ return item.Name === 'United States'});
+        if( default_selected_currency ) this.selected_currency = default_selected_currency.CurrencyCode;
+
+      } catch (err) {
+        this.errorMessage = err?.response?.data?.message || "Currencies not found, please try again later.";
+      }
+    },
     copySharedLink() {
       var link = this.calculated_route_detail?.shared_link?.formatted_url;
       if (!link) return;
@@ -834,6 +920,7 @@ export default {
         if (res.status !== 200) return this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
 
         this.calculated_route_detail = res.data.decrypted_calculated_route_detail;
+        this.store.Config = res.data.config;
 
         var StartLocation = this.calculated_route_detail.StartLocation;
         var DestinationLocation = this.calculated_route_detail.DestinationLocation;
@@ -866,9 +953,10 @@ export default {
           THIS.build_route_button_triggered++;
         }, 1500);
 
-        this.isLoading = false;
       } catch (err) {
         this.errorMessage = err?.response?.data?.message || 'Veri çekilirken bir sorun oluştu.';
+      } finally {
+        this.isLoading = false;
       }
     }
   }

@@ -1,57 +1,79 @@
 <template>
-  <section class="mx-auto w-full max-w-5xl px-4 sm:px-6 pt-12 pb-8 flex items-start justify-center min-h-[80vh]">
-    <div class="w-full grid grid-cols-1 md:grid-cols-2 md:bg-white md:border md:border-zinc-200 md:rounded-xl md:shadow-sm overflow-hidden">
-      <div class="w-full px-4 py-10 sm:px-6 md:px-12 md:py-16 flex flex-col justify-center">
+  <section class="min-h-[88vh] w-full px-4 sm:px-6 py-10 flex items-center justify-center bg-white">
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl ring-1 ring-zinc-100 shadow-sm overflow-hidden">
+      
+      <!-- Sol: Form -->
+      <div class="w-full px-5 sm:px-8 md:px-12 py-10 md:py-14 flex flex-col justify-center">
         <div class="w-full max-w-md mx-auto text-center md:text-left">
-          <img src="../images/AppIconRouteWise-4 1.svg" alt="Routewise Logo" class="w-20 h-20 mx-auto md:mx-0 mb-8" />
-          <h1 class="text-2xl font-bold text-black mb-2">Reset your password</h1>
+          <img
+            src="../images/AppIconRouteWise-4 1.svg"
+            alt="Routewise Logo"
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto md:mx-0 mb-6 sm:mb-8" />
+
+          <h1 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-2">
+            Reset your password
+          </h1>
           <p class="text-sm text-zinc-500 mb-8">
             Enter your username to start the reset process.
           </p>
-          <form @submit.prevent="onSubmit" novalidate>
-            <div class="mb-4">
+
+          <form @submit.prevent="onSubmit" novalidate class="space-y-3">
+            <div>
+              <label for="username" class="sr-only">Username</label>
               <input
+                id="username"
                 v-model.trim="form.UserName"
                 type="text"
                 autocomplete="username"
                 placeholder="username"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
-              />
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
+                       outline-none transition" />
             </div>
-            <p class="text-xs text-zinc-500 mb-4">
+
+            <p class="text-xs text-zinc-500">
               We’ll continue if an account exists for this username.
             </p>
-            <p v-if="error" class="text-red-500 text-sm text-center mb-4">
+
+            <p v-if="error" class="text-sm text-red-600 text-center">
               {{ error }}
             </p>
+
             <button
               type="submit"
               :disabled="loading || !form.UserName"
-              class="w-full py-3 rounded-full bg-black text-white font-semibold hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed transition"
-            >
+              class="w-full mt-1 py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white
+                     font-semibold shadow-sm hover:opacity-95 active:opacity-90
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 transition">
               <span v-if="!loading">Continue</span>
               <span v-else class="inline-flex items-center gap-2">
-                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
                   <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
                 </svg>
                 Processing…
               </span>
             </button>
-            <p class="mt-6 text-center text-sm text-zinc-600">
+
+            <p class="pt-4 text-center text-sm text-zinc-600">
               Remembered your password?
-              <RouterLink
-                to="/login"
-                class="text-black underline hover:text-zinc-800 font-medium"
-              >
+              <RouterLink to="/login" class="text-zinc-900 underline underline-offset-2 hover:opacity-80 font-medium">
                 Sign in
               </RouterLink>
             </p>
           </form>
         </div>
       </div>
-      <div class="hidden md:block bg-zinc-100">
-        <img src="../images/background.jpg" alt="Reset Illustration" class="w-full h-full object-cover" />
+
+      <!-- Sağ: Görsel -->
+      <div class="hidden md:block relative">
+        <img
+          src="../images/background.jpg"
+          alt="Reset illustration"
+          class="w-full h-full object-cover" />
+        <!-- Formu öne çıkarmak için sol kenardan hafif overlay -->
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/60 to-transparent"></div>
       </div>
     </div>
   </section>

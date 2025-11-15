@@ -285,11 +285,11 @@
 
             <template v-else-if="step === 2">
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <div>
+                <!-- <div>
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Route Type</label>
                   <HeadlessSelect v-model="form.RouteType" :items="routeTypeItems" placeholder="Select route type" />
-                </div>
-                <div>
+                </div> -->
+                <div class="lg:col-span-2">
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Driving Style</label>
                   <HeadlessSelect v-model="form.DriveType" :items="driveTypeItems" placeholder="Select driving style" />
                 </div>
@@ -297,7 +297,6 @@
                   <label class="block text-sm font-medium text-zinc-800 mb-1">Toll Pass</label>
                   <HeadlessMultiSelect v-model="form.TollPass" :items="tollPassItems"
                     placeholder="Select toll passes" />
-                  <p class="mt-1 text-xs text-zinc-500">Model: <code>form.TollPass: string[]</code></p>
                 </div>
               </div>
             </template>
@@ -599,7 +598,7 @@ export default {
     progressPct() { return Math.round(((this.step + 1) / this.steps.length) * 100) },
     step1Ok() { return !!this.form.StartLocation && !!this.form.DestinationLocation },
     step2Ok() { return !!this.form.CarBrand && !!this.form.CarModel && !!this.form.Engine && !!this.form.FuelType },
-    step3Ok() { return !!this.form.RouteType && !!this.form.DriveType },
+    step3Ok() { return !!this.form.DriveType },
     step4Ok() {
       const l = this.form.Luggage, p = this.form.Person
       return (p && p > 0) && (l === null || l >= 0)
@@ -871,7 +870,7 @@ export default {
   watch: {
     form:{
       handler(newVal){
-        //console.log(newVal);
+        console.log(newVal);
       },
       immediate: true, deep: true
     },

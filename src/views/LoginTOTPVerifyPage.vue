@@ -1,27 +1,28 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 pb-8 flex items-start justify-center min-h-[80vh]">
-    <div class="w-full max-w-md bg-white md:rounded-xl md:shadow-md md:border md:border-zinc-200 px-6 py-10">
+  <section class="min-h-[88vh] w-full px-4 sm:px-6 py-10 flex items-center justify-center bg-white">
+    <div class="w-full max-w-md bg-white rounded-2xl ring-1 ring-zinc-100 shadow-sm px-6 py-10">
+      <!-- Back -->
       <button
+        type="button"
         @click="goBackLogin"
-        class="mb-6 flex items-center text-sm text-zinc-600 hover:text-black transition"
+        class="mb-6 inline-flex items-center text-sm text-zinc-600 hover:text-zinc-900 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20 rounded-md px-1 -mx-1"
+        aria-label="Back to Login"
       >
-        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-          <path
-            d="M15 18l-6-6 6-6"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Back to Login
       </button>
-      <h1 class="text-2xl font-bold text-black text-center">
+
+      <!-- Title -->
+      <h1 class="text-2xl sm:text-3xl font-bold text-zinc-900 text-center tracking-tight">
         Enter your security code
       </h1>
-      <p class="mt-2 text-sm text-zinc-500 text-center">
+      <p class="mt-2 text-sm text-zinc-600 text-center">
         Enter the 6-digit code from your authenticator app
       </p>
+
+      <!-- OTP boxes -->
       <div class="mt-6 flex justify-center gap-2 md:gap-3" @paste.prevent="onPaste">
         <input
           v-for="(v, i) in code"
@@ -29,27 +30,40 @@
           ref="box"
           inputmode="numeric"
           autocomplete="one-time-code"
+          pattern="[0-9]*"
           maxlength="1"
           :value="v"
+          :aria-label="'Code digit ' + (i + 1)"
           @input="onInput(i, $event)"
           @keydown="onKeydown(i, $event)"
-          class="h-12 w-12 md:h-14 md:w-14 text-center text-lg font-medium text-black border border-zinc-300 rounded-lg bg-zinc-50 focus:bg-white focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition"
+          class="h-12 w-10 md:h-14 md:w-12 text-center text-lg md:text-xl font-medium
+                 text-zinc-900 rounded-lg
+                 bg-rose-50/40 ring-1 ring-inset ring-rose-200/60
+                 focus:bg-white focus:ring-2 focus:ring-rose-300
+                 outline-none transition"
         />
       </div>
+
+      <!-- Error -->
       <p v-if="error" class="mt-4 text-sm text-red-600 text-center">
         {{ error }}
       </p>
+
+      <!-- Submit -->
       <div class="mt-6 w-full">
         <button
+          type="button"
           :disabled="loading || otpString.length !== 6"
           @click="onSubmit"
-          class="w-full rounded-md bg-black hover:bg-zinc-900 text-white font-semibold py-3 text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition"
+          class="w-full rounded-full bg-zinc-900 hover:bg-black text-white font-semibold py-3 text-sm shadow-sm
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 transition"
         >
           <span v-if="!loading">Verify</span>
           <span v-else class="inline-flex items-center gap-2">
-            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-              <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
-              <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
+            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+              <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3"/>
             </svg>
             Verifying…
           </span>

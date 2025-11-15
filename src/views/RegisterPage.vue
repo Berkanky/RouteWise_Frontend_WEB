@@ -1,77 +1,131 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 pb-8 flex items-start justify-center min-h-[80vh]">
-    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 md:bg-white md:rounded-xl md:border md:border-zinc-200 md:shadow-sm md:overflow-hidden">
-      <div class="w-full px-4 py-10 sm:px-6 md:px-12 md:py-16 flex flex-col justify-center">
+  <section class="min-h-[88vh] w-full px-4 sm:px-6 py-10 flex items-center justify-center bg-white">
+    <div
+      class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2
+             bg-white rounded-2xl ring-1 ring-zinc-100 shadow-sm overflow-hidden">
+
+      <!-- Sol: Form -->
+      <div class="w-full px-5 sm:px-8 md:px-12 py-10 md:py-14 flex flex-col justify-center">
         <div class="w-full max-w-md mx-auto text-center md:text-left">
-          <img src="../images/AppIconRouteWise-4 1.svg" alt="Routewise Logo" class="w-24 h-24 mx-auto md:mx-0 mb-8" />
-          <h1 class="text-2xl font-bold text-black mb-2">Create your account</h1>
-          <p class="text-sm text-zinc-500 mb-8">Start your journey with RouteWise.</p>
-          <form @submit.prevent="onSubmit" novalidate class="text-left">
-            <div class="mb-4">
+          <img
+            src="../images/AppIconRouteWise-4 1.svg"
+            alt="Routewise Logo"
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto md:mx-0 mb-6 sm:mb-8" />
+
+          <h1 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-2">
+            Create your account
+          </h1>
+          <p class="text-sm text-zinc-500 mb-8">
+            Start your journey with RouteWise.
+          </p>
+
+          <form @submit.prevent="onSubmit" novalidate class="text-left space-y-4">
+
+            <!-- Username -->
+            <div>
+              <label for="username" class="sr-only">Username</label>
               <input
+                id="username"
                 v-model.trim="form.UserName"
                 @keyup="WatchUserName"
                 type="text"
                 autocomplete="username"
                 placeholder="Choose a username"
                 :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
-                :class="IsUserNameUsed ? 'border border-red-500 bg-red-50' : ''"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
+                       outline-none transition"
+                :class="IsUserNameUsed ? 'bg-red-50 ring-2 ring-red-300' : ''"
               />
               <p v-if="IsUserNameUsed" class="text-sm text-red-600 mt-1">This username is already taken.</p>
             </div>
-            <div class="mb-4 relative">
+
+            <!-- Password -->
+            <div class="relative">
+              <label for="password" class="sr-only">Password</label>
               <input
+                id="password"
                 :type="showPassword ? 'text' : 'password'"
                 v-model="form.Password"
                 autocomplete="new-password"
                 placeholder="Create a password"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
+                       outline-none transition"
               />
-              <button type="button" @click="showPassword = !showPassword"
-                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-black">
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                :aria-pressed="showPassword ? 'true' : 'false'"
+                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-zinc-900">
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
             </div>
-            <div class="mb-4 relative">
+
+            <!-- Password Confirm -->
+            <div class="relative">
+              <label for="password_confirm" class="sr-only">Confirm password</label>
               <input
+                id="password_confirm"
                 :type="showPassword ? 'text' : 'password'"
                 v-model="form.PasswordConfirm"
                 autocomplete="new-password"
                 placeholder="Re-enter your password"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-500 outline-none focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10 transition"
+                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
+                       outline-none transition"
               />
-              <button type="button" @click="showPassword = !showPassword"
-                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-black">
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                :aria-pressed="showPassword ? 'true' : 'false'"
+                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-zinc-900">
                 {{ showPassword ? 'Hide' : 'Show' }}
               </button>
             </div>
-            <p v-if="error" class="text-sm text-red-600 text-center mt-3">
+
+            <!-- Error -->
+            <p v-if="error" class="text-sm text-red-600 text-center">
               {{ error }}
             </p>
+
+            <!-- Submit -->
             <button
               :disabled="loading || IsUserNameUsed"
-              class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white font-semibold shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition mt-4">
+              class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white
+                     font-semibold shadow-sm hover:opacity-95 active:opacity-90
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25
+                     transition mt-2">
               <span v-if="!loading">Register</span>
               <span v-else class="inline-flex items-center gap-2">
-                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
                   <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
                 </svg>
                 Processing…
               </span>
             </button>
-            <p class="mt-6 text-center text-sm text-zinc-600">
+
+            <!-- Login link -->
+            <p class="pt-4 text-center text-sm text-zinc-600">
               Already have an account?
-              <RouterLink to="/login" class="text-black underline hover:text-zinc-800 font-medium">
+              <RouterLink to="/login" class="text-zinc-900 underline underline-offset-2 hover:opacity-80 font-medium">
                 Log in
               </RouterLink>
             </p>
           </form>
         </div>
       </div>
-      <div class="hidden md:block bg-zinc-100">
-        <img src="../images/background.jpg" alt="Register illustration" class="w-full h-full object-cover" />
+
+      <!-- Sağ: Görsel -->
+      <div class="hidden md:block relative">
+        <img
+          src="../images/background.jpg"
+          alt="Register illustration"
+          class="w-full h-full object-cover" />
+        <!-- Formu öne çıkarmak için sol kenardan hafif overlay -->
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/60 to-transparent"></div>
       </div>
     </div>
   </section>
@@ -117,7 +171,7 @@ export default {
   methods: {
     goVerifyNow() {
       clearTimeout(this.resumeTimer);
-      this.$router.push({ name: "RegisterTOTPVerify" });
+      this.$router.push({ name: "TOTPVerify" });
     },
     WatchUserName() {
       var UserName = this.form.UserName?.trim();
@@ -233,7 +287,7 @@ export default {
         this.store.TOTPSetupData.ManualSecret = res.data.ManualSecret;
         this.store.TOTPSetupData.UserName = this.form.UserName;
 
-        this.$router.push({ name: "RegisterTOTPVerify" });
+        this.$router.push({ name: "TOTPVerify" });
 
       } catch (e) {
 

@@ -123,7 +123,7 @@ async function validateSession({ force = true } = {}) {
   }
 }
 
-var SKIP_VALIDATE = new Set(['Login', 'Register', 'LoginTOTPVerify', 'RegisterTOTPVerify']);
+var SKIP_VALIDATE = new Set(['Login', 'Register', 'LoginTOTPVerify', 'TOTPVerify']);
 
 router.beforeEach(async (to) => {
   if (SKIP_VALIDATE.has(to.name)) return true;

@@ -11,9 +11,9 @@
             Home
           </button>
 
-          <button class="hover:text-[#e11d48]" @click="GoAccountPage">
+          <!-- <button class="hover:text-[#e11d48]" @click="GoAccountPage">
             Account
-          </button>
+          </button> -->
           <RouterLink
             to="/start/calculate/route"
             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#e11d48] text-white font-semibold shadow hover:opacity-90 active:scale-[0.98]"
@@ -77,7 +77,7 @@
                   <HomeIcon class="w-5 h-5"/>
                   <span>Home</span>
                 </button>
-                <button
+                <!-- <button
                   v-on:click="GoAccountPage()"
                   :class="[
                     'flex items-center gap-3 py-2.5 px-3 transition-colors',
@@ -86,7 +86,7 @@
                 >
                   <HomeIcon class="w-5 h-5"/>
                   <span>Account</span>
-                </button>
+                </button> -->
                 <RouterLink
                   to="/start/calculate/route"
                   @click="toggleMobileMenu(false)"

@@ -3,7 +3,7 @@ import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
     WebAppName: 'RouteWise',
-    AppVersion:'1.6.0',
+    AppVersion:'1.6.3',
     Config: {},
     UserData: {},
 
@@ -46,11 +46,9 @@ export const UseStore = defineStore("UseStore", {
           Object.assign(this.ServiceRequestData, {message, status, data, config: { url: res.config.url }});
 
           if(res.config.url == '/auth/details' && res.status === 200) {
-
+            this.UserData = res.data.UserData;
             this.Config = res.data.config;
-            this.UserData = res.data.UserData; 
           }
-
           return Promise.resolve(res);
         },
         (err) => {

@@ -1,105 +1,102 @@
 <template>
-  <div class="min-h-screen bg-[#f4f6f9] px-3 py-6 sm:px-6">
-    <div class="min-h-screen bg-[#f4f6f9] px-3 py-6 sm:px-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div v-for="(route, idx) in routes" :key="route._id || idx" class="h-full flex flex-col bg-white
-         -mx-3 rounded-none border-y border-gray-200 shadow-none
-         px-4 py-5
-         sm:mx-0 sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-sm
-         hover:shadow-md transition">
+  <div class="min-h-screen bg-white px-3 py-6 sm:px-6">
+    <div class="mx-auto max-w-7xl">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="(route, idx) in routes" :key="route._id || idx" class="h-full flex flex-col bg-[#fcfcfc] ring-1 ring-zinc-100 rounded-xl shadow-sm
+                 hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 ease-out px-4 py-5">
           <div class="flex-1">
             <div class="text-right">
               <div class="inline-flex items-center gap-2">
                 <span class="text-[10px] uppercase bg-black text-white px-2 py-1 tracking-wide rounded">
                   {{ route.TravelMode || '—' }}
                 </span>
-                <span class="text-[11px] text-gray-500">
+                <span class="text-[11px] text-zinc-500">
                   {{ route.decrypted_calculated_route_polylines?.length || 0 }} Alternative
                 </span>
               </div>
             </div>
+
             <div
-              class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[13px] sm:text-[14px] text-gray-800 items-stretch">
-              <div class="rounded-lg border border-gray-200 p-3 h-full">
-                <p class="text-gray-400 text-[12px]">Best ETA</p>
+              class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[13px] sm:text-[14px] text-zinc-800 items-stretch">
+              <div class="rounded-lg bg-zinc-50 p-3 h-full">
+                <p class="text-zinc-400 text-[12px]">Best ETA</p>
                 <p class="font-medium leading-snug">{{ route.best_eta }}</p>
               </div>
-              <div class="rounded-lg border border-gray-200 p-3 h-full">
-                <p class="text-gray-400 text-[12px]">Best Cost</p>
+              <div class="rounded-lg bg-zinc-50 p-3 h-full">
+                <p class="text-zinc-400 text-[12px]">Best Cost</p>
                 <p class="font-medium">${{ route.best_total_cost }}</p>
               </div>
-              <div class="rounded-lg border border-gray-200 p-3 h-full">
-                <p class="text-gray-400 text-[12px]">Best Distance</p>
+              <div class="rounded-lg bg-zinc-50 p-3 h-full">
+                <p class="text-zinc-400 text-[12px]">Best Distance</p>
                 <p class="font-medium">{{ route.best_distance_mil }} mil</p>
               </div>
             </div>
-            <div class="mt-4 pb-2 mb-2 border-b border-gray-100">
-              <p class="text-[12px] text-gray-400 mb-1.5">Alternative Routes</p>
+
+            <div class="mt-4 pb-2 mb-2 border-b border-zinc-100">
+              <p class="text-[12px] text-zinc-400 mb-1.5">Alternative Routes</p>
               <div class="flex flex-wrap gap-1.5">
-                <span v-for="(alt, i) in route.decrypted_calculated_route_polylines" :key="alt._id || i"
-                  class="inline-flex items-center text-[11px] px-2 py-1 rounded-full border border-gray-200 text-gray-700">
+                <span v-for="(alt, i) in route.decrypted_calculated_route_polylines" :key="alt._id || i" class="inline-flex items-center text-[11px] px-2 py-1 rounded-full
+                         bg-zinc-100 text-zinc-700 hover:bg-zinc-200 transition">
                   {{ alt.AverageDestinationTimeFormatted }} | {{ alt.DistanceMIL }} mil | ${{ alt.TotalCost }}
                 </span>
               </div>
               <span v-if="route.more_count > 0"
-                class="mt-2 inline-block text-[11px] px-2 py-1 rounded-full border border-dashed text-gray-500">
+                class="mt-2 inline-block text-[11px] px-2 py-1 rounded-full border border-dashed text-zinc-500">
                 +{{ route.more_count }} more
               </span>
             </div>
-            <div class="mt-4 grid grid-cols-2 gap-3 text-[13px] text-gray-700">
+
+            <div class="mt-4 grid grid-cols-2 gap-3 text-[13px] text-zinc-700">
               <div>
-                <p class="text-gray-400 text-[12px]">Car</p>
+                <p class="text-zinc-400 text-[12px]">Car</p>
                 <p>{{ route.VehicleId?.make || '—' }} {{ route.VehicleId?.model || '' }}</p>
               </div>
               <div>
-                <p class="text-gray-400 text-[12px]">Engine</p>
+                <p class="text-zinc-400 text-[12px]">Engine</p>
                 <p>{{ route.VehicleId?.displ || '—' }}L • {{ route.VehicleId?.fueltype1 || '—' }}</p>
               </div>
             </div>
           </div>
-          <div class="mt-auto pt-3 border-t flex items-center justify-between">
-            <p class="text-[11px] text-gray-400 leading-tight">
+
+          <div class="mt-auto pt-3 border-t border-zinc-100 flex items-center justify-between">
+            <p class="text-[11px] text-zinc-400 leading-tight">
               Total cost range: ${{ route.min_total_cost }}–{{ route.max_total_cost }}
             </p>
-            <button @click="handleViewDetail(route._id)" aria-label="View detail for {{ route.Name }}" class="w-full sm:w-auto h-10 px-4 rounded-lg
-              border border-gray-300 text-gray-800 font-semibold text-[13px] tracking-wide
-              bg-white
-              active:scale-[0.98] active:bg-gray-50
-              hover:border-gray-400 hover:bg-gray-50
-              transition-all duration-150 ease-in-out
-              shadow-[0_1px_3px_rgba(0,0,0,0.05)]
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/30"
-            >
+
+            <button type="button" @click="handleViewDetail(route._id)" aria-label="View detail for {{ route.Name }}"
+              class="w-full sm:w-auto h-10 px-4 rounded-lg
+                     border border-zinc-300 text-zinc-800 font-semibold text-[13px] tracking-wide
+                     bg-white hover:border-zinc-400 hover:bg-zinc-50
+                     active:scale-[0.98] active:bg-zinc-100
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/30
+                     shadow-[0_1px_3px_rgba(0,0,0,0.05)] transition-all duration-150 ease-in-out">
               View Detail
             </button>
           </div>
         </div>
       </div>
     </div>
+
     <div class="sticky bottom-0 z-30">
-      <div class="bg-white/90 dark:bg-zinc-950/80 backdrop-blur
-           border-t border-zinc-200/80 dark:border-zinc-800">
-        <div class="h-14 sm:h-[60px] px-3 sm:px-4
-             flex items-center justify-between gap-4
-             md:mx-auto md:max-w-3xl md:justify-center" style="padding-bottom: env(safe-area-inset-bottom);">
+      <div class="bg-white/90 backdrop-blur border-t border-zinc-200/80">
+        <div class="h-14 sm:h-[60px] px-3 sm:px-4 flex items-center justify-between gap-4
+                 md:mx-auto md:max-w-3xl md:justify-center" style="padding-bottom: env(safe-area-inset-bottom);">
           <div class="flex items-center gap-3 min-w-0">
-            <div class="relative h-1.5 w-28 rounded bg-zinc-200/90 dark:bg-zinc-800 overflow-hidden">
-              <div class="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-200 transition-all duration-300"
+            <div class="relative h-1.5 w-28 rounded bg-zinc-200/90 overflow-hidden">
+              <div class="absolute inset-y-0 left-0 bg-zinc-900 transition-all duration-300"
                 :style="{ width: progressPct + '%' }"></div>
             </div>
-            <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 dark:text-zinc-300 truncate">
+            <p v-if="TotalCount !== null" class="text-[12px] text-zinc-600 truncate">
               {{ routes.length }} / {{ TotalCount }} Displaying
             </p>
           </div>
+
           <button v-if="hasMore" :disabled="loading" @click="manualLoadMore" class="inline-flex h-10 sm:h-11 px-4 items-center justify-center gap-2
-            rounded-md bg-white text-zinc-900 border border-zinc-200
-            hover:bg-zinc-50 active:bg-zinc-100 active:translate-y-px
-            disabled:opacity-60 disabled:active:translate-y-0 disabled:pointer-events-none
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20
-            transition touch-manipulation
-            dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-700
-            md:ml-4 md:shrink-0"
-          >
+                   rounded-md bg-white text-zinc-900 border border-zinc-200
+                   hover:bg-zinc-50 active:bg-zinc-100 active:translate-y-px
+                   disabled:opacity-60 disabled:active:translate-y-0 disabled:pointer-events-none
+                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/20
+                   transition touch-manipulation md:ml-4 md:shrink-0">
             <svg v-if="loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" class="opacity-25" />
               <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
@@ -152,7 +149,7 @@ export default {
   async created() {
 
     var { Page } = this.$route.query;
-    if( Page ) this.Page = Page;
+    if (Page) this.Page = Page;
 
     await this.calculated_routes_service({ reset: true });
 
@@ -221,7 +218,7 @@ export default {
           signal: this._abortCtrl.signal
         });
 
-        if(res.status !== 200 ) return;
+        if (res.status !== 200) return;
 
         if (typeof res.data.PageSize === 'number') this.PageSize = res.data.PageSize;
         if (typeof res.data.TotalCount === 'number') this.TotalCount = res.data.TotalCount;
@@ -244,7 +241,7 @@ export default {
 
         var nextPage = Number(this.$route.query.Page ?? 1);
         if (nextPage === this.Page) return;
-        
+
         this.Page = nextPage;
         await this.calculated_routes_service({ reset: nextPage === 1 });
       },
