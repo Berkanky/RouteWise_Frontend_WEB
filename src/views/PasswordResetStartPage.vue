@@ -1,7 +1,7 @@
 <template>
   <section
     class="min-h-[88vh] w-full px-4 sm:px-6 py-8 sm:py-10
-           flex items-start md:items-center justify-center bg-zinc-50"
+           flex items-start md:items-center justify-center bg-white"
   >
     <div
       class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2

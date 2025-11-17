@@ -6,7 +6,7 @@
     <div
       class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2
              bg-white
-             md:rounded-3xl md:ring-1 md:ring-zinc-200
+             md:rounded-3xl md:ring-1 md:ring-zinc-100
              md:shadow-[0_18px_55px_rgba(15,23,42,0.08)]
              md:overflow-hidden"
     >

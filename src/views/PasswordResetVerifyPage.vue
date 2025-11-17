@@ -5,9 +5,9 @@
   >
     <div class="w-full max-w-lg">
       <div
-        class="rounded-3xl bg-white ring-1 ring-zinc-100
-               shadow-[0_18px_55px_rgba(15,23,42,0.08)]
-               px-6 sm:px-8 md:px-10 py-7 sm:py-8"
+        class="px-0 sm:px-2 md:px-8 py-0 sm:py-2 md:py-8
+               md:rounded-3xl md:bg-white md:ring-1 md:ring-zinc-100
+               md:shadow-[0_18px_55px_rgba(15,23,42,0.08)]"
       >
         <header class="mb-6 sm:mb-7 text-center">
           <h1 class="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
