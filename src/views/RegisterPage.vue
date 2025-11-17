@@ -1,16 +1,24 @@
 <template>
-  <section class="min-h-[88vh] w-full px-4 sm:px-6 py-10 flex items-center justify-center bg-white">
+  <section
+    class="min-h-[88vh] w-full px-4 sm:px-6 py-8 sm:py-10
+           flex items-start md:items-center justify-center bg-zinc-50"
+  >
     <div
       class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2
-             bg-white rounded-2xl ring-1 ring-zinc-100 shadow-sm overflow-hidden">
-
+             bg-white
+             md:rounded-3xl md:ring-1 md:ring-zinc-200
+             md:shadow-[0_18px_55px_rgba(15,23,42,0.08)]
+             md:overflow-hidden"
+    >
       <!-- Sol: Form -->
       <div class="w-full px-5 sm:px-8 md:px-12 py-10 md:py-14 flex flex-col justify-center">
         <div class="w-full max-w-md mx-auto text-center md:text-left">
+
           <img
             src="../images/AppIconRouteWise-4 1.svg"
             alt="Routewise Logo"
-            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto md:mx-0 mb-6 sm:mb-8" />
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto md:mx-0 mb-6 sm:mb-8"
+          />
 
           <h1 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-2">
             Create your account
@@ -19,7 +27,7 @@
             Start your journey with RouteWise.
           </p>
 
-          <form @submit.prevent="onSubmit" novalidate class="text-left space-y-4">
+          <form @submit.prevent="onSubmit" novalidate class="space-y-4">
 
             <!-- Username -->
             <div>
@@ -33,55 +41,67 @@
                 placeholder="Choose a username"
                 :aria-invalid="is_user_name_existing ? 'true' : 'false'"
                 class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
-                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
+                       ring-1 ring-inset ring-zinc-200
+                       focus:bg-white focus:ring-2 focus:ring-zinc-900/20
                        outline-none transition"
                 :class="is_user_name_existing ? 'bg-red-50 ring-2 ring-red-300' : ''"
               />
-              <p v-if="is_user_name_existing" class="text-sm text-red-600 mt-1">This username is already taken.</p>
+              <p v-if="is_user_name_existing" class="text-xs text-red-600 mt-1">
+                This username is already taken.
+              </p>
             </div>
 
             <!-- Password -->
-            <div class="relative">
+            <div>
               <label for="password" class="sr-only">Password</label>
-              <input
-                id="password"
-                :type="showPassword ? 'text' : 'password'"
-                v-model="form.Password"
-                autocomplete="new-password"
-                placeholder="Create a password"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
-                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
-                       outline-none transition"
-              />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                :aria-pressed="showPassword ? 'true' : 'false'"
-                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-zinc-900">
-                {{ showPassword ? 'Hide' : 'Show' }}
-              </button>
+              <div class="relative">
+                <input
+                  id="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="form.Password"
+                  autocomplete="new-password"
+                  placeholder="Create a password"
+                  class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                         ring-1 ring-inset ring-zinc-200
+                         focus:bg-white focus:ring-2 focus:ring-zinc-900/20 outline-none transition"
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  :aria-pressed="showPassword ? 'true' : 'false'"
+                  class="absolute inset-y-0 right-4 flex items-center text-xs sm:text-sm text-zinc-600 hover:text-zinc-900"
+                >
+                  {{ showPassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+              <p class="mt-1 text-xs text-zinc-500">
+                Use at least 8 characters, including letters and numbers.
+              </p>
             </div>
 
             <!-- Password Confirm -->
-            <div class="relative">
+            <div>
               <label for="password_confirm" class="sr-only">Confirm password</label>
-              <input
-                id="password_confirm"
-                :type="showPassword ? 'text' : 'password'"
-                v-model="form.PasswordConfirm"
-                autocomplete="new-password"
-                placeholder="Re-enter your password"
-                class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
-                       ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
-                       outline-none transition"
-              />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                :aria-pressed="showPassword ? 'true' : 'false'"
-                class="absolute inset-y-0 right-4 flex items-center text-sm text-zinc-600 hover:text-zinc-900">
-                {{ showPassword ? 'Hide' : 'Show' }}
-              </button>
+              <div class="relative">
+                <input
+                  id="password_confirm"
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="form.PasswordConfirm"
+                  autocomplete="new-password"
+                  placeholder="Re-enter your password"
+                  class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
+                         ring-1 ring-inset ring-zinc-200
+                         focus:bg-white focus:ring-2 focus:ring-zinc-900/20 outline-none transition"
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  :aria-pressed="showPassword ? 'true' : 'false'"
+                  class="absolute inset-y-0 right-4 flex items-center text-xs sm:text-sm text-zinc-600 hover:text-zinc-900"
+                >
+                  {{ showPassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
             </div>
 
             <!-- Error -->
@@ -96,10 +116,11 @@
                      font-semibold shadow-sm hover:opacity-95 active:opacity-90
                      disabled:opacity-50 disabled:cursor-not-allowed
                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25
-                     transition mt-2">
+                     transition mt-2"
+            >
               <span v-if="!loading">Register</span>
               <span v-else class="inline-flex items-center gap-2">
-                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                   <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
                   <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" />
                 </svg>
@@ -110,7 +131,10 @@
             <!-- Login link -->
             <p class="pt-4 text-center text-sm text-zinc-600">
               Already have an account?
-              <RouterLink to="/login" class="text-zinc-900 underline underline-offset-2 hover:opacity-80 font-medium">
+              <RouterLink
+                to="/login"
+                class="text-zinc-900 underline underline-offset-2 hover:opacity-80 font-medium"
+              >
                 Log in
               </RouterLink>
             </p>
@@ -123,10 +147,11 @@
         <img
           src="../images/background.jpg"
           alt="Register illustration"
-          class="w-full h-full object-cover" />
-        <!-- Formu öne çıkarmak için sol kenardan hafif overlay -->
+          class="w-full h-full object-cover"
+        />
         <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/60 to-transparent"></div>
       </div>
+
     </div>
   </section>
 </template>

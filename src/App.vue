@@ -1,6 +1,6 @@
 <template>
   <AppNavbar v-if="!this.is_mobile_active"/>
-  <main class="min-h-[100svh] overflow-x-hidden bg-zinc-50 pt-16 has-fixed-footer">
+  <main class="min-h-[100svh] overflow-x-hidden bg-white pt-16 has-fixed-footer">
     <router-view />
   </main>
   <AppFooter class="hidden md:block print:hidden"/>

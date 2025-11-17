@@ -86,7 +86,7 @@
                 >
                   <HomeIcon class="w-5 h-5"/>
                   <span>Account</span>
-                </button> -->
+                </button> --><!-- 
                 <RouterLink
                   to="/start/calculate/route"
                   @click="toggleMobileMenu(false)"
@@ -97,11 +97,11 @@
                 >
                   <MapIcon class="w-5 h-5"/>
                   <span>Route</span>
-                </RouterLink>
+                </RouterLink> -->
               </nav>
             </div>
             <div class="px-3">
-              <div
+             <!--  <div
                 class="mb-4 p-3 bg-zinc-50 flex items-center justify-between hover:bg-zinc-100 transition-all cursor-pointer"
                 @click="goToRecentRoutes"
               >
@@ -111,7 +111,7 @@
                   <p class="text-xs text-zinc-500">Latest calculations</p>
                 </div>
                 <ChevronRightIcon class="h-4 w-4 text-zinc-400" />
-              </div>
+              </div> -->
               <p class="text-center text-[10px] text-zinc-400 mb-3 opacity-70">
                 app_version {{ store.AppVersion }}
               </p>
