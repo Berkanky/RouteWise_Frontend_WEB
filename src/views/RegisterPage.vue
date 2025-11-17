@@ -31,13 +31,13 @@
                 type="text"
                 autocomplete="username"
                 placeholder="Choose a username"
-                :aria-invalid="IsUserNameUsed ? 'true' : 'false'"
+                :aria-invalid="is_user_name_existing ? 'true' : 'false'"
                 class="w-full rounded-full bg-zinc-50 px-4 py-3 text-zinc-900 placeholder:text-zinc-500
                        ring-1 ring-inset ring-zinc-200 focus:bg-white focus:ring-2 focus:ring-zinc-900/20
                        outline-none transition"
-                :class="IsUserNameUsed ? 'bg-red-50 ring-2 ring-red-300' : ''"
+                :class="is_user_name_existing ? 'bg-red-50 ring-2 ring-red-300' : ''"
               />
-              <p v-if="IsUserNameUsed" class="text-sm text-red-600 mt-1">This username is already taken.</p>
+              <p v-if="is_user_name_existing" class="text-sm text-red-600 mt-1">This username is already taken.</p>
             </div>
 
             <!-- Password -->
@@ -91,7 +91,7 @@
 
             <!-- Submit -->
             <button
-              :disabled="loading || IsUserNameUsed"
+              :disabled="loading || is_user_name_existing"
               class="w-full py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black text-white
                      font-semibold shadow-sm hover:opacity-95 active:opacity-90
                      disabled:opacity-50 disabled:cursor-not-allowed
@@ -156,7 +156,7 @@ export default {
       heartbeatTimer: null,
       sendQueue: [],
       debounceTimer: null,
-      IsUserNameUsed: false,
+      is_user_name_existing: false,
       showResume: false,
       resumeTimer: null,
     };
@@ -176,7 +176,7 @@ export default {
     WatchUserName() {
       var UserName = this.form.UserName?.trim();
       if (!UserName) {
-        this.IsUserNameUsed = false;
+        this.is_user_name_existing = false;
         return;
       }
       clearTimeout(this.debounceTimer);
@@ -185,14 +185,18 @@ export default {
       }, 300);
     },
     WSConnect() {
-      var RailwayWS = import.meta.env.VITE_WEB_SOCKET_API_URL;
+      var web_socket_api_url = import.meta.env.VITE_WEB_SOCKET_API_URL;
       try {
-        this.socket = new WebSocket(RailwayWS);
+
+        this.socket = new WebSocket(web_socket_api_url);
       } catch (e) {
+
         console.error("Web Socket Error. ", e);
         return this.scheduleReconnect();
       }
+
       this.socket.onopen = () => {
+
         this.reconnectAttempts = 0;
         this.flushQueue();
         this.startHeartbeat();
@@ -200,12 +204,14 @@ export default {
       };
       this.socket.onmessage = (event) => {
         try {
-          const payload = JSON.parse(event.data)?.payload;
-          if (typeof payload?.IsUserNameUsed === "boolean") {
-            this.IsUserNameUsed = payload.IsUserNameUsed;
-          }
-        } catch {}
+
+          var payload = JSON.parse(event.data)?.payload;
+          if (typeof payload?.is_user_name_existing === "boolean") this.is_user_name_existing = payload.is_user_name_existing;
+        } catch(err){
+          console.log(err);
+        }
       };
+
       this.socket.onerror = (err) => console.warn("Web Socket Error. ", err?.message || err);
       this.socket.onclose = () => {
         this.stopHeartbeat();
@@ -215,6 +221,7 @@ export default {
     sendWS(payload) {
 
       var data = JSON.stringify(payload);
+
       if (this.socket && this.socket.readyState === WebSocket.OPEN) this.socket.send(data);
       else this.sendQueue.push(data);
     },
@@ -259,7 +266,7 @@ export default {
         return;
       }
 
-      if (this.IsUserNameUsed) {
+      if (this.is_user_name_existing) {
 
         this.error = "Please choose another username.";
         return;
@@ -279,7 +286,7 @@ export default {
           PasswordConfirm: this.form.PasswordConfirm,
         });
 
-        if( res.status !== 200 ) return this.error = res.data.message;
+        if( res.status !== 200 ) return this.error = res.data?.message;
 
         this.store.RegisterData = this.form;
 

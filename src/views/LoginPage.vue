@@ -10,10 +10,10 @@
             class="w-16 h-16 sm:w-20 sm:h-20 mx-auto md:mx-0 mb-6 sm:mb-8" />
 
           <h1 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-2">
-            Welcome to Routewise
+            Welcome to RouteWise
           </h1>
           <p class="text-sm text-zinc-500 mb-8">
-            Login and unlock smarter travel with Routewise.
+            Login and unlock smarter travel with RouteWise.
           </p>
 
           <form @submit.prevent="onSubmit" novalidate class="text-left space-y-4">

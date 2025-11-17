@@ -634,6 +634,12 @@
                       {{ calculated_route_detail.shared_link.ExpiresDate || '—' }}
                     </span>
                   </div>
+                  <div class="mt-1 text-[12px] text-zinc-600 flex flex-wrap gap-1">
+                    <span class="text-zinc-500 shrink-0">Access request:</span>
+                    <span class="font-mono tabular-nums break-all">
+                      {{ calculated_route_detail?.shared_link?.AccessCount || '—' }}
+                    </span>
+                  </div>
                 </div>
               </div>
 
