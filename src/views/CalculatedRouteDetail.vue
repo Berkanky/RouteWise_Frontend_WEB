@@ -89,6 +89,7 @@
         </div>
       </div>
       <div class="rounded-2xl border border-zinc-100 bg-white shadow-sm p-4 sm:p-5 no-overflow">
+        <!-- Header -->
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-3 min-w-0">
             <span
@@ -105,6 +106,7 @@
               </p>
             </div>
           </div>
+
           <div class="hidden sm:flex sm:flex-wrap items-center gap-2">
             <span
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
@@ -112,6 +114,8 @@
             </span>
           </div>
         </div>
+
+        <!-- 3 Columns -->
         <div
           class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4
            sm:[&>*:not(:first-child)]:pl-4 sm:[&>*:not(:first-child)]:border-l sm:[&>*:not(:first-child)]:border-zinc-100">
@@ -121,12 +125,14 @@
               {{ calculated_route_detail?.FuelPriceAtTransactionTime || '—' }}
             </p>
           </div>
+
           <div class="min-w-0">
             <p class="text-[11px] text-zinc-500">Units</p>
             <p class="text-[16px] font-semibold text-zinc-900 leading-snug">
               {{ calculated_route_detail?.FuelPriceUnits || '—' }}
             </p>
           </div>
+
           <div class="min-w-0">
             <p class="text-[11px] text-zinc-500">Period</p>
             <p class="font-mono tabular-nums text-[13px] text-zinc-900 leading-snug">
@@ -134,7 +140,11 @@
             </p>
           </div>
         </div>
+
+        <!-- Divider -->
         <div class="mt-3 h-px bg-zinc-50"></div>
+
+        <!-- Pricing Source -->
         <p class="mt-2 text-[11px] text-zinc-500">
           Pricing source:
           <span class="font-mono tabular-nums text-zinc-700">
@@ -149,7 +159,16 @@
             {{ calculated_route_detail?.FuelPricePeriod }}
           </span>
         </p>
+
+        <!-- NEW: Liter Basis -->
+        <p class="mt-1 text-[11px] text-zinc-500">
+          Liter basis:
+          <span class="font-mono tabular-nums text-zinc-700">
+            {{ calculated_route_detail?.FuelLiterPriceAtTransactionTime?.formatted_liter || '—' }}
+          </span>
+        </p>
       </div>
+
       <div class="rounded-2xl border border-zinc-100 bg-white p-4 lg:p-5 shadow-sm overflow-hidden no-overflow">
         <div class="mb-1 flex items-center justify-between">
           <h3 class="text-[13px] font-semibold text-zinc-900">Route Summary</h3>
@@ -171,31 +190,31 @@
             </div>
           </div>
         </div>
-        <div 
-          v-if="Object.keys(this.calculate_currency_service_fx_data).length"
+        <div v-if="Object.keys(this.calculate_currency_service_fx_data).length"
           class="mt-3 mb-4 rounded-md bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-[10px] text-zinc-500">
-        <div class="flex flex-wrap gap-x-6 gap-y-1">
-          <span>
-            <span class="font-medium text-zinc-700">Period: </span>
-            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.period }} </span>
-          </span>
+          <div class="flex flex-wrap gap-x-6 gap-y-1">
+            <span>
+              <span class="font-medium text-zinc-700">Period: </span>
+              <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.period }} </span>
+            </span>
 
-          <span>
-            <span class="font-medium text-zinc-700">Base / Target: </span>
-            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.base_currency }} / {{ this.calculate_currency_service_fx_data.target_currency }} </span>
-          </span>
+            <span>
+              <span class="font-medium text-zinc-700">Base / Target: </span>
+              <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.base_currency }} / {{
+                this.calculate_currency_service_fx_data.target_currency }} </span>
+            </span>
 
-          <span>
-            <span class="font-medium text-zinc-700">Rate: </span>
-            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.formatted_rate }} </span>
-          </span>
+            <span>
+              <span class="font-medium text-zinc-700">Rate: </span>
+              <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.formatted_rate }} </span>
+            </span>
 
-          <span>
-            <span class="font-medium text-zinc-700">Requested At: </span>
-            <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.request_date }} </span>
-          </span>
+            <span>
+              <span class="font-medium text-zinc-700">Requested At: </span>
+              <span class="text-zinc-600"> {{ this.calculate_currency_service_fx_data.request_date }} </span>
+            </span>
+          </div>
         </div>
-      </div>
         <div class="divide-y divide-zinc-100">
           <section v-for="(each_created_polyline, key) in calculated_route_detail.decrypted_calculated_route_polylines"
             :key="key" class="relative py-3 lg:py-4 pr-4">
@@ -248,7 +267,7 @@
               <div class="min-w-0 no-break">
                 <p class="text-[11px] text-zinc-500">Cost</p>
                 <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                   {{ each_created_polyline?.TotalCost || '—' }}
+                  {{ each_created_polyline?.TotalCost || '—' }}
                 </p>
                 <div class="my-[6px] h-px bg-zinc-50"></div>
                 <div class="text-[11px] text-zinc-500 space-y-1">
@@ -776,29 +795,29 @@ export default {
     }
   },
   methods: {
-    async on_currency_change(val){
+    async on_currency_change(val) {
       var currency_code = val;
       this.errorMessage = '';
 
-      try{
+      try {
         var response = await axios.post('/calculate/currency', { _id: this.calculated_route_detail._id, currency_code: currency_code });
-        if( response.status !== 200 ) return this.errorMessage = response?.data?.message || 'An error occurred while selecting the currency. Please try again later.';
+        if (response.status !== 200) return this.errorMessage = response?.data?.message || 'An error occurred while selecting the currency. Please try again later.';
 
         this.calculate_currency_service_fx_data = response.data.data.fx;
         Object.assign(this.calculate_currency_service_fx_data, { request_date: response.data.data.request_date_formatted });
 
         var calculate_currency_results = response.data.data.results;
-        for(var i = 0; i < calculate_currency_results.length; i++){
+        for (var i = 0; i < calculate_currency_results.length; i++) {
           var row_data = calculate_currency_results[i];
-          var finded_polyline_data = this.calculated_route_detail.decrypted_calculated_route_polylines.find(function(item){ return item.RouteId == row_data.polyline_id});
-          if( finded_polyline_data ) {
+          var finded_polyline_data = this.calculated_route_detail.decrypted_calculated_route_polylines.find(function (item) { return item.RouteId == row_data.polyline_id });
+          if (finded_polyline_data) {
             finded_polyline_data.TollRoadEstimatedPriceDollar = row_data.converted_cost.toll_road_cost.formatted_value;
             finded_polyline_data.TotalGallonCost = row_data.converted_cost.fuel_cost.formatted_value;
             finded_polyline_data.TotalCost = row_data.converted_cost.total_cost.formatted_value;
           }
         };
 
-      }catch(err){
+      } catch (err) {
         this.errorMessage = err?.response?.data?.message || 'An error occurred while selecting the currency. Please try again later.';
       }
     },
@@ -811,8 +830,8 @@ export default {
 
         this.avaliable_currencies = response?.data?.frankfurter_service_response_data?.detailed_rates;
 
-        var default_selected_currency = this.avaliable_currencies.find(function(item){ return item.Name === 'United States'});
-        if( default_selected_currency ) this.selected_currency = default_selected_currency.CurrencyCode;
+        var default_selected_currency = this.avaliable_currencies.find(function (item) { return item.Name === 'United States' });
+        if (default_selected_currency) this.selected_currency = default_selected_currency.CurrencyCode;
 
       } catch (err) {
         this.errorMessage = err?.response?.data?.message || "Currencies not found, please try again later.";

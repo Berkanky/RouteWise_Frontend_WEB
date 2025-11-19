@@ -458,9 +458,9 @@ const HeadlessMultiSelect = {
   },
   methods: {
     labelOf(it) {
-      if (it == null) return ""
-      if (typeof it === "string" || typeof it === "number") return String(it)
-      return it.label ?? it.name ?? it.title ?? it.value ?? JSON.stringify(it)
+      if (it == null) return "";
+      if (typeof it === "string" || typeof it === "number") return String(it);
+      return it.label ?? it.name ?? it.title ?? it.value ?? JSON.stringify(it);
     }
   },
   render() {
@@ -491,14 +491,42 @@ const HeadlessMultiSelect = {
             ])
           ])
         ]),
+
         h(TransitionRoot, { leave: "transition ease-in duration-100", "leave-from": "opacity-100", "leave-to": "opacity-0" }, {
-          default: () => h(ListboxOptions, { class: "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-zinc-200 bg-white py-1 text-sm shadow-lg focus:outline-none" },
+          default: () => h(ListboxOptions, {
+            class: "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-zinc-200 bg-white py-1 text-sm shadow-lg focus:outline-none"
+          },
             this.items.map((it, idx) =>
               h(ListboxOption, { key: idx, value: it }, {
                 default: ({ active, selected }) =>
-                  h("li", {
-                    class: ["px-3 py-2 cursor-pointer", active ? "bg-zinc-50" : "", selected ? "font-medium text-zinc-900" : "text-zinc-700"]
-                  }, this.labelOf(it))
+                  h(
+                    "li",
+                    {
+                      class: [
+                        "px-3 py-2 cursor-pointer",
+                        active ? "bg-zinc-50" : "",
+                        selected ? "font-medium text-zinc-900" : "text-zinc-700"
+                      ]
+                    },
+                    [
+                      h("div", { class: "flex flex-col" }, [
+
+                        // LABEL
+                        h("span", { class: "text-sm" }, this.labelOf(it)),
+
+                        // usage_description
+                        it.usage_description
+                          ? h(
+                            "span",
+                            {
+                              class: "mt-0.5 text-xs text-zinc-500 truncate"
+                            },
+                            it.usage_description
+                          )
+                          : null
+                      ])
+                    ]
+                  )
               })
             )
           )
@@ -506,7 +534,7 @@ const HeadlessMultiSelect = {
       ])
     })
   }
-}
+};
 
 export default {
   name: "RouteWizard",
@@ -680,8 +708,9 @@ export default {
     },
     async CathchMetaData(country_name) {
       var res = await axios.post(`/toll-passes`, { country_name: country_name }, {});
-      if (res.status === 200) this.tollPassItems = res.data.toll_passes;
-      else return;
+      if (res.status !== 200) return;
+
+      this.tollPassItems = res.data.toll_passes;
     },
     async onEngineChange(v) {
 
@@ -771,7 +800,7 @@ export default {
       };
       try {
         var res = await axios.post(`/start/calculate/route`, body, {});
-        console.log("/start/calculate/route : " +res);
+        console.log("/start/calculate/route : " + res);
         if (res.status === 200) {
 
           this.feedback = { type: 'success', message: res.data.message };
@@ -828,7 +857,7 @@ export default {
       var start_location_country = this.store.StartLocation?.address_components_details?.country;
       var destination_location_country = this.store.DestinationLocation?.address_components_details?.country;
 
-      if( start_location_country && destination_location_country  && start_location_country === destination_location_country ) {
+      if (start_location_country && destination_location_country && start_location_country === destination_location_country) {
 
         var country_name = start_location_country;
 
@@ -868,8 +897,8 @@ export default {
     }
   },
   watch: {
-    form:{
-      handler(newVal){
+    form: {
+      handler(newVal) {
         console.log(newVal);
       },
       immediate: true, deep: true
