@@ -53,8 +53,10 @@ export default {
     }
   },
   async mounted() {
+    await this.store.client_config_service();
 
     var GOOGLE_API_KEY = this.store.Config.GOOGLE_API_KEY;
+
     if (!GOOGLE_API_KEY) return;
 
     var default_center = { lat: 41.015137, lng: 28.97953 };

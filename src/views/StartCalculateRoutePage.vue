@@ -800,7 +800,7 @@ export default {
       };
       try {
         var res = await axios.post(`/start/calculate/route`, body, {});
-        console.log("/start/calculate/route : " + res);
+
         if (res.status === 200) {
 
           this.feedback = { type: 'success', message: res.data.message };
@@ -899,7 +899,7 @@ export default {
   watch: {
     form: {
       handler(newVal) {
-        console.log(newVal);
+        //console.log(newVal);
       },
       immediate: true, deep: true
     },

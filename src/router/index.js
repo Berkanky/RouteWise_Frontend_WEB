@@ -105,19 +105,21 @@ var router = createRouter({
   }
 });
 
-var currentUser = null;
 var validatedAt = 0;
 
 async function validateSession({ force = true } = {}) {
 
-  if (!force && currentUser && Date.now() - validatedAt < 60_000) return true;
+  if (!force && Date.now() - validatedAt < 60_000) return true;
   try {
-    var { data } = await axios.get("/auth/details");
-    currentUser = data?.user ?? data;
+    var response = await axios.get("/auth/session");
+    if( response.status !== 200 ){
+      validatedAt = 0;
+      return false;
+    }
+
     validatedAt = Date.now();
     return true;
   } catch {
-    currentUser = null;
     validatedAt = 0;
     return false;
   }

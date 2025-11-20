@@ -3,96 +3,85 @@ import axios from "axios";
 export const UseStore = defineStore("UseStore", {
   state: () => ({
     WebAppName: 'RouteWise',
-    AppVersion:'1.6.8',
+    AppVersion:'1.6.9',
     Config: {},
     UserData: {},
 
     LoginData: {
       IsRemindDeviceActive: true
     },
+
     RegisterData: {},
+
     TOTPSetupData:{},
 
     StartLocation:{},
     DestinationLocation:{},
     
     calculated_route_detail_active: false,
-    calculated_route_detail_overview_details: {},
-    ServiceRequestData: {},
-    ServiceRequestStarted: false,
+    calculated_route_detail_overview_details: {}
   }),
   actions: {
     WatchServices() {
       axios.interceptors.request.use(
         (config) => {
-          this.ServiceRequestStarted = true;
           return Promise.resolve(config);
         },
         (err) => {
-          this.ServiceRequestStarted = false;
           return Promise.reject(err);
         }
       );
 
       axios.interceptors.response.use(
         (res) => {
-          this.ServiceRequestStarted = false;
-          this.ServiceRequestData = {};
-
-          var message = res.data.message;
-          var status = res.status;
-          var data = res.data;
-          
-          Object.assign(this.ServiceRequestData, {message, status, data, config: { url: res.config.url }});
-
-          if(res.config.url == '/auth/details' && res.status === 200) {
-            this.UserData = res.data.UserData;
-            this.Config = res.data.config;
-          }
           return Promise.resolve(res);
         },
         (err) => {
-          this.ServiceRequestStarted = false;
-          this.ServiceRequestData = {};
-
-          var message = err.response?.data?.message ?? err.message ?? "Error, please try again.";
-          var status = err.response?.status ?? 500;
-          
-          Object.assign(this.ServiceRequestData, { message, status });
-
           return Promise.reject(err);
         }
       );
     },
+    async user_details_service(){
+      this.UserData = {};
+      var user_data = {};
+      try{
+
+        var response = await axios.get('/auth/details');
+        if( !response.status === 200 ) return;
+
+        user_data = response?.data?.UserData;
+        return;
+      }catch(err){
+        console.log(err);
+        return;
+      }finally{
+        this.UserData = user_data;
+      }
+    },
+    async client_config_service(){
+      var config = {};
+      this.Config = '';
+
+      try{
+        var response = await axios.get('/client-config');
+        if( response.status !== 200 ) return;
+
+        config = response?.data.config;
+      }catch(err){
+        console.log(err);
+        return;
+
+      }finally{
+        
+        this.Config = config;
+      }
+    },
     ResetPiniaStore() {
       this.$reset();
-    },
-    GetCurrentDateFormatted(date){
-      date = String(date);
-      var d = new Date(date);
-
-      var month = d.getMonth() + 1;
-      var day = d.getDate();
-      var year = d.getFullYear();
-
-      var hour = d.getHours();
-      var minute = d.getMinutes();
-      var second = d.getSeconds();
-
-      if( month < 10 ) month = '0' + month;
-      if( day < 10 ) day = '0' + day;
-
-      if( hour < 10 ) hour = '0' + hour;
-      if( minute < 10 ) minute = '0' + minute;
-      if( second < 10 ) second = '0' + second;
-
-      var formatted_date = month + '.' + day + '.' + year + ' ' + hour + ':' + minute + ':' + second;
-
-      return formatted_date;
     }
   },
   persist: {
     storage: sessionStorage,
-    paths: ["UserData", "Config"],
-  },
+    paths: ["UserData"]
+  }, 
 });

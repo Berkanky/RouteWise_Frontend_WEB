@@ -144,22 +144,6 @@
         <!-- Divider -->
         <div class="mt-3 h-px bg-zinc-50"></div>
 
-        <!-- Pricing Source -->
-        <p class="mt-2 text-[11px] text-zinc-500">
-          Pricing source:
-          <span class="font-mono tabular-nums text-zinc-700">
-            {{ calculated_route_detail?.FuelPriceAtTransactionTime }}
-          </span>
-          <span class="mx-1 text-zinc-300">/</span>
-          <span class="font-mono tabular-nums text-zinc-700">
-            {{ calculated_route_detail?.FuelPriceUnits }}
-          </span>
-          <span class="mx-1 text-zinc-300">•</span>
-          <span class="font-mono tabular-nums text-zinc-700">
-            {{ calculated_route_detail?.FuelPricePeriod }}
-          </span>
-        </p>
-
         <!-- NEW: Liter Basis -->
         <p class="mt-1 text-[11px] text-zinc-500">
           Liter basis:
@@ -306,7 +290,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
+            <!-- <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
               <div class="flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   class="w-4 h-4 text-zinc-400">
@@ -332,7 +316,7 @@
                   <div>{{ calculated_route_detail?.StartLocationLongitude?.toFixed(6) || '—' }}</div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm no-overflow">
@@ -358,7 +342,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
+            <!-- <div class="mt-3 grid grid-cols-2 gap-2 text-[12px] text-zinc-500">
               <div class="flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   class="w-4 h-4 text-zinc-400">
@@ -384,7 +368,7 @@
                   <div>{{ calculated_route_detail?.DestinationLocationLongitude?.toFixed(6) || '—' }}</div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div v-if="calculated_route_detail?.DestinationLocationDetail?.error"
               class="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-[12px] text-rose-700">
               <strong class="font-semibold">Address warning:</strong>
@@ -443,7 +427,7 @@
       </div>
       <div
         class="rounded-2xl border border-zinc-100 bg-white p-4 sm:p-5 shadow-sm print-keep print-overflow-visible no-overflow">
-        <div class="flex items-center justify-between mb-3">
+        <!-- <div class="flex items-center justify-between mb-3">
           <h3 class="text-[14px] font-semibold text-zinc-900">Vehicle</h3>
           <div
             class="hidden sm:flex items-center gap-2 print-block print:[grid-template-columns:repeat(2,minmax(0,1fr))]">
@@ -463,12 +447,8 @@
               class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
               {{ calculated_route_detail?.VehicleId?.fueltype }}
             </span>
-            <span
-              class="inline-flex items-center rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-700">
-              {{ calculated_route_detail?.FuelPriceUnits }}
-            </span>
           </div>
-        </div>
+        </div> -->
         <dl class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 grid-print-block">
           <div class="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
             <dt class="text-zinc-500 text-[12px] leading-none mb-1">Make</dt>
@@ -767,10 +747,8 @@ export default {
     this.store.calculated_route_detail_overview_details = [];
     this.store.calculated_route_detail_active = false;
 
-    var { Token } = this.$route.query;
-
     var { _id } = this.$route.params || {};
-    if (_id) await this.get_calculated_route_detail(_id, Token);
+    if (_id) await this.get_calculated_route_detail(_id );
 
     await this.get_avaliable_currencies();
   },
@@ -933,19 +911,18 @@ export default {
         console.log(err);
       }
     },
-    async get_calculated_route_detail(_id, Token) {
+    async get_calculated_route_detail(_id) {
 
       this.isLoading = true;
       this.errorMessage = '';
-
+      
       try {
 
-        var res = await axios.post('/calculated/route/detail', { _id }, { headers: { "Authorization": "Bearer " + Token } });
-
+        var res = await axios.post('/calculated/route/detail', { _id } );
+        
         if (res.status !== 200) return this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
 
         this.calculated_route_detail = res.data.decrypted_calculated_route_detail;
-        this.store.Config = res.data.config;
 
         var StartLocation = this.calculated_route_detail.StartLocation;
         var DestinationLocation = this.calculated_route_detail.DestinationLocation;

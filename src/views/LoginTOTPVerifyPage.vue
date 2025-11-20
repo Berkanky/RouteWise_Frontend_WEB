@@ -208,7 +208,8 @@ export default {
 
         var redir = this.$route.query.redirect;
         if (typeof redir === "string" && redir) return this.$router.replace(redir);
-  
+        
+        await this.store.user_details_service();
         this.$router.push({ name: 'Home', query:{ Page: 1 } });
 
       } catch (e) {

@@ -9,14 +9,12 @@
 <script>
 import { UseStore } from "./stores/store";
 import AppNavbar from "./components/AppNavbar.vue";
-import AppModal from "./components/AppModal.vue";
 import AppFooter from "./components/AppFooter.vue";
 
 export default {
   name: "App",
   components: {
     AppNavbar,
-    AppModal,
     AppFooter,
   },
   setup() {
@@ -27,16 +25,22 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-      isMobileMenuOpen: false,
-      isMobile: window.innerWidth < 768
+      window_with: window.innerWidth
     };
   },
-  created(){
-    window.addEventListener('resize', this.updateMobileStatus)
+  async mounted(){
+    await this.store.user_details_service();
+  },
+  mounted() {
+    window.addEventListener("resize", this.on_resize());
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.updateMobileStatus)
+    window.removeEventListener("resize", this.on_resize());
+  },
+  methods:{
+    on_resize() {
+      this.window_with = window.innerWidth;
+    }
   },
   computed:{
     is_mobile_active() {
@@ -45,17 +49,8 @@ export default {
 
       var is_current_route_auth_page = auth_pages.some(function(item){ return item === current_route_name});
 
-      this.isMobile = window.innerWidth < 768 && is_current_route_auth_page ? true : false;
-      return this.isMobile;
+      return this.window_with < 768 && is_current_route_auth_page ? true : false;
     }
-  },
-  mounted() {
-    this.store.WatchServices();
-  },
-  methods:{
-    updateMobileStatus() {
-      this.isMobile = window.innerWidth < 768
-    },
   }
 };
 </script>

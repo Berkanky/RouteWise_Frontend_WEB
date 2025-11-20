@@ -612,8 +612,6 @@ export default {
 
         this.calculated_route_detail = res.data.decrypted_calculated_route_detail;
 
-        this.store.Config = res.data.config;
-
         var StartLocation = this.calculated_route_detail.StartLocation;
         var DestinationLocation = this.calculated_route_detail.DestinationLocation;
 
