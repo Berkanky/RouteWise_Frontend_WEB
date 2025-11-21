@@ -28,7 +28,7 @@ export default {
       window_with: window.innerWidth
     };
   },
-  async mounted(){
+  async created(){
     await this.store.user_details_service();
   },
   mounted() {

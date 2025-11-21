@@ -42,6 +42,7 @@ export const UseStore = defineStore("UseStore", {
       );
     },
     async user_details_service(){
+      
       this.UserData = {};
       var user_data = {};
       try{
