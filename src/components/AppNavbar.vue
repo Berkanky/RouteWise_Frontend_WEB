@@ -54,7 +54,7 @@
                     {{ store.UserData?.UserName || 'User' }}
                   </p>
                   <p class="text-[11px] text-zinc-500">
-                    Joined: {{ formatDate(store.UserData?.CreatedDate) }}
+                    Joined: {{ store.UserData?.CreatedDate }}
                   </p>
                 </div>
               </div>
@@ -188,16 +188,6 @@ export default {
       this.isMobileMenuOpen = open;
       document.body.classList.toggle('overflow-hidden', open);
     },
-    formatDate(dateStr) {
-
-      if (!dateStr) return '-';
-      var date = new Date(dateStr);
-      return date.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    },
     isActive(name) {
       return this.$route.name === name;
     }
@@ -205,7 +195,7 @@ export default {
   watch: {
     'store.UserData': {
       handler(newVal) {
-        this.Active = newVal?.Active === true
+        this.Active = newVal?.Active === true;
       },
       immediate: true,
       deep: true

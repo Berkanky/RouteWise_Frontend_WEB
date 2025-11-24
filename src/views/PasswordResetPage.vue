@@ -128,7 +128,7 @@
                 </div>
                 <div>
                   <div class="font-semibold text-zinc-900">TOTP Setup</div>
-                  <div class="text-xs text-zinc-500">Authenticator’ı yeniden kur</div>
+                  <div class="text-xs text-zinc-500">Reinstall the Authenticator</div>
                 </div>
               </div>
               <svg class="h-5 w-5 text-zinc-400 group-hover:text-zinc-700" viewBox="0 0 24 24" fill="currentColor"
@@ -149,7 +149,7 @@
                 </div>
                 <div>
                   <div class="font-semibold text-zinc-900">Login Page</div>
-                  <div class="text-xs text-zinc-500">Giriş sayfasına dön</div>
+                  <div class="text-xs text-zinc-500">Return to the login page</div>
                 </div>
               </div>
               <svg class="h-5 w-5 text-zinc-400 group-hover:text-zinc-700" viewBox="0 0 24 24" fill="currentColor"

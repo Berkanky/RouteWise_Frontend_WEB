@@ -32,10 +32,11 @@ export default {
     await this.store.user_details_service();
   },
   mounted() {
-    window.addEventListener("resize", this.on_resize());
+    this.on_resize();
+    window.addEventListener("resize", this.on_resize);  
   },
   beforeUnmount() {
-    window.removeEventListener("resize", this.on_resize());
+    window.removeEventListener("resize", this.on_resize);
   },
   methods:{
     on_resize() {
@@ -49,7 +50,9 @@ export default {
 
       var is_current_route_auth_page = auth_pages.some(function(item){ return item === current_route_name});
 
-      return this.window_with < 768 && is_current_route_auth_page ? true : false;
+      var is_mobile_active_val = this.window_with < 768 && is_current_route_auth_page ? true : false;
+
+      return is_mobile_active_val;
     }
   }
 };
