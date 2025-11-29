@@ -204,69 +204,85 @@
             :key="key" class="relative py-3 lg:py-4 pr-4">
             <div class="pointer-events-none absolute right-0 top-0 h-full w-[4px] rounded-r-md" :style="{
               background: `linear-gradient(to bottom,
-                transparent 0%,
-                ${each_created_polyline?.StrokeColor || '#ccc'} 35%,
-                ${each_created_polyline?.StrokeColor || '#ccc'} 65%,
-                transparent 100%)
-              `
+        transparent 0%,
+        ${each_created_polyline?.StrokeColor || '#ccc'} 35%,
+        ${each_created_polyline?.StrokeColor || '#ccc'} 65%,
+        transparent 100%)`
             }"></div>
-            <div class="mb-2">
-              <span
-                class="inline-flex items-center rounded-full border border-zinc-200/80 bg-zinc-50/60 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
-                Route #{{ key + 1 }}
-              </span>
-              <span v-if="each_created_polyline?.Name" class="ml-2 text-[11px] text-zinc-500">
-                {{ each_created_polyline.Name }}
-              </span>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-y-2 md:gap-4
+
+            <div class="flex items-start gap-3">
+              <!-- SOLDA CHECKBOX -->
+              <div class="pt-1">
+                <input type="checkbox" v-model="each_created_polyline.SelectedPolyline" @change="on_polyline_select_change(each_created_polyline._id, $event)"
+                  class="h-4 w-4 rounded border-zinc-300 text-zinc-700 focus:ring-zinc-400" />
+              </div>
+
+              <div class="flex-1">
+                <div class="mb-2">
+                  <span
+                    class="inline-flex items-center rounded-full border border-zinc-200/80 bg-zinc-50/60 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
+                    Route #{{ key + 1 }}
+                  </span>
+                  <span v-if="each_created_polyline?.Name" class="ml-2 text-[11px] text-zinc-500">
+                    {{ each_created_polyline.Name }}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-y-2 md:gap-4
                md:[&>*:not(:first-child)]:pl-4 md:[&>*:not(:first-child)]:border-l md:[&>*:not(:first-child)]:border-zinc-100
                grid-print-block">
-              <div class="min-w-0 no-break">
-                <p class="text-[11px] text-zinc-500">Distance</p>
-                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                  {{ each_created_polyline?.DistanceKM }}
-                  <span class="text-[11px] font-normal text-zinc-500">km</span>
-                </p>
-                <p class="tabular-nums text-[11px] text-zinc-500">
-                  {{ each_created_polyline?.DistanceMIL }} mi
-                </p>
-              </div>
-              <div class="min-w-0 no-break">
-                <p class="text-[11px] text-zinc-500">ETA</p>
-                <p class="text-[16px] lg:text-[17px] font-semibold text-zinc-900 leading-snug">
-                  {{ each_created_polyline?.AverageDestinationTimeFormatted || '—' }}
-                </p>
-              </div>
-              <div class="min-w-0 no-break">
-                <p class="text-[11px] text-zinc-500">Fuel Consumption</p>
-                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                  {{ each_created_polyline?.TotalGallon }}
-                  <span class="text-[11px] font-normal text-zinc-500">gal</span>
-                  <span class="mx-1.5 text-zinc-300">•</span>
-                  {{ each_created_polyline?.TotalLiter?.liter }}
-                  <span class="text-[11px] font-normal text-zinc-500">L</span>
-                </p>
-              </div>
-              <div class="min-w-0 no-break">
-                <p class="text-[11px] text-zinc-500">Cost</p>
-                <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
-                  {{ each_created_polyline?.TotalCost || '—' }}
-                </p>
-                <div class="my-[6px] h-px bg-zinc-50"></div>
-                <div class="text-[11px] text-zinc-500 space-y-1">
-                  <div class="grid grid-cols-[auto_auto] justify-between">
-                    <span class="truncate">Fuel</span>
-                    <span class="tabular-nums"> {{ each_created_polyline?.TotalGallonCost }}</span>
+                  <div class="min-w-0 no-break">
+                    <p class="text-[11px] text-zinc-500">Distance</p>
+                    <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                      {{ each_created_polyline?.DistanceKM }}
+                      <span class="text-[11px] font-normal text-zinc-500">km</span>
+                    </p>
+                    <p class="tabular-nums text-[11px] text-zinc-500">
+                      {{ each_created_polyline?.DistanceMIL }} mi
+                    </p>
                   </div>
-                  <div class="grid grid-cols-[auto_auto] justify-between">
-                    <span class="truncate">Tolls</span>
-                    <span class="tabular-nums"> {{ each_created_polyline?.TollRoadEstimatedPriceDollar }}</span>
+                  <div class="min-w-0 no-break">
+                    <p class="text-[11px] text-zinc-500">ETA</p>
+                    <p class="text-[16px] lg:text-[17px] font-semibold text-zinc-900 leading-snug">
+                      {{ each_created_polyline?.AverageDestinationTimeFormatted || '—' }}
+                    </p>
+                  </div>
+                  <div class="min-w-0 no-break">
+                    <p class="text-[11px] text-zinc-500">Fuel Consumption</p>
+                    <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                      {{ each_created_polyline?.TotalGallon }}
+                      <span class="text-[11px] font-normal text-zinc-500">gal</span>
+                      <span class="mx-1.5 text-zinc-300">•</span>
+                      {{ each_created_polyline?.TotalLiter?.liter }}
+                      <span class="text-[11px] font-normal text-zinc-500">L</span>
+                    </p>
+                  </div>
+                  <div class="min-w-0 no-break">
+                    <p class="text-[11px] text-zinc-500">Cost</p>
+                    <p class="tabular-nums tracking-tight text-[18px] font-semibold text-zinc-900 leading-tight">
+                      {{ each_created_polyline?.TotalCost || '—' }}
+                    </p>
+                    <div class="my-[6px] h-px bg-zinc-50"></div>
+                    <div class="text-[11px] text-zinc-500 space-y-1">
+                      <div class="grid grid-cols-[auto_auto] justify-between">
+                        <span class="truncate">Fuel</span>
+                        <span class="tabular-nums">
+                          {{ each_created_polyline?.TotalGallonCost }}
+                        </span>
+                      </div>
+                      <div class="grid grid-cols-[auto_auto] justify-between">
+                        <span class="truncate">Tolls</span>
+                        <span class="tabular-nums">
+                          {{ each_created_polyline?.TollRoadEstimatedPriceDollar }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </section>
+
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -748,7 +764,7 @@ export default {
     this.store.calculated_route_detail_active = false;
 
     var { _id } = this.$route.params || {};
-    if (_id) await this.get_calculated_route_detail(_id );
+    if (_id) await this.get_calculated_route_detail(_id);
 
     await this.get_avaliable_currencies();
   },
@@ -773,6 +789,19 @@ export default {
     }
   },
   methods: {
+    async on_polyline_select_change(polyline_id, event){
+
+      var val = event.target.checked;
+
+      if( val ){
+        this.calculated_route_detail.decrypted_calculated_route_polylines.forEach(function(item){
+          if( item._id !== polyline_id ) item.SelectedPolyline = !val;
+        });
+      }
+
+      var response = await axios.put(`/update/selected/polyline`, { polyline_id: polyline_id, is_selected: val });
+      if( response.status !== 200 ) return;
+    },
     async on_currency_change(val) {
       var currency_code = val;
       this.errorMessage = '';
@@ -915,11 +944,11 @@ export default {
 
       this.isLoading = true;
       this.errorMessage = '';
-      
+
       try {
 
-        var res = await axios.post('/calculated/route/detail', { _id } );
-        
+        var res = await axios.post('/calculated/route/detail', { _id });
+
         if (res.status !== 200) return this.errorMessage = 'Sunucudan geçerli bir yanıt gelmedi.';
 
         this.calculated_route_detail = res.data.decrypted_calculated_route_detail;

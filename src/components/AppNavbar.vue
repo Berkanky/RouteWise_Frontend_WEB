@@ -94,8 +94,9 @@
             <button ...>Saved routes</button>
             -->
               </nav>
+              
             </div>
-
+            
             <!-- Footer / Version & Logout -->
             <footer class="px-4 pb-4 pt-3 border-t border-zinc-200/70 bg-white/95">
               <div class="flex items-center justify-between mb-2">
