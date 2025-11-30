@@ -87,17 +87,17 @@
                   <HomeIcon class="w-5 h-5" />
                   <span>Home</span>
                 </button>
-
-                <!-- Diğer menüler için buraya aynı patternle ekleme yaparsın -->
-                <!--
-            <button ...>History</button>
-            <button ...>Saved routes</button>
-            -->
+                <button v-on:click="GoAccountDetailsPage()" :class="[
+                  'w-full flex items-center gap-3 py-2.5 px-4 text-left rounded-lg transition-all',
+                  isActive('Home')
+                    ? 'bg-zinc-900/5 text-zinc-900 font-medium border-l-2 border-[#e11d48]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
+                ]">
+                  <InformationCircleIcon class="w-5 h-5" />
+                  <span>Account Details</span>
+                </button>
               </nav>
-              
             </div>
-            
-            <!-- Footer / Version & Logout -->
             <footer class="px-4 pb-4 pt-3 border-t border-zinc-200/70 bg-white/95">
               <div class="flex items-center justify-between mb-2">
                 <p class="text-[10px] text-zinc-400">
@@ -163,8 +163,8 @@ export default {
     }
   },
   methods: {
-    GoAccountPage() {
-      this.$router.push({ name: 'Account', query: { _id: this.store.UserData._id } });
+    GoAccountDetailsPage(){
+      this.$router.push({path:'/account'});
     },
     GoHomePage() {
 
@@ -196,7 +196,7 @@ export default {
   watch: {
     'store.UserData': {
       handler(newVal) {
-        this.Active = newVal?.Active === true;
+        if( newVal ) this.Active = newVal?.Active === true;
       },
       immediate: true,
       deep: true

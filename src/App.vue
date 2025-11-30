@@ -1,5 +1,5 @@
 <template>
-  <AppNavbar v-if="!this.is_mobile_active"/>
+  <AppNavbar v-if="!this.is_auth_required"/>
   <main class="min-h-[100svh] overflow-x-hidden bg-white pt-16 has-fixed-footer">
     <router-view />
   </main>
@@ -41,18 +41,19 @@ export default {
   methods:{
     on_resize() {
       this.window_with = window.innerWidth;
+      this.store.mobile_active = this.window_with < 768 ? true : false;
     }
   },
   computed:{
-    is_mobile_active() {
+    is_auth_required() {
       var auth_pages = ["Login", "LoginTOTPVerify", "TOTPVerify", "PasswordResetStart", "PasswordResetVerify", "PasswordReset", "Register"];
       var current_route_name = this.$route.name;
 
       var is_current_route_auth_page = auth_pages.some(function(item){ return item === current_route_name});
 
-      var is_mobile_active_val = this.window_with < 768 && is_current_route_auth_page ? true : false;
+      var is_auth_required_val = this.window_with < 768 && is_current_route_auth_page ? true : false;
 
-      return is_mobile_active_val;
+      return is_auth_required_val;
     }
   }
 };

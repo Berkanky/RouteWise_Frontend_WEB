@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-7xl">
       <div class="md:flex md:items-start md:gap-6">
         <!-- SOL: Kullanıcı paneli (sadece masaüstü) -->
-        <AccountDetails/>
+        <AccountDetails v-show="!this.store.mobile_active"/>
         <!-- SAĞ: ana içerik (rotalar) -->
         <div class="flex-1">
           <!-- Rotalar varsa grid -->

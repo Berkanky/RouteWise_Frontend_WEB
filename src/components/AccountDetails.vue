@@ -1,6 +1,12 @@
 <template>
-    <aside class="hidden md:block w-72 shrink-0">
-        <div class="sticky top-24 space-y-4">
+    <aside
+        class="
+            md:block md:w-72 md:shrink-0 md:static
+            fixed inset-x-0 bottom-0 top-16 z-20 overflow-y-auto bg-white
+            px-4 py-6
+        "
+    >
+        <div class="md:sticky md:top-24 space-y-4">
             <div class="rounded-2xl bg-[#fcfcfc] ring-1 ring-zinc-100 shadow-sm px-4 py-4">
                 <button type="button" class="w-full flex items-center justify-between gap-3 mb-1"
                     @click="accountCardOpen = !accountCardOpen">

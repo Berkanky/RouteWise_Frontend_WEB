@@ -20,7 +20,9 @@ export const UseStore = defineStore("UseStore", {
     DestinationLocation:{},
     
     calculated_route_detail_active: false,
-    calculated_route_detail_overview_details: {}
+    calculated_route_detail_overview_details: {},
+
+    mobile_active: false
   }),
   actions: {
     WatchServices() {
